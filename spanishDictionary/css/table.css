@@ -1,0 +1,15 @@
+/*=============================================
+                 DATA-TABLE STYLES
+=============================================*/
+.table thead th {
+    border-bottom: 1px solid var(--ghost-gray)
+}
+.page-item.active .page-link {
+    background-color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+}
+
+.page-link {
+    color: var(--dark-ocean);
+    border: 1px solid #d0cece;
+}

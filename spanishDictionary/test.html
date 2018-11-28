@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang ="en">
+<head>
+	<meta charset ="utf-8">
+	<meta name ="viewport" content = "width=device-width, initial-scale=1.0">
+	<meta name = "author" content ="Team 12">
+	<link rel="stylesheet" href ="./css/base.css" type = "text/css"/>
+
+	<title>Dashboard</title>
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  	
+
+
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+  <script src="./js/dashboard.js"></script>
+
+
+  <script src="./js/hammer.min.js"></script>
+
+	<script src="./js/moment.min.js"></script>
+
+	<link href="./css/eventcontrol.css" rel="stylesheet">
+
+<script src="./js/eventcontrol.js"></script>
+
+
+
+</head>
+<body>
+
+<form action="./services/dictionaryService.php?dictionary=1" method="POST" enctype="multipart/form-data">
+    <input name="entryText" type="text" placeholder="Enter a word or phrase">
+    <textarea name="entryDefinition">Enter the translation</textarea>
+    <input type="file" accept="audio/*" name="entryAudio" >
+    <input type="submit" name="newEntry" value="submit word to dictionary">
+</form>
+
+<table id="test"></table>
+<script>
+$("#test").DataTable( {
+    			ajax: {
+        			url:"http://mramir14.create.stedwards.edu/spanishDictionary/services/dictionaryService.php?dictionary=2",
+        			dataSrc: function (json) {
+		      					var return_data = new Array();
+		      					for(var i=0;i< json.length; i++){
+
+	      						
+	      							return_data.push({
+		      							Entry: json[i].entryText,
+		      							Definition: json[i].entryDefinition,
+	      							})
+		      						
+		      						
+		      						
+		      					}
+		      					return return_data;
+    						}
+    			},
+    			columns: [
+			        { data: "Entry" },
+			        { data: "Definition"},
+
+    			],
+			} );
+		
+</script>
+</body>
+</html>

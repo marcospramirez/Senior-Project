@@ -1,0 +1,95 @@
+:root { /*color palette*/
+  --off-black: #343434;
+  --pale-lime: #deebc1;
+  --pale-lime-hover: #c1da8b;
+  --blue-sand: #cfdfda;
+  --blue-sand-hover: #a3c2b8;
+  --dark-ocean: #172b42;
+  --dark-turquoise: #236477;
+  --ghost-gray: #0000001a;   /*black w/ very little opacity*/
+}
+
+/*=============================================
+                 GENERAL STYLES
+=============================================*/
+body {
+  font-family: 'Source Sans Pro Light', sans-serif;
+  color: var(--off-black);
+  font-size: 100%;
+  background-color: white;
+  background-image: url("../images/leaves.png");
+  background-attachment: fixed;
+  background-position: center;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Source Sans Pro SemiBold', sans-serif;
+
+}
+
+.hr-header {
+    margin-top: 0;
+    border: .5px solid var(--ghost-gray);
+    border-radius: 15px;
+}
+.content-frame {
+    margin: 5% auto;
+    padding: 5% auto;
+    background-color: white;
+}
+
+/*=============================================
+                 DASHBOARD STYLES
+=============================================*/
+.div-dictionary {
+  padding: 0 2%;
+}
+
+.btn-dictionary {
+  background-color: var(--pale-lime);
+  border-color: var(--pale-lime);
+  color: var(--off-black);
+  font-size: 1.15em;
+}
+
+.btn-dictionary:hover {
+  background-color: var(--pale-lime-hover);
+  border-color: var(--pale-lime-hover);
+  color: var(--off-black);
+}
+
+button.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*=============================================
+                 DICTIONARY STYLES
+=============================================*/
+button.audio {  /*outline button*/
+  color: var(--dark-ocean);
+  border-color: var(--dark-ocean);
+  border-radius: 100%;
+}
+
+button.audio:hover {
+  color: white;
+  border-color: var(--dark-ocean);
+  background-color: var(--dark-ocean);
+  border-radius: 100%;
+}
+
+button.dark {
+  font-family: 'Source Sans Pro SemiBold', sans-serif;
+  color: white;
+  border-color: var(--dark-turquoise);
+  background-color: var(--dark-turquoise);
+  margin: 0px 15px;
+}
+
+button.dark:hover {
+  color: white;
+  border-color: var(--dark-ocean);
+  background-color: var(--dark-ocean);
+}

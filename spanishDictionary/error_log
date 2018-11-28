@@ -1,0 +1,41 @@
+[12-Nov-2018 07:21:32 UTC] PHP Warning:  require(classfun.php): failed to open stream: No such file or directory in /home/mramircr/public_html/spanishDictionary/asg2.php on line 3
+[12-Nov-2018 07:21:32 UTC] PHP Fatal error:  require(): Failed opening required 'classfun.php' (include_path='.:/opt/alt/php70/usr/share/pear') in /home/mramircr/public_html/spanishDictionary/asg2.php on line 3
+[12-Nov-2018 07:22:00 UTC] PHP Notice:  Use of undefined constant test - assumed 'test' in /home/mramircr/public_html/spanishDictionary/asg2.php on line 2
+[12-Nov-2018 07:25:50 UTC] PHP Notice:  Use of undefined constant test - assumed 'test' in /home/mramircr/public_html/spanishDictionary/asg2.php on line 3
+[12-Nov-2018 07:27:06 UTC] PHP Notice:  Use of undefined constant test - assumed 'test' in /home/mramircr/public_html/spanishDictionary/asg2.php on line 3
+[12-Nov-2018 07:27:06 UTC] PHP Warning:  mysqli_stmt_bind_param(): Number of variables doesn't match number of parameters in prepared statement in /home/mramircr/public_html/spanishDictionary/asg2.php on line 24
+[12-Nov-2018 07:27:06 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mysqli_stmt_get_result() in /home/mramircr/public_html/spanishDictionary/asg2.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/mramircr/public_html/spanishDictionary/asg2.php on line 26
+[12-Nov-2018 07:28:35 UTC] PHP Notice:  Use of undefined constant test - assumed 'test' in /home/mramircr/public_html/spanishDictionary/asg2.php on line 3
+[12-Nov-2018 07:28:35 UTC] PHP Warning:  mysqli_stmt_bind_param(): Number of variables doesn't match number of parameters in prepared statement in /home/mramircr/public_html/spanishDictionary/asg2.php on line 24
+[12-Nov-2018 07:28:35 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mysqli_stmt_get_result() in /home/mramircr/public_html/spanishDictionary/asg2.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/mramircr/public_html/spanishDictionary/asg2.php on line 26
+[12-Nov-2018 07:29:02 UTC] PHP Warning:  mysqli_stmt_bind_param(): Number of variables doesn't match number of parameters in prepared statement in /home/mramircr/public_html/spanishDictionary/asg2.php on line 22
+[12-Nov-2018 07:29:02 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mysqli_stmt_get_result() in /home/mramircr/public_html/spanishDictionary/asg2.php:24
+Stack trace:
+#0 {main}
+  thrown in /home/mramircr/public_html/spanishDictionary/asg2.php on line 24
+[12-Nov-2018 07:30:09 UTC] PHP Warning:  mysqli_stmt_bind_param(): Number of variables doesn't match number of parameters in prepared statement in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[12-Nov-2018 07:30:09 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mysqli_stmt_get_result() in /home/mramircr/public_html/spanishDictionary/dashboard.php:24
+Stack trace:
+#0 {main}
+  thrown in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 24
+[12-Nov-2018 07:32:55 UTC] PHP Warning:  mysqli_stmt_bind_param(): Number of variables doesn't match number of parameters in prepared statement in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[12-Nov-2018 07:32:55 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mysqli_stmt_get_result() in /home/mramircr/public_html/spanishDictionary/dashboard.php:24
+Stack trace:
+#0 {main}
+  thrown in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 24
+[12-Nov-2018 07:32:59 UTC] PHP Warning:  mysqli_stmt_bind_param(): Number of variables doesn't match number of parameters in prepared statement in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[12-Nov-2018 07:33:00 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function mysqli_stmt_get_result() in /home/mramircr/public_html/spanishDictionary/dashboard.php:24
+Stack trace:
+#0 {main}
+  thrown in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 24
+[12-Nov-2018 17:01:51 UTC] PHP Warning:  mysqli_connect(): (28000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/mramircr/public_html/spanishDictionary/includes/dbh.inc.php on line 15
+[12-Nov-2018 17:03:23 UTC] PHP Warning:  mysqli_connect(): (28000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/mramircr/public_html/spanishDictionary/includes/dbh.inc.php on line 15
+[12-Nov-2018 17:03:26 UTC] PHP Warning:  mysqli_connect(): (28000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/mramircr/public_html/spanishDictionary/includes/dbh.inc.php on line 15
+[12-Nov-2018 17:14:57 UTC] PHP Notice:  Trying to get property of non-object in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 21
+[12-Nov-2018 17:15:54 UTC] PHP Notice:  Trying to get property of non-object in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 21
