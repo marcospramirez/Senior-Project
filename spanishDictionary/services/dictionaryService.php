@@ -1,18 +1,10 @@
 <?php
-    $servername = "localhost";
-    $dbusername = "mramircr_spanish";
-    $dbpassword = "PKFuDD]p31h(";
-    $dbname = "mramircr_spanishDictionary";
+    require_once("./db.php");
     
+
     $dictionaryID = $_GET['dictionary'];
     
-    $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
-    
-    if($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
-    }
-    
-    
+    $conn = returnConnection();
     if(isset($_POST["newEntry"])){
         
         $entryText = $_POST["entryText"];
@@ -37,10 +29,7 @@
         } 
         else {
             echo "Error: " . $sql . "<br>" . $conn->error;  
-        }
-    
-        
-       
+        }   
         
     }
     
@@ -62,8 +51,10 @@
     }
     
     //echo json_encode($records);
+    header('Content-Type: text/html; charset=utf-8');
     echo json_encode($records, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
     
-    $conn->close();
+
+    closeConnection($conn);    
 ?>
