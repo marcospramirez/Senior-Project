@@ -36,7 +36,7 @@
     else{
     
     
-    $sql = "SELECT entryText, entryDefinition from entryToDictionary, Entry where Entry.entryID in (select entryID from entryToDictionary where entryToDictionary.dictionaryID = '$dictionaryID' )";
+    $sql = "SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = '$dictionaryID'";
     
     $result = $conn->query($sql);
     
