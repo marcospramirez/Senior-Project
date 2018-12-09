@@ -17,3 +17,9 @@ function parseURLParams(url) {
     }
     return parms;
 }//end of parseURLParams
+
+function stringToNameArray(string) {
+    array = string.split("||")
+    array.pop();//remove last entry, which is an empty entry
+    return array
+}

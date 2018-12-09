@@ -5,15 +5,15 @@ $conn = returnConnection();
 
 if(isset($_GET["email"])) {  //if data in post, check user
     $email = $_GET["email"];
-    $sql = "SELECT className AS 'classrooms' FROM classroom, instructor WHERE instructorEmail = email AND email = '$email';";
-
-    $classroomString = '';
+    //get all dictionary names for specific user
+    $sql = "SELECT e.entryAudioPath, e.entryText, e.entryDefinition FROM entry e, entrytodictionary t, dictionary d WHERE e.entryID = t.entryID AND t.dictionaryID = d.dictionaryID AND d.dictionaryID = 7;";
+    $dictionaryString = '';
 
     if ($result = $conn->query($sql)) { //query successful
         while ($row = $result->fetch_assoc()) {
-            $classroomString .= $row['classrooms']."||";
+            $dictionaryString .= $row['name']."||";
         }
-        print $classroomString;
+        print $dictionaryString;
     }
     else {  //fail: show error message
         echo "Error: " . $sql . "<br>" . $conn->error;

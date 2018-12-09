@@ -18,12 +18,6 @@ function displayClassroomTable(classroomArray) {
     return table
 }//end of displayClassroomTable
 
-function stringToClassroomNameArray(string) {
-    array = string.split("||")
-    array.pop();//remove last entry, which is an empty entry
-    return array
-}
-
 $(function () {
     let table = ''
     const errorMsgId = 'table-classrooms'
@@ -49,7 +43,7 @@ $(function () {
     }
     //using AJAX, recieves JSON from URL in the form of the data var
     $.get(URL, userData, function(data) {
-        let array = stringToClassroomNameArray(data)
+        let array = stringToNameArray(data)
         table = displayClassroomTable(array)
 
         $('#table-classrooms tbody').on('click', 'tr', function () {

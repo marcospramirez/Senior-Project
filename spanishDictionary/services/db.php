@@ -1,14 +1,14 @@
 <?php
 function returnConnection(){
-	// $servername = "localhost";
-  // $dbusername = "mramircr_spanish";
-  // $dbpassword = "PKFuDD]p31h(";
-  // $dbname = "mramircr_spanishDictionary";
+//	 $servername = "localhost";
+//   $dbusername = "mramircr_spanish";
+//   $dbpassword = "PKFuDD]p31h(";
+//   $dbname = "mramircr_spanishDictionary";
 
   $servername = "localhost";
   $dbusername = "root"; //default for xampp
   $dbpassword = ""; //default for xampp
-  $dbname = "spanishdictionary";
+  $dbname = "mramircr_spanishDictionary";
 
   $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
