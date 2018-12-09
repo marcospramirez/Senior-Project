@@ -1,11 +1,11 @@
 <?php
-require_once("db.php");
+require_once("./db.php");
 
 $conn = returnConnection();
 
 if(isset($_GET["email"])) {  //if data in post, check user
     $email = $_GET["email"];
-    $sql = "SELECT className AS 'classrooms' FROM classroom, instructor WHERE instructorEmail = email AND email = '$email';";
+    $sql = "SELECT className AS 'classrooms' FROM Classroom, Instructor WHERE instructorEmail = email AND email = '$email';";
 
     $classroomString = '';
 
