@@ -1,5 +1,5 @@
 <?php
-    require_once("db.php");
+    require_once("./db.php");
 
     $conn = returnConnection();
 
@@ -24,9 +24,9 @@ function registerUser($user, $conn) {
     $sql = "";
 
     if($user == "STUDENT") {    //check if student is in db
-        $sql = "UPDATE student SET password = '$password', name = '$name' WHERE email = '$email';";
+        $sql = "UPDATE Student SET Student.password = '$password', Student.name = '$name' WHERE Student.email = '$email';";
     } elseif($user == "INSTRUCTOR") {   //add instructor to db
-        $sql = "INSERT INTO instructor (email, password, name) VALUES ('$email', '$password', '$name');";
+        $sql = "INSERT INTO Instructor (email, password, name) VALUES ('$email', '$password', '$name');";
     }
 
     if ($conn->query($sql) && ($conn->affected_rows > 0)) { //register successful
@@ -38,3 +38,5 @@ function registerUser($user, $conn) {
         return "Error: " . $sql . "<br>" . $conn->error;
     }
 }//end of insertUser
+
+?>

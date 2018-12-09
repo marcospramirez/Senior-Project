@@ -1,5 +1,5 @@
 <?php
-require_once("db.php");
+require_once("./db.php");
 
 $conn = returnConnection();
 
@@ -29,7 +29,7 @@ function checkUser($conn) {
 }
 
 function checkUserStudent($conn, $email, $password) {
-    $sql = "SELECT * FROM student WHERE email = '$email' AND password = '$password';";
+    $sql = "SELECT * FROM Student WHERE email = '$email' AND password = '$password';";
 
     if ($conn->query($sql) && ($conn->affected_rows > 0)) { //student exists
         return "STUDENT";
@@ -41,7 +41,7 @@ function checkUserStudent($conn, $email, $password) {
 }
 
 function checkUserInstructor($conn, $email, $password) {
-    $sql = "SELECT * FROM instructor WHERE email = '$email' AND password = '$password';";
+    $sql = "SELECT * FROM Instructor WHERE email = '$email' AND password = '$password';";
 
     if ($conn->query($sql) && ($conn->affected_rows > 0)) { //instructor exists
         return "INSTRUCTOR";
