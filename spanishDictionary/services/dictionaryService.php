@@ -1,10 +1,35 @@
 <?php
     require_once("./db.php");
-    
 
-    $dictionaryID = $_GET['dictionary'];
+    $dictionaryID = '';
+    if(isset($_GET['dictionary'])) {
+        $dictionaryID = $_GET['dictionary'];
+    }
     
     $conn = returnConnection();
+
+    //creating new dictionary
+    if(isset($_POST["dictionaryName"])) {
+        $classID = $_POST['class'];
+        $dictionaryName = $_POST["dictionaryName"];
+
+        $sql = "INSERT INTO dictionary (dictionaryID, dictionaryName) VALUES (NULL, '$dictionaryName');";
+
+        if ($conn->query($sql) === TRUE) {  //success: created new dictionary, now add dictionary to classroom
+            $dictionaryID = $conn->insert_id;
+
+            $sql = "INSERT INTO classroomtodictionary (classID, dictionaryID) VALUES ('$classID', '$dictionaryID');";
+
+            if ($conn->query($sql) === TRUE) {  //success: added dictionary to classroom
+                //if the new dictionary came with some entries,
+                //then process new entries
+                if(isset($_POST["entryText"])) {
+                    $_POST["newEntry"] = 'true!';
+                }
+            }
+        }
+    }
+
     if(isset($_POST["newEntry"])){
         // echo count($_FILES);
         // echo '<pre>';
@@ -22,25 +47,25 @@
 
             $target_dir = "../audio/";
             $target_file = $target_dir . $entryAudio;
-        
+
             move_uploaded_file($_FILES["entryAudio"]["tmp_name"][$index], $target_file);
             $sql = "INSERT INTO Entry (entryText, entryDefinition, entryAudioPath) VALUES ('$entryText', '$entryDefinition', '$entryAudio');";
 
-        
+
             if ($conn->query($sql) === TRUE) {
                 $last_id = $conn->insert_id;
                 //echo "New record created successfully. Last inserted ID is: " . $last_id;
-                
+
                 $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID', '$last_id');";
-                
+
                 if($conn->query($addToDictionary)){
                     header("Location: ../dictionary.php?dictionaryID=" . $dictionaryID);
                 }
-            } 
+            }
             else {
-                echo "Error: " . $sql . "<br>" . $conn->error;  
-            }   
-        
+                echo "Error: " . $sql . "<br>" . $conn->error;
+            }
+
         }
         
         // $entryText = $_POST["entryText"];
@@ -71,7 +96,7 @@
     header('Content-Type: text/html; charset=utf-8');
     echo json_encode($records, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
 
-    closeConnection($conn);    
+
+    closeConnection($conn);
 ?>
