@@ -1,6 +1,6 @@
 var termCount = 1   //page loads with one term & need at least one term in a dictionary
 function addTermFields() {
-    const termHTML = `<hr class="hr-term">
+    const termHTML = `<hr class="hr-entries">
             <div id="term${termCount + 1}" class="row align-items-start"> <!--Term #${termCount + 1} in Dictionary-->
                 <div class="col-sm-auto"> <!--Term & Audio-->
                     <div class="row align-items-start"> <!--Term-->
@@ -29,9 +29,10 @@ function addTermFields() {
 $(function () {
     let urlParams = parseURLParams(location.href)
     const classID = urlParams.classID[0]
-    const importHiddenInputs = $('#import-hidden')
-    importHiddenInputs.append(`<input type="hidden" name="class" value="${classID}">`)
 
-    const addDictionaryHiddenInput = $('#add-dictionary-hidden')
-    addDictionaryHiddenInput.append(`<input type="hidden" name="class" value="${classID}">`)
+    const hiddenImport = $('#import-hidden')
+    addHiddenClassIdInput(hiddenImport, classID)
+
+    const hiddenAddToDictionary = $('#add-dictionary-hidden')
+    addHiddenClassIdInput(hiddenAddToDictionary, classID)
 })

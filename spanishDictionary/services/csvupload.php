@@ -4,7 +4,7 @@
 	if(isset($_POST["submit_csv"])){
 
 		$conn = returnConnection();
-		$classID = $_POST['classId'];
+		$classID = $_POST['classID'];
 
 		$tmpName = $_FILES['csv']['tmp_name'];
 		$csvAsArray = array_map('str_getcsv', file($tmpName));
@@ -54,7 +54,7 @@
 	            }
 	        } 
 	        else {
-	            echo "Error: " . $sql . "<br>" . $conn->error;  
+	            echo "Error: " . $insertSQL . "<br>" . $conn->error;
 	        }   
         
 		}
@@ -105,7 +105,7 @@
 			}
 		}
 		else{
-			echo "Error: " . $sql . "<br>" . $conn->error;  
+			echo "Error: " . $insertSQL . "<br>" . $conn->error;
 		}
 
 	}

@@ -18,8 +18,14 @@ function parseURLParams(url) {
     return parms;
 }//end of parseURLParams
 
-function stringToNameArray(string) {
-    array = string.split("||")
-    array.pop();//remove last entry, which is an empty entry
+function stringToArray(string, delimiter) {
+    array = string.split(delimiter)
+    if(array[array.length-1] === "") {    //if last index is empty, pop it
+        array.pop();
+    }
     return array
+}
+
+function addHiddenClassIdInput(element, classID) {
+    element.append(`<input type="hidden" name="class" value="${classID}">`)
 }

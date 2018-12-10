@@ -1,3 +1,21 @@
+function getClassNameIdArray(data) {
+    let classNameArray = []
+    let classIdArray = []
+
+    const classroomArray = stringToArray(data, "``");
+    $.each(classroomArray, function (i, classroomString) {
+        const classNameIdPair = stringToArray(classroomString, "||");
+
+        const name = classNameIdPair[0]
+        const id = classNameIdPair[1]
+
+        classNameArray.push(name)
+        classIdArray.push(id)
+    })
+
+    return {classNameArray: classNameArray, classIdArray: classIdArray}
+}
+
 function displayClassroomTable(classroomArray) {
     let tableDataSet = []
     $.each(classroomArray, function(i, classroom) {
@@ -18,6 +36,7 @@ function displayClassroomTable(classroomArray) {
     return table
 }//end of displayClassroomTable
 
+
 $(function () {
     let table = ''
     const errorMsgId = 'table-classrooms'
@@ -37,18 +56,21 @@ $(function () {
     }
 
     let email = urlParams.email[0]
-    const URL = `./services/classroom.php`
+    const URL = `./services/classroomService.php`
     const userData = {
         email: email
     }
     //using AJAX, recieves JSON from URL in the form of the data var
     $.get(URL, userData, function(data) {
-        let array = stringToNameArray(data)
-        table = displayClassroomTable(array)
+        const classNameArray = getClassNameIdArray(data).classNameArray
+        const classIdArray = getClassNameIdArray(data).classIdArray
+
+        table = displayClassroomTable(classNameArray)
 
         $('#table-classrooms tbody').on('click', 'tr', function () {
-            var classroomName = table.row( this ).data();
-            window.location.replace(`./student-classroom.html?classroomName=${classroomName}`)
+            const tableIndex = table.row( this ).index()
+            const classroomID = classIdArray[tableIndex]
+            window.location.replace(`./students.html?classroomID=${classroomID}`)
         } );
     })
     .fail(function() {

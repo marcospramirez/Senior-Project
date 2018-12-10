@@ -50,9 +50,9 @@ $(function(){
             }
             $.post(URL, userData, function(data) {
                 if(data == "instructor") {  //authenticated instructor, redirect to instructor dashboard
-                    window.location.replace(`./classroom-dashboard.html?email=${email}`)
+                    window.location.replace(`./dashboard.php?email=${email}`)
                 } else if(data == "student") {  //authenticated student, redirect to student dashboard
-                    window.location.replace(`./classroom-dashboard.html?email=${email}`)
+                    window.location.replace(`./dashboard.php?email=${email}`)
                 } else if(data == "none") { //invalid credentials
                     document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'
                 } else {

@@ -17,15 +17,19 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <!--CUSTOM CSS-->
     <link href="css/base.css" rel="stylesheet"/>
-    <link href="css/add-dictionary.css" rel="stylesheet"/>
+    <link href="css/add.css" rel="stylesheet"/>
     <!--CUSTOM JS-->
     <script src="js/utils.js"></script>
     <script src="js/add-dictionary.js"></script>
-    <script src="js/import-dictionary.js"></script>
-
 </head>
 <body>
-    <!-- Contact Us Modal -->
+    <header>
+        <nav class="navbar sticky-top navbar-light bg-light justify-content-between">
+            <a class="navbar-brand">Marcos<b>&</b>Vickie</a>
+        </nav>
+    </header>
+
+<!-- Contact Us Modal -->
     <div class="modal fade importFile" id="import-file" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered importFile" role="document">
             <div class="modal-content">
@@ -35,7 +39,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="import-dictionary-form">
+                <form id="import-dictionary-form" action="./services/csvupload.php" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div id="import-error-message"></div>
                             <div class="form-group">
@@ -51,7 +55,7 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" name="submit_csv" value="Import Dictionary" class="btn btn-primary">
+                        <input type="submit" name="submit_csv" value="Import Dictionary" class="btn dark">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -64,7 +68,7 @@
         <br>
         <div class="row align-items-start">
             <h1 id="add-dict-header" class="col">Add Dictionary to </h1>
-            <button id="add-dict-import"  class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Dictionary</button>
+            <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Dictionary</button>
         </div>
         <hr class="hr-header">
         <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php" method="POST">
@@ -94,12 +98,12 @@
                 </div>
             </div>
             <div class="row"> <!--Button: Add New Term text fields-->
-                <div class="col" align="right"><button type="button" class="btn add-term" onclick="addTermFields()"><i class="fas fa-plus"></i></button></div>
+                <div class="col" align="right"><button type="button" class="btn add-more" onclick="addTermFields()"><i class="fas fa-plus"></i></button></div>
             </div>
             <div id="add-dictionary-error-message"></div>
             <div class="row"> <!--Button: Create New Dictionary-->
                 <div id="add-dictionary-hidden"></div>  <!--add classID into POST-->
-                <div class="col" align="center"><input type="submit" name="newDictionary" value="Create Dictionary" id="new-dictionary" class="btn dark"></div>
+                <div class="col" align="center"><input type="submit" name="newDictionary" value="Create Dictionary" id="submit-new" class="btn dark"></div>
             </div>
         </form>
     </div>
