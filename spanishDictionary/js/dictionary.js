@@ -1,8 +1,7 @@
 $(document).ready(function() {
-    var email = parseURLParams(location.href).email[0];
-    var dictionaryName = parseURLParams(location.href).dictionaryName[0];
-    //i'm not sending an ID, so this call won't work. query in dictionary service needs to be reworked
-    var URL = `http://mramir14.create.stedwards.edu/spanishDictionary/services/dictionaryService.php?dictionary=${dictionaryName}`
+    // var email = parseURLParams(location.href).email[0];
+    var dictionaryID = parseURLParams(location.href).dictionaryID[0];
+    var URL = `http://mramir14.create.stedwards.edu/spanishDictionary/services/dictionaryService.php?dictionary=${dictionaryID}`
 
     var table = $('#table-dictionary').DataTable({
     "ajax": {
@@ -10,7 +9,7 @@ $(document).ready(function() {
           dataSrc: function (json) {
                 var return_data = new Array();
                 for(var i=0;i< json.length; i++){
-                    return_data.push(["audio", json[i].entryText, json[i].entryDefinition])
+                    return_data.push([json[i].entryAudioPath, json[i].entryText, json[i].entryDefinition])
                 }
                 return return_data;
             }
@@ -24,16 +23,9 @@ $(document).ready(function() {
 
     $('#table-dictionary tbody').on( 'click', 'button', function () {
     var data = table.row( $(this).parents('tr') ).data();
-    var definition = data[2];
-    var audioPath = "";
-    if(definition == "cero") {
-        audioPath = "./audio/es-mx-cero.mp3";
-        playAudio(audioPath)
-    }
-    else {
-        alert("Audio not available!")
-    }
-    } );
+    var audioPath = data[0];
+    playAudio(audioPath)
+    });
 });
 
 function playAudio(audioPath) {

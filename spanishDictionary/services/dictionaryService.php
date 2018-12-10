@@ -59,7 +59,7 @@
                 $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID', '$last_id');";
 
                 if($conn->query($addToDictionary)){
-                    header("Location: ../dictionary.php?dictionaryID=" . $dictionaryID);
+                    header("Location: ../dictionary.html?dictionaryID=" . $dictionaryID);
                 }
             }
             else {

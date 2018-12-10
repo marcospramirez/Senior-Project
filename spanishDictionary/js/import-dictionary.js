@@ -2,7 +2,7 @@ function importDictionary(classID, errormsg) {
     const URL = `./services/addDictionary.php?class=${classID}`
     const dictionaryName= $('#dictionary-name').val()
     const userData = {
-        submit_csv: true    //how the fuck am i supposed to import a file????
+        submit_csv: true    //how the fuck am i supposed to import a file???? <- lol i'm such a fucking walnut
     }
     //using AJAX, recieve dictionaryID of new dictionary
     $.post(URL, userData, function(data) {
