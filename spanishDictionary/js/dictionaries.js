@@ -78,7 +78,7 @@ $(function () {
     //using AJAX, recieves JSON from URL in the form of the data var
     $.get(URL, userData, function(data) {
         //maybe make data include the dictionary ID and somehow send that to dictionary.html
-        let array = stringToArray(data)
+        let array = stringToArray(data, "||")
         table = displayDictionaryTable(array, contentID)
 
         $(`#${contentID} tbody`).on('click', 'tr', function () {

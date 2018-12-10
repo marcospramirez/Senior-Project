@@ -70,7 +70,7 @@ $(function () {
         $('#table-classrooms tbody').on('click', 'tr', function () {
             const tableIndex = table.row( this ).index()
             const classroomID = classIdArray[tableIndex]
-            window.location.replace(`./students.html?classroomID=${classroomID}`)
+            window.location.replace(`./dictionaries.html?classroom=${classroomID}&email=${email}`)
         } );
     })
     .fail(function() {

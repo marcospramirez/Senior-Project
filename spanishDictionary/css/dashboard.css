@@ -1,3 +1,7 @@
-.card, .card-body, .card-text {
+ .card-header, .card-body, .card-footer {
     background-color: white;
 }
+
+ .card {
+     margin: 3%;
+ }

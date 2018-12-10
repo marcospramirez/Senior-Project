@@ -1,9 +1,9 @@
 <?php
     require_once("services/db.php");
 
-    $conn = returnConnection();
+    function getClassNameIdPair() {
+        $conn = returnConnection();
 
-    function getClassNameIdPair($conn) {
         if(isset($_GET['email'])) {
             $email = $_GET['email'];
             $permission = $_GET['permission'];
@@ -36,9 +36,8 @@
 
             return $classNameIdPairArray;
         }
+        closeConnection($conn);
     }
-
-    closeConnection($conn);
 ?>
 
 <!DOCTYPE html>
@@ -76,19 +75,28 @@
         </div>
         <div class="card-body">
             <?php
-                $classNameIdPairArray = getClassNameIdPair($conn);
+                $classNameIdPairArray = getClassNameIdPair();
                 $classNameArray = $classNameIdPairArray["nameArray"];
                 $classIdArray = $classNameIdPairArray["idArray"];
 
-                for ($i = 0; $i <= 10; $i++) {
-                    echo $classNameArray[$i];
-                    if(($i + 1) <= 10) echo '<br>';
-                }
 
+                if(sizeof($classNameArray) > 0) {
+                    for ($i = 0; ($i <= 4 && $i <= sizeof($classNameArray)-1); $i++) {
+                        echo $classNameArray[$i];
+                        if(($i + 1) <= 10) echo '<br>';
+                    }
+                }
+                else {
+                    echo "<div align='center'>";
+                        echo "<h3>No Classrooms.</h3>";
+//                        echo "<h3>Add One Now.</h3>";
+//                        echo '<button class="btn dark" onclick="window.location.replace(`add-dictionary.html`) >Add One Now</button>';
+                    echo "</div>";
+                }
             ?>
         </div>
         <div class="card-footer">
-            <button class="btn" type="submit">More...</button>
+            <button class="btn" onclick="window.location.replace('classrooms.html?email=<?php print_r($_GET['email']) ?>')">More...</button>
         </div>
     </div>
 
