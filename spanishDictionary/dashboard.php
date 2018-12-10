@@ -1,3 +1,46 @@
+<?php
+    require_once("services/db.php");
+
+    $conn = returnConnection();
+
+    function getClassNameIdPair($conn) {
+        if(isset($_GET['email'])) {
+            $email = $_GET['email'];
+            $permission = $_GET['permission'];
+
+            if($permission == 'student') {
+                $sql = "SELECT c.className AS 'name', c.classID AS 'id' FROM student s, studenttoclassroom t, classroom c WHERE s.email = t.studentEmail AND t.classroomID = c.classID AND s.email = '$email';";
+
+            }elseif($permission == 'instructor') {
+                $sql = "SELECT className AS 'name', classID AS 'id' FROM Classroom, Instructor WHERE instructorEmail = email AND email = '$email';";
+
+            }
+
+            $classNameArray = array();
+            $classIdArray = array();
+
+            if ($result = $conn->query($sql)) { //query successful
+                while ($row = $result->fetch_assoc()) {
+                    array_push($classNameArray, $row['name']);
+                    array_push($classIdArray, $row['id']);
+                }
+            }
+            else {  //fail: show error message
+                echo "Error: " . $sql . "<br>" . $conn->error;
+            }
+
+            $classNameIdPairArray = array(
+                "nameArray" => $classNameArray,
+                "idArray" => $classIdArray
+            );
+
+            return $classNameIdPairArray;
+        }
+    }
+
+    closeConnection($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -30,15 +73,19 @@
     <div class="card">
         <div class="card-header">
             <h2>Classrooms</h2>
-            <?php
-            if(isset($_GET['email'])) {
-                $email = $_GET['email'];
-
-                //GET CLASSROOMS TO SHOW UP DEPENDING IF INSTRUCTOR OR STUDENT
-            }
-            ?>
         </div>
         <div class="card-body">
+            <?php
+                $classNameIdPairArray = getClassNameIdPair($conn);
+                $classNameArray = $classNameIdPairArray["nameArray"];
+                $classIdArray = $classNameIdPairArray["idArray"];
+
+                for ($i = 0; $i <= 10; $i++) {
+                    echo $classNameArray[$i];
+                    if(($i + 1) <= 10) echo '<br>';
+                }
+
+            ?>
         </div>
         <div class="card-footer">
             <button class="btn" type="submit">More...</button>

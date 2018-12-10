@@ -48,15 +48,15 @@ $(function(){
                 email: email,
                 password: password
             }
-            $.post(URL, userData, function(data) {
-                if(data == "instructor") {  //authenticated instructor, redirect to instructor dashboard
-                    window.location.replace(`./dashboard.php?email=${email}`)
-                } else if(data == "student") {  //authenticated student, redirect to student dashboard
-                    window.location.replace(`./dashboard.php?email=${email}`)
-                } else if(data == "none") { //invalid credentials
+            $.post(URL, userData, function(permission) {
+                if(permission == "instructor") {  //authenticated instructor, redirect to instructor dashboard
+                    window.location.replace(`./dashboard.php?email=${email}&permission=${permission}`)
+                } else if(permission == "student") {  //authenticated student, redirect to student dashboard
+                    window.location.replace(`./dashboard.php?email=${email}&permission=${permission}`)
+                } else if(permission == "none") { //invalid credentials
                     document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'
                 } else {
-                    document.getElementById(errorMsgId).innerHTML = 'Error! ' + data
+                    document.getElementById(errorMsgId).innerHTML = 'Error! ' + permission
                 }
             }) //end of $.post
                 .fail(function() {

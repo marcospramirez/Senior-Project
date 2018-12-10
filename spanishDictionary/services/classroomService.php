@@ -3,7 +3,7 @@
 
     $conn = returnConnection();
 
-    //get all of instructor's classrooms
+    //get all of instructor's classrooms (name & id)
     if(isset($_GET["email"])) {
         $email = $_GET["email"];
         $sql = "SELECT className AS 'name', classID AS 'id' FROM Classroom, Instructor WHERE instructorEmail = email AND email = '$email';";
