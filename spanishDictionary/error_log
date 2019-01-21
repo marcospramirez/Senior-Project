@@ -39,3 +39,21 @@ Stack trace:
 [12-Nov-2018 17:03:26 UTC] PHP Warning:  mysqli_connect(): (28000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/mramircr/public_html/spanishDictionary/includes/dbh.inc.php on line 15
 [12-Nov-2018 17:14:57 UTC] PHP Notice:  Trying to get property of non-object in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 21
 [12-Nov-2018 17:15:54 UTC] PHP Notice:  Trying to get property of non-object in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 21
+[10-Dec-2018 16:21:35 UTC] PHP Notice:  Undefined index: permission in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 9
+[10-Dec-2018 16:21:35 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:21:35 UTC] PHP Warning:  mysqli::query(): Empty query in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:21:35 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 29
+[10-Dec-2018 16:21:49 UTC] PHP Notice:  Undefined index: permission in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 9
+[10-Dec-2018 16:21:49 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:21:49 UTC] PHP Warning:  mysqli::query(): Empty query in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:21:49 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 29
+[10-Dec-2018 16:22:41 UTC] PHP Notice:  Undefined index: permission in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 9
+[10-Dec-2018 16:22:41 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:22:41 UTC] PHP Warning:  mysqli::query(): Empty query in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:22:41 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 29
+[10-Dec-2018 16:22:49 UTC] PHP Notice:  Undefined index: permission in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 9
+[10-Dec-2018 16:22:49 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:22:49 UTC] PHP Warning:  mysqli::query(): Empty query in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 22
+[10-Dec-2018 16:22:49 UTC] PHP Notice:  Undefined variable: sql in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 29
+[10-Dec-2018 16:24:39 UTC] PHP Notice:  Undefined index: email in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 99
+[10-Dec-2018 18:47:42 UTC] PHP Notice:  Undefined index: email in /home/mramircr/public_html/spanishDictionary/dashboard.php on line 99

@@ -16,7 +16,7 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-  <script src="./js/dashboard.js"></script>
+  <script src="js/dictionaries.js"></script>
 
 
   <script src="./js/hammer.min.js"></script>
@@ -32,14 +32,41 @@
 </head>
 <body>
 
+<h3>New Entry Form</h3>
 <form action="./services/dictionaryService.php?dictionary=1" method="POST" enctype="multipart/form-data">
-    <input name="entryText" type="text" placeholder="Enter a word or phrase">
-    <textarea name="entryDefinition">Enter the translation</textarea>
-    <input type="file" accept="audio/*" name="entryAudio" >
+    <input name="entryText[]" type="text" placeholder="Enter a word or phrase">
+    <textarea name="entryDefinition[]">Enter the translation</textarea>
+    <input type="file" accept="audio/*" name="entryAudio[]">
+    <input name="entryText[]" type="text" placeholder="Enter a word or phrase">
+    <textarea name="entryDefinition[]">Enter the translation</textarea>
+    <input type="file" accept="audio/*" name="entryAudio[]" >
+
     <input type="submit" name="newEntry" value="submit word to dictionary">
 </form>
+<!-- 
+<table id="test"></table> -->
 
-<table id="test"></table>
+<h3>Upload Students Form</h3>
+<form action="./services/csvupload.php" method ="POST" enctype="multipart/form-data">
+<input name="classId" type="text" value="1">
+<input type="file" name="csv">
+<input type="submit" name="submit_csv" value="studentcsv">
+<input type="hidden" name="action" value="studentcsv">
+</form>
+
+
+<br/><br/>
+<h3>New Dictionary Form</h3>
+<form action="./services/csvupload.php" method ="POST" enctype="multipart/form-data">
+<input name="classId" type="text" value="1">
+<input name="dictionaryName" type="text" value="This is a test">
+<input type="file" name="csv">
+<input type="submit" name="submit_csv" value="newDictionary">
+<input type="hidden" name="action" value="newDictionary">
+</form>
+
+
+<!-- 
 <script>
 $("#test").DataTable( {
     			ajax: {
@@ -67,6 +94,6 @@ $("#test").DataTable( {
     			],
 			} );
 		
-</script>
+</script> -->
 </body>
 </html>
