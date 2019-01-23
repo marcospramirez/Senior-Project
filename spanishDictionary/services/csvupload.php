@@ -1,23 +1,23 @@
 <?php
 	require_once("./db.php");
 
-	if(isset($_POST["submit_csv"])){
+	// if(isset($_POST["submit_csv"])){
 
-		$conn = returnConnection();
-		$classID = $_POST['class'];
+	// 	$conn = returnConnection();
+	// 	$classID = $_POST['class'];
 
-		$tmpName = $_FILES['csv']['tmp_name'];
-		$csvAsArray = array_map('str_getcsv', file($tmpName));
+	// 	$tmpName = $_FILES['csv']['tmp_name'];
+	// 	$csvAsArray = array_map('str_getcsv', file($tmpName));
 
-		if($_POST["action"] === "studentcsv"){
-			uploadStudents($conn, $classID, $csvAsArray);
+	// 	if($_POST["action"] === "studentcsv"){
+	// 		uploadStudents($conn, $classID, $csvAsArray);
 
-		}
-		else if($_POST["action"] === "newDictionary"){
-			uploadNewDictionary($conn, $classID, $csvAsArray);
-		}
+	// 	}
+	// 	else if($_POST["action"] === "newDictionary"){
+	// 		uploadNewDictionary($conn, $classID, $csvAsArray);
+	// 	}
 
-	}
+	// }
 
 	function remove_utf8_bom($text)
 	{
