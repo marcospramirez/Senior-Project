@@ -39,7 +39,7 @@ $(function () {
     }
 
     const URL = './services/dashboardService.php'
-    const cardBody = 'card-body'
+    const cardBody = "cardBody"
 
     $.get(URL, userData, function (data) {
         //todo: i'm also getting personalVocabID of the classroom, add that to the session
