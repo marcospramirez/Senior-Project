@@ -13,7 +13,7 @@ function printSessionInfo($requestedSessionInfoArray) {
     echo '<script type="text/javascript">';
     foreach ($requestedSessionInfoArray as $sessionInfoName) {
         //using json_encode to properly escape
-        if(isset($_SESSION[$sessionInfoName])) { echo 'var '.$sessionInfoName.'FromSession = "'.json_encode($_SESSION[$sessionInfoName]).'";'; }
+        if(isset($_SESSION[$sessionInfoName])) { echo 'var '.$sessionInfoName.'FromSession = '.json_encode($_SESSION[$sessionInfoName]).';'; }
 
 
 //        if($sessionInfoName !== 'email') { if(isset($_SESSION['email'])) { echo 'var emailSession = "'.json_encode($_SESSION['email']).'";';}}
