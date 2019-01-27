@@ -52,8 +52,9 @@ $(function () {
             const classroomID = classroomIDArray[index]
             classroomNameHTML += appendClickableClassroomName(index, classroomID, classroomName)
             if((index + 1) <= classroomNameArray.length) { classroomNameHTML += '<br>'} //print breaks between classroom names
-            
         })
+
+        document.getElementById(cardBody).innerHTML = classroomNameHTML
     })
         .fail(function () {
             document.getElementById(cardBody).innerHTML = `Error, could not post! URL: ${URL}`
