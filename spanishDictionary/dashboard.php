@@ -24,7 +24,7 @@ printHeadClose();
 <main>
   <div class="container content-frame border rounded">
       <br>
-      <h1 class="col">Gateway Dashboard</h1>
+      <h1 class="col">Dashboard</h1>
       <hr class="hr-header">
       <div class="div-dashboard">
           <div class="card">
