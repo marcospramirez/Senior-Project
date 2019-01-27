@@ -9,7 +9,7 @@ printBootstrapJsCdn();
 printFontAwesomeIconsCdn();
 
 include_once "includes/printSessionInfo.inc.php";
-printSessionInfo(array('userType', 'classroomID', 'classroomName'));
+printSessionInfo(array('role', 'classroomID', 'classroomName'));
 
 echo '
     <!--CUSTOM CSS-->

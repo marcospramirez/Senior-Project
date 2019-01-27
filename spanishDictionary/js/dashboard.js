@@ -33,10 +33,9 @@ function appendClickableClassroomName(index, classroomID, classroomName) {
 
 //AJAX GET to get classroom list (array of classroom IDs & an array of classroomNames)
 $(function () {
-    //todo: change userType to role
     const userData = {
         email: emailFromSession,
-        role: userTypeFromSession
+        role: roleFromSession
     }
 
     const URL = './services/dashboardService.php'

@@ -30,17 +30,17 @@ function passedErrorCheckRegister(errorMsgId, name, email, password, passwordCon
     return result
 }//end of passedErrorCheckLogin
 
-function registerUser(userType, URL, errorMsgId) {
-  const name = $(`#register-${userType}-name`)
-  const email = $(`#register-${userType}-email`)
-  const password = $(`#register-${userType}-password`)
-  const passwordConfirm = $(`#register-${userType}-password-confirm`)
+function registerUser(role, URL, errorMsgId) {
+  const name = $(`#register-${role}-name`)
+  const email = $(`#register-${role}-email`)
+  const password = $(`#register-${role}-password`)
+  const passwordConfirm = $(`#register-${role}-password-confirm`)
 
   //client-end error checking
   if(passedErrorCheckRegister(errorMsgId, name.val(), email.val(), password.val(), passwordConfirm.val())) {
       //process AJAX request
       const userData = {
-          user: userType.toUpperCase(),
+          user: role.toUpperCase(),
           name: name.val(),
           email: email.val(),
           password: password.val()
@@ -73,32 +73,32 @@ $(function(){
     let studentForm = $('#register-student-form')
     let instructorForm = $('#register-instructor-form')
     let errorMsgId = ''
-    let userType = ''
+    let role = ''
     const URL = `./services/register.php`
 
     //hijack student register form
     studentForm.submit(function(event) {
         event.preventDefault()
 
-        userType = "student"
+        role = "student"
 
         //clear error messages
-        errorMsgId = `register-${userType}-error-message`
+        errorMsgId = `register-${role}-error-message`
         document.getElementById(errorMsgId).innerHTML = ''
 
-        registerUser(userType, URL, errorMsgId)
+        registerUser(role, URL, errorMsgId)
     })
 
     //hijack instructor register form
     instructorForm.submit(function(event) {
         event.preventDefault()
 
-        userType = "instructor"
+        role = "instructor"
 
         //clear error messages
-        errorMsgId = `register-${userType}-error-message`
+        errorMsgId = `register-${role}-error-message`
         document.getElementById(errorMsgId).innerHTML = ''
 
-        registerUser(userType, URL, errorMsgId)
+        registerUser(role, URL, errorMsgId)
     })
 }) //end of doc ready

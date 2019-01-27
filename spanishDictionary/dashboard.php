@@ -8,7 +8,7 @@ printBootstrapCssCdn();
 printBootstrapJsCdn();
 
 include_once "includes/printSessionInfo.inc.php";
-printSessionInfo(array('email', 'userType'));
+printSessionInfo(array('email', 'role'));
 
 echo '
     <!--CUSTOM CSS-->

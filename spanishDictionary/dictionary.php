@@ -10,7 +10,7 @@ printDataTablesCdn();
 printFontAwesomeIconsCdn();
 
 include_once "includes/printSessionInfo.inc.php";
-printSessionInfo(array('userType', 'dictionaryID', 'dictionaryName'));
+printSessionInfo(array('role', 'dictionaryID', 'dictionaryName'));
 
 echo '
     <!--CUSTOM JS-->
