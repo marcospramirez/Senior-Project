@@ -66,7 +66,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
         if (studentCount === 0) {    //if no students in classroom, allow instructor to add some
             studentButtonInnerHTML.append(`Add Students to Classroom`)
             studentButton.click(function () {
-                window.location.href = './addStudent.php'
+                window.location.href = '../addStudent.php'
             })
         }   //end of if
         //else if there are students in the classroom,
@@ -80,7 +80,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
             }
 
             studentButton.click(function () {
-                window.location.href = './studentList.php'
+                window.location.href = '../studentList.php'
             })
         }   //end of else if
     })//end of $.get
@@ -95,7 +95,7 @@ function showAddDictionaryButton() {
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
 
     addDictionaryButton.click(function () {
-        window.location.href = './addDictionary.php'
+        window.location.href = '../addDictionary.php'
     })
 }//end of showAddDictionaryButton
 

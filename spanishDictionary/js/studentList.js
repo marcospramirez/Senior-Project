@@ -12,7 +12,7 @@ function showAddStudentButton() {
     $('#student-list-header').append(`            ${addStudentButton}\n`)    //extra spaces/tab for formatting purposes
 
     addStudentButton.click(function () {
-        window.location.href = './addStudent.php'
+        window.location.href = '../addStudent.php'
     })
 }
 
