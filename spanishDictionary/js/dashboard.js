@@ -17,10 +17,12 @@ function getClassroomIDNameSet(data) {
 
 //create html to classroom name. when clicked, go to classroom.php
 function appendClickableClassroomName(index, classroomID, classroomName) {
-    let classroomNameHTML = `<p id="classroom-name-${index}">${classroomName}</p>`
+    const classroomNameHTMLId = `classroom-name-${index}`
+    let classroomNameHTML = `<p id="${classroomNameHTMLId}">${classroomName}</p>`
+
 
     //if name is clicked, add classroomID & classroomName to session & go to classroom.php
-    $(`#classroom-name-${index}`).click(function () {
+    $(`#${classroomNameHTMLId}`).on( "click", function () {
         const userData = {
             classroomID: classroomID,
             classroomName: classroomName
