@@ -10,6 +10,7 @@ echo '
         <!--CUSTOM CSS-->
         <link href="css/loginRegister.css" rel="stylesheet"/>
         <!--CUSTOM JS-->
+        <script src="js/utils.js"></script>
         <script src="js/toggleLoginRegister.js"></script>
         <script src="js/login.js"></script>
         <script src="js/register.js"></script>
