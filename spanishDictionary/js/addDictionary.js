@@ -39,6 +39,8 @@ $(function () {
 
     setAddDictionaryHeader('add-dict-header',clasroomName)
 
+    //todo: hijack form, redirect after success
+
     //add classroomID as a hidden input named "class"
     //for both the 'import' form and the 'add dictionary' form
     const importDictionaryForm = $('#import-hidden')
