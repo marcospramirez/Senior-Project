@@ -32,7 +32,7 @@ printHeadClose();
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="import-student-form" action="services/csvupload.php" method="POST" enctype="multipart/form-data">
+            <form id="import-student-form" action="services/studentService.php?Action=addStudentsCSV" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div id="import-error-message"></div>
                     <div class="form-group">
@@ -60,7 +60,7 @@ printHeadClose();
             <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Students</button>
         </div>
         <hr class="hr-header">
-        <form id="new-students-form" enctype="multipart/form-data" action="services/studentService.php" method="POST">
+        <form id="new-students-form" enctype="multipart/form-data" action="services/studentService.php?Action=addStudents" method="POST">
             <div id="students">
                 <div id="student1"> <!--Student #1 in Classroom-->
                     <div class="form-group"><input type="text" class="form-control" title="studentEmail" name="studentEmail[]" placeholder="Student Email" required></div>

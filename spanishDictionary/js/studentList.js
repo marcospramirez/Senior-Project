@@ -52,7 +52,7 @@ $(function () {
         Action: "list",
         classroomID: classroomID
     }
-    //using AJAX, recieves JSON from URL in the form of the data var
+    //using AJAX, receives JSON from URL in the form of the data var
     $.get(URL, userData, function(data) {
         let studentList = JSON.parse(data)
         displayStudentListTable(studentList)

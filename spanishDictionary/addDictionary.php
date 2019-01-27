@@ -73,7 +73,7 @@ printHeadClose();
                 <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Dictionary</button>
             </div>
             <hr class="hr-header">
-            <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php" method="POST">
+            <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php?Action=addDictionary" method="POST">
                 <!--Dictionary Name-->
                 <div class="row align-items-start">
                     <div class="col-sm-auto"><input type="text" id="dictionary-name" class="form-control" title="dictionary" name="dictionaryName" placeholder="Dictionary Name" required></div>

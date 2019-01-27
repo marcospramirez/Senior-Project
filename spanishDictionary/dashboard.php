@@ -34,7 +34,7 @@ printHeadClose();
               <div class="card-body">
               </div>
               <div class="card-footer">
-                  <button class="btn" onclick="window.location.replace('classrooms.html?email=<?php print_r($_GET['email']) ?>')">More...</button>
+                  <button class="btn" onclick="window.location.href = '')">More...</button>
               </div>
           </div>
       </div>

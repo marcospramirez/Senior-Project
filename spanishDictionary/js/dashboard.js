@@ -33,15 +33,17 @@ function appendClickableClassroomName(index, classroomID, classroomName) {
 
 //AJAX GET to get classroom list (array of classroom IDs & an array of classroomNames)
 $(function () {
-    //todo: role vs userType? Is "role" used elsewhere, in case it would be easier to change userType
+    //todo: change userType to role
     const userData = {
         email: emailFromSession,
-        userType: userTypeFromSession
+        role: userTypeFromSession
     }
-    const URL = './services/dashboard.php'
+
+    const URL = './services/dashboardService.php'
     const cardBody = 'card-body'
 
     $.get(URL, userData, function (data) {
+        //todo: i'm also getting personalVocabID of the classroom, add that to the session
         const  classroomIDNameSet = getClassroomIDNameSet(data)
         const classroomIDArray = classroomIDNameSet.classroomIDArray
         const classroomNameArray = classroomIDNameSet.classroomNameArray

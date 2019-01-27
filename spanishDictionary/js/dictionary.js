@@ -28,21 +28,21 @@ function playAudio(audioPath) {
 
 //display audio, terms & definitions of the dictionary in a table
 $ (function() {
-    const URL = `./services/dictionaryService.php`
-    // const dictionaryID = dictionaryIDFromSession
+    const dictionaryID = dictionaryIDFromSession
     const dictionaryName = dictionaryNameFromSession
+    const URL = `./services/dictionaryService.php?Action=single&dictionaryID=${dictionaryID}`
     updateHeader(dictionaryName)
 
     var table = $('#table-dictionary').DataTable({
         "ajax": {
             url: URL,
-            dataSrc: function (json) {  //todo: figure out how this works and how I can add an "Action": "single" to the data
+            dataSrc: function (json) {
                 if(json.length === 0) { //no terms in dictionary
                     showAddToDictionaryButton()
                 } else {
                     var return_data = new Array();
                     for(var i=0;i< json.length; i++){
-                        return_data.push(["audio", json[i].entryText, json[i].entryDefinition])
+                        return_data.push([json[i].entryAudioPath, json[i].entryText, json[i].entryDefinition])
                     }
                     return return_data;
                 }
