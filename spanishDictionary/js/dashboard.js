@@ -26,7 +26,7 @@ function goToClassroom(classroomID, classroomName) {
 //create html to classroom name. when clicked, go to classroom.php
 function appendClickableClassroomName(index, classroomID, classroomName) {
     const classroomNameHTMLId = `classroom-name-${index}`
-    let classroomNameHTML = `<button type="button" id="${classroomNameHTMLId}" class="btn btn-link" onclick="goToClassroom(${classroomID}, \"${classroomName}\")">${classroomName}</button>`
+    let classroomNameHTML = `<button type="button" id="${classroomNameHTMLId}" class="btn btn-link" onclick='goToClassroom(${classroomID}, "${classroomName}")'>${classroomName}</button>`
 
 
     // //if name is clicked, add classroomID & classroomName to session & go to classroom.php
