@@ -15,20 +15,24 @@ function getClassroomIDNameSet(data) {
     return {classroomIDArray: classroomIDArray, classroomNameArray: classroomNameArray}
 }
 
+function goToClassroom(classroomID, classroomName) {
+    const userData = {
+        classroomID: classroomID,
+        classroomName: classroomName
+    }
+    addToSessionAndMoveToPage(userData, 'goTo', './classroom.php')
+}
+
 //create html to classroom name. when clicked, go to classroom.php
 function appendClickableClassroomName(index, classroomID, classroomName) {
     const classroomNameHTMLId = `classroom-name-${index}`
-    let classroomNameHTML = `<p id="${classroomNameHTMLId}">${classroomName}</p>`
+    let classroomNameHTML = `<button type="button" id="${classroomNameHTMLId}" class="btn btn-link" onclick="goToClassroom(${classroomID}, ${classroomName})">${classroomName}</button>`
 
 
-    //if name is clicked, add classroomID & classroomName to session & go to classroom.php
-    $(`#${classroomNameHTMLId}`).on( "click", function () {
-        const userData = {
-            classroomID: classroomID,
-            classroomName: classroomName
-        }
-        addToSessionAndMoveToPage(userData, 'goTo', './classroom.php')
-    })
+    // //if name is clicked, add classroomID & classroomName to session & go to classroom.php
+    // $(`#${classroomNameHTMLId}`).on( "click", function () {
+    //
+    // })
 
     return classroomNameHTML
 }//end of appendClickableClassroomName
