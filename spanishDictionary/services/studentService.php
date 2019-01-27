@@ -16,12 +16,12 @@
             countAction($conn);
             break;
 
-        case "addStudentsCSV":
+        case "addStudentCSV":
             addStudentCSV($conn);
             break;
 
-        case "addStudents":
-            addStudents($conn);
+        case "addStudent":
+            addStudent($conn);
             break;
 
         case "no action":
@@ -80,7 +80,7 @@
 
     }
 
-    function addStudentsCSV($conn){
+    function addStudentCSV($conn){
         $conn = returnConnection();
         $classID = $_POST['classroomID'];
 
@@ -91,7 +91,7 @@
 
     }
 
-    function addStudents($conn){
+    function addStudent($conn){
         $classID = '';
         if(isset($_POST['class'])) {
             $classID = $_POST['class'];
