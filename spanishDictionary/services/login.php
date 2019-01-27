@@ -3,7 +3,7 @@ require_once("./db.php");
 
 $conn = returnConnection();
 
-if(isset($_GET["email"])) {  //if data in post, check user
+if(isset($_POST["email"])) {  //if data in post, check user
     $result = checkUser($conn);
 
     print($result);
@@ -12,8 +12,8 @@ if(isset($_GET["email"])) {  //if data in post, check user
 closeConnection($conn);
 
 function checkUser($conn) {
-    $email = $_GET["email"];
-    $password = $_GET["password"];
+    $email = $_POST["email"];
+    $password = $_POST["password"];
 
     $checkUserStudentResult = checkUserStudent($conn, $email, $password);
     $checkUserInstructorResult = checkUserInstructor($conn, $email, $password);
