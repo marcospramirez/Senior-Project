@@ -1,19 +1,18 @@
-function getDictionaryNameIdSet(data) {
+function getDictionaryIdNameSet(data) {
+    let dictionaryIDArray = []
     let dictionaryNameArray = []
-    let dictionaryIdArray = []
 
-    const dictionaryArray = stringToArray(data, "``");
-    $.each(dictionaryArray, function (i, dictionaryString) {
-        const dictionaryNameIdPair = stringToArray(dictionaryString, "||");
+    const dictionaryIDNameData = JSON.parse(data)
 
-        const name = dictionaryNameIdPair[0]
-        const id = dictionaryNameIdPair[1]
+    $.each(dictionaryIDNameData, function (i, dictionaryNameID) {
+        const dictionaryID = dictionaryNameID.dictionaryID
+        const dictionaryName = dictionaryNameID.dictionaryName
 
-        dictionaryNameArray.push(name)
-        dictionaryIdArray.push(id)
+        dictionaryIDArray.push(dictionaryID)
+        dictionaryNameArray.push(dictionaryName)
     })
 
-    return {dictionaryNameArray: dictionaryNameArray, dictionaryIdArray: dictionaryIdArray}
+    return {dictionaryIdArray: dictionaryIDArray, dictionaryNameArray: dictionaryNameArray}
 }
 
 function displayDictionaryTable(dictionaryArray, contentID) {
@@ -102,12 +101,16 @@ function showAddDictionaryButton() {
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
 function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
-    const URL = './services/studentService.php';
-    $.get(URL, {classroomID : classroomID}, function(data) {
+    const URL = './services/dictionaryService.php'
+    const userData = {
+        Action: "list",
+        classroomID: classroomID
+    }
+    $.get(URL, userData, function(data) {
         //separate dictionary data into separate arrays
-        const dictionaryNameIdSet = getDictionaryNameIdSet(data)    //todo: this func will need to be restructured because idk how i'm getting this info back
-        const dictionaryNameArray = dictionaryNameIdSet.dictionaryNameArray
-        const dictionaryIdArray = dictionaryNameIdSet.dictionaryIdArray
+        const dictionaryIDNameSet = getDictionaryIdNameSet(data)
+        const dictionaryIDArray = dictionaryIDNameSet.dictionaryIdArray
+        const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
 
         if(dictionaryNameArray.length === 0) {  //classroom doesn't have dictionaries
             $(`#${tableDiv}`).val(`No Dictionaries in Classroom ${classroomName}.`)
@@ -117,7 +120,7 @@ function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
             //click on table row/dictionary name to go to dictionary
             $(`#${tableDiv} tbody`).on('click', 'tr', function () {
                 const tableIndex = table.row( this ).index()
-                const dictionaryID = dictionaryIdArray[tableIndex]
+                const dictionaryID = dictionaryIDArray[tableIndex]
                 const dictionaryName = dictionaryNameArray[tableIndex]
 
                 //add email and userType to the session & redirect to the dashboard

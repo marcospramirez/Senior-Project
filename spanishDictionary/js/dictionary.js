@@ -15,7 +15,7 @@ function showAddToDictionaryButton() {
         dictionaryBody.append(addToDictionaryButton)
 
         addToDictionaryButton.click(function () {
-            window.location.href = './TBD.php'  //todo: figure out if this is going to addDictionary.php or a new editDictionary.php
+            window.location.href = './services/addDictionary.php'
         })
     }
 }//end of showAddToDictionaryButton
