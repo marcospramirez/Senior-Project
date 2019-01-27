@@ -34,12 +34,12 @@ function addHiddenInputToForm(form, name, data) {
 //movementFlag: "redirectTo"- move to different file without adding the movement to the history stack
 //              "goTo"- move to a different file, adding the movement to the history stack
 function addToSessionAndMoveToPage(userData, movementFlag, URL) {
-    const addToSessionURL = "./includes/addToSessionAndMoveToPage.inc.php"
+    const addToSessionURL = "./includes/addToSession.inc.php"
     $.post(addToSessionURL, userData, function() {  //added userData successfully
         if(movementFlag === 'redirectTo') {window.location.replace(URL)}  //redirect to URL/don't add to history
         else if(movementFlag === 'goTo') {window.location.href = URL}   //go to ULR, adding past location to history
     })
-    $.fail(function(data){  //failed to connect
+    .fail(function(data){  //failed to connect
         console.log("Error! " + data)
     })
 }
