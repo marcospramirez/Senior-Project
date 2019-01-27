@@ -30,107 +30,75 @@ function passedErrorCheckRegister(errorMsgId, name, email, password, passwordCon
     return result
 }//end of passedErrorCheckLogin
 
-function registerStudent(URL, errorMsgId) {
-  const name = $('#register-student-name').val()
-  const email = $('#register-student-email').val()
-  const password = $('#register-student-password').val()
-  const passwordConfirm = $('#register-student-password-confirm').val()
+function registerUser(userType, URL, errorMsgId) {
+  const name = $(`#register-${userType}-name`)
+  const email = $(`#register-${userType}-email`)
+  const password = $(`#register-${userType}-password`)
+  const passwordConfirm = $(`#register-${userType}-password-confirm`)
 
   //client-end error checking
-  if(passedErrorCheckRegister(errorMsgId, name, email, password, passwordConfirm)) {
+  if(passedErrorCheckRegister(errorMsgId, name.val(), email.val(), password.val(), passwordConfirm.val())) {
       //process AJAX request
       const userData = {
-          user: "STUDENT",
-          name: name,
-          email: email,
-          password: password
+          user: userType.toUpperCase(),
+          name: name.val(),
+          email: email.val(),
+          password: password.val()
       }
       $.post(URL, userData, function(data) {
-          if(data == "success") {  //user was inserted correctly!
-              $('#register-student-name').val('') //clear name input field
-              $('#register-student-email').val('') //clear email input field
-              $('#register-student-password').val('') //clear password input field
-              $('#register-student-password-confirm').val('') //clear password confirm input field
+          if(data == "success") {  //user was registered!
+              name.val('') //clear name input field
+              email.val('') //clear email input field
+              password.val('') //clear password input field
+              passwordConfirm.val('') //clear password confirm input field
               showLogin()
               document.getElementById("register-success-message").innerHTML = 'Registered Successfully!'
           } else if(data == "duplicate") {  //username is not available
               document.getElementById(errorMsgId).innerHTML = 'Username is not available.'
           } else {
-              document.getElementById(errorMsgId).innerHTML = 'Error! ' + data
+              document.getElementById(errorMsgId).innerHTML = `Error! ${data}`
           }
       }) //end of $.post
           .fail(function() {
-                  document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL} | User Data: ${userData}`
+                  document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL}`
           })//end of $.fail
 
 
   } //end of if: passedErrorCheckLogin
-}//end of registerStudent
+}//end of registerUser
 
-function registerInstructor(URL, errorMsgId) {
-    const name = $('#register-instructor-name').val()
-    const email = $('#register-instructor-email').val()
-    const password = $('#register-instructor-password').val()
-    const passwordConfirm = $('#register-instructor-password-confirm').val()
-
-    //client-end error checking
-    if(passedErrorCheckRegister(errorMsgId, name, email, password, passwordConfirm)) {
-        //process AJAX request
-        const userData = {
-            user: "INSTRUCTOR",
-            name: name,
-            email: email,
-            password: password
-        }
-        $.post(URL, userData, function(data) {
-            if(data == "success") {  //user was inserted correctly!
-                $(`#register-instructor-name`).val('') //clear name input field
-                $('#register-instructor-email').val('') //clear email input field
-                $('#register-instructor-password').val('') //clear password input field
-                $('#register-instructor-password-confirm').val('') //clear password confirm input field
-                showLogin()
-                document.getElementById("register-success-message").innerHTML = 'Registered Successfully!'
-            } else if(data == "duplicate") {  //username is not available
-                document.getElementById(errorMsgId).innerHTML = 'Username is not available.'
-            } else {
-                document.getElementById(errorMsgId).innerHTML = 'Error! ' + data
-            }
-        }) //end of $.post
-            .fail(function() {
-                document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL} | User Data: ${userData}`
-            })//end of $.fail
-
-
-    } //end of if: passedErrorCheckLogin
-}//end of registerInstructor
-
-//jQuery to load AFTER doc is loaded
+//hijack forms & register user
 $(function(){
     //set form variable
     let studentForm = $('#register-student-form')
     let instructorForm = $('#register-instructor-form')
     let errorMsgId = ''
+    let userType = ''
     const URL = `./services/register.php`
 
     //hijack student register form
     studentForm.submit(function(event) {
-      event.preventDefault()
+        event.preventDefault()
 
-      //clear error messages
-      errorMsgId = 'register-student-error-message'
-      document.getElementById(errorMsgId).innerHTML = ''
+        userType = "student"
 
-      registerStudent(URL, errorMsgId)
+        //clear error messages
+        errorMsgId = `register-${userType}-error-message`
+        document.getElementById(errorMsgId).innerHTML = ''
+
+        registerUser(userType, URL, errorMsgId)
     })
 
     //hijack instructor register form
     instructorForm.submit(function(event) {
-      event.preventDefault()
+        event.preventDefault()
 
-      //clear error messages
-      errorMsgId = 'register-instructor-error-message'
-      document.getElementById(errorMsgId).innerHTML = ''
+        userType = "instructor"
 
-      registerInstructor(URL, errorMsgId)
+        //clear error messages
+        errorMsgId = `register-${userType}-error-message`
+        document.getElementById(errorMsgId).innerHTML = ''
+
+        registerUser(userType, URL, errorMsgId)
     })
 }) //end of doc ready

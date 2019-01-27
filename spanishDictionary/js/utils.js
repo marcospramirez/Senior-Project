@@ -26,6 +26,20 @@ function stringToArray(string, delimiter) {
     return array
 }
 
-function addHiddenClassIdInput(element, classID) {
-    element.append(`<input type="hidden" name="class" value="${classID}">`)
+function addHiddenInputToForm(form, name, data) {
+    form.append(`<input type="hidden" name="${name}" value="${data}">`)
+}
+
+//add user data to session and then move to a different file.
+//movementFlag: "redirectTo"- move to different file without adding the movement to the history stack
+//              "goTo"- move to a different file, adding the movement to the history stack
+function addToSessionAndMoveToPage(userData, movementFlag, URL) {
+    const addToSessionURL = "./includes/addToSessionAndMoveToPage.inc.php"
+    $.post(addToSessionURL, userData, function() {  //added userData successfully
+        if(movementFlag === 'redirectTo') {window.location.replace(URL)}  //redirect to URL/don't add to history
+        else if(movementFlag === 'goTo') {window.location.href = URL}   //go to ULR, adding past location to history
+    })
+    $.fail(function(data){  //failed to connect
+        console.log("Error! " + data)
+    })
 }

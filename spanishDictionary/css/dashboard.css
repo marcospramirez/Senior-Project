@@ -1,7 +1,7 @@
- .card-header, .card-body, .card-footer {
+.card-header, .card-body, .card-footer {
     background-color: white;
 }
 
- .card {
-     margin: 3%;
- }
+.card {
+    margin: 3%;
+}

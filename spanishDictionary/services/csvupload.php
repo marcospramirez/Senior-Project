@@ -1,7 +1,7 @@
 <?php
 	require_once("./db.php");
 
-	if(isset($_POST["submit_csv"])){
+	if(isset($_POST["submit_csv"])) {
 
 		$conn = returnConnection();
 		$classID = $_POST['classID'];

@@ -1,36 +1,28 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add Students</title>
+<?php
+session_start();
+include_once "includes/head.inc.php";
+printHeadOpen('Add Students');
+printGoogleFontsCdn();
+printBootstrapCssCdn();
+printJQueryCdn();
+printBootstrapJsCdn();
+printFontAwesomeIconsCdn();
 
-    <!--GOOGLE FONTS-->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600" rel="stylesheet">
-    <!--BOOTSTRAP CSS-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <!-- JQUERY -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!--BOOTSTRAP JS-->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
-    <!--FONT AWESOME SOLID ICON PACK-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+include_once "includes/printSessionInfo.inc.php";
+printSessionInfo(array('userType', 'classroomID', 'classroomName'));
+
+echo '
     <!--CUSTOM CSS-->
-    <link href="css/base.css" rel="stylesheet"/>
     <link href="css/add.css" rel="stylesheet"/>
     <!--CUSTOM JS-->
     <script src="js/utils.js"></script>
-    <script src="js/add-students.js"></script>
-</head>
-<body>
-    <header>
-        <nav class="navbar sticky-top navbar-light bg-light justify-content-between">
-            <a class="navbar-brand">Marcos<b>&</b>Vickie</a>
-        </nav>
-    </header>
+    <script src="js/addStudent.js"></script>
+';
 
+printHeadClose();
+?>
 
-<!-- Contact Us Modal -->
+<!-- Import Students Modal -->
 <div class="modal fade importFile" id="import-file" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered importFile" role="document">
         <div class="modal-content">
@@ -40,7 +32,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="import-student-form" action="./services/csvupload.php" method="POST" enctype="multipart/form-data">
+            <form id="import-student-form" action="services/csvupload.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div id="import-error-message"></div>
                     <div class="form-group">
@@ -85,5 +77,7 @@
         </form>
     </div>
 </main>
-</body>
-</html>
+
+<?php
+include_once "includes/footer.inc.php";
+?>

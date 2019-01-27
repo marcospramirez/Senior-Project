@@ -26,13 +26,27 @@ function addTermFields() {
     termCount++
 }
 
+function setAddDictionaryHeader(element, classroomName,) {
+    //update page title to reflect classroom name
+    document.title = `${classroomName} - Add Dictionary`
+    //update header to reflect classroom name
+    $(`#${element}`).append(classroomName)
+}
+
 $(function () {
-    let urlParams = parseURLParams(location.href)
-    const classID = urlParams.classID[0]
+    const classroomID = classroomIDFromSession
+    const clasroomName = classroomNameFromSession
 
-    const hiddenImport = $('#import-hidden')
-    addHiddenClassIdInput(hiddenImport, classID)
+    setAddDictionaryHeader('add-dict-header',clasroomName)
 
-    const hiddenAddToDictionary = $('#add-dictionary-hidden')
-    addHiddenClassIdInput(hiddenAddToDictionary, classID)
+    //add classroomID as a hidden input named "class"
+    //for both the 'import' form and the 'add dictionary' form
+    const importDictionaryForm = $('#import-hidden')
+    addHiddenInputToForm(importDictionaryForm, 'class', classroomID)
+
+    const addDictionaryForm = $('#add-dictionary-hidden')
+    addHiddenInputToForm(addDictionaryForm, 'class', classroomID)
+
+    //todo: need to add a hidden input("Action": "addDictionaryCSV" & "Action": "addDictionary"),
+    //but dictionaryService.php expects them in GET, while I'm sending them through POST...
 })

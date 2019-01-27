@@ -41,20 +41,20 @@ h3 {
 }
 
 .hr-header {
-  margin-top: 0;
-  border: .5px solid var(--ghost-gray);
-  border-radius: 15px;
+    margin-top: 0;
+    border: .5px solid var(--ghost-gray);
+    border-radius: 15px;
 }
 .content-frame {
-  margin: 5% auto;
-  padding: 5% auto;
-  background-color: white;
+    margin: 5% auto;
+    padding: 5% auto;
+    background-color: white;
 }
 
 /*=============================================
                  DASHBOARD STYLES
 =============================================*/
-.div-dictionary {
+.div-dashboard {
   padding: 0 2%;
 }
 
@@ -93,7 +93,7 @@ button.audio:hover {
   border-radius: 100%;
 }
 
-.btn.dark {
+button.dark {
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 600;
   color: white;
@@ -102,7 +102,7 @@ button.audio:hover {
   margin: 0px 15px;
 }
 
-.btn.dark:hover {
+button.dark:hover {
   color: white;
   border-color: var(--dark-ocean);
   background-color: var(--dark-ocean);

@@ -1,9 +1,9 @@
-div#students-header {
+div#student-list-header {
     margin-top: 5%;
     margin-bottom: 2%;
 }
 
-.students-frame {
+.student-list-frame {
     /*margin: 5% auto;*/
     padding: 5% auto;
     background-color: white;
