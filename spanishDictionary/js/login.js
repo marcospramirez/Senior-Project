@@ -28,7 +28,7 @@ $(function(){
     //set form variable
     let form = $('#login-form')
     let errorMsgId = ''
-    const URL = `TDB.html`
+    const URL = `services/login.php`
 
     //hijack student register form
     form.submit(function(event) {
