@@ -40,7 +40,7 @@ printHeadClose();
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="import-dictionary-form" action="services/csvupload.php" method="POST" enctype="multipart/form-data">
+                <form id="import-dictionary-form" action="services/dictionaryService.php?Action=addDictionaryCSV" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div id="import-error-message"></div>
                         <div class="form-group">
@@ -51,6 +51,7 @@ printHeadClose();
                             <label for="importFile" class="col-form-label">Import from csv:</label>
                             <input type="file" id="importFile" class="form-control" accept=".csv" name="csv" required>
                         </div>
+                        <!--todo: remove hidden-->
                         <div id="import-hidden">
                             <input type="hidden" name="action" value="newDictionary">
                         </div>
