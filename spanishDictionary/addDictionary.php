@@ -2,7 +2,7 @@
 session_start();
 
 //INSTRUCTOR ONLY PAGE - redirect if not instructor
-if($_SESSION['userType'] !== "instructor") {
+if($_SESSION['role'] !== "instructor") {
     //redirect user back to login
     header("Location: login.php");
     exit();
@@ -17,7 +17,7 @@ printBootstrapJsCdn();
 printFontAwesomeIconsCdn();
 
 include_once "includes/printSessionInfo.inc.php";
-printSessionInfo(array('email', 'userType', 'classroomID', 'classroomName'));
+printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
 echo '
     <!--CUSTOM CSS-->

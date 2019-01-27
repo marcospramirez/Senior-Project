@@ -7,7 +7,7 @@ if(!isset($_SESSION['email'])) {    //not accessed internally
     exit();
 }
 
-//All data that can be added to the session: email, userType, classroomID, classroomName, dictionaryID, dictionaryName
+//All data that can be added to the session: email, role, classroomID, classroomName, dictionaryID, dictionaryName
 
 function printSessionInfo($requestedSessionInfoArray) {
     echo '<script type="text/javascript">';
@@ -17,7 +17,7 @@ function printSessionInfo($requestedSessionInfoArray) {
 
 
 //        if($sessionInfoName !== 'email') { if(isset($_SESSION['email'])) { echo 'var emailSession = "'.json_encode($_SESSION['email']).'";';}}
-//        if($sessionInfoName !== 'userType') if(isset($_SESSION['userType'])) { { echo 'var userTypeSession = "'.json_encode($_SESSION['userType']).'";';}}
+//        if($sessionInfoName !== 'role') if(isset($_SESSION['role'])) { { echo 'var roleSession = "'.json_encode($_SESSION['role']).'";';}}
 //        if($sessionInfoName !== 'classroomID') if(isset($_SESSION['classroomID'])) { { echo 'var classroomIDSession = "'.json_encode($_SESSION['classroomID']).'";';}}
 //        if($sessionInfoName !== 'classroomName') if(isset($_SESSION['classroomName'])) { { echo 'var classroomNameSession = "'.json_encode($_SESSION['classroomName']).'";';}}
 //        if($sessionInfoName !== 'dictionaryID') if(isset($_SESSION['dictionaryID'])) { { echo 'var dictionaryIDSession = "'.json_encode($_SESSION['dictionaryID']).'";';}}

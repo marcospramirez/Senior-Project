@@ -4,6 +4,7 @@ include_once "includes/head.inc.php";
 printHeadOpen('Login');
 printGoogleFontsCdn();
 printBootstrapCssCdn();
+printJQueryCdn();
 printBootstrapJsCdn();
 echo '
         <!--CUSTOM CSS-->

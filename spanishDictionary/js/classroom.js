@@ -123,7 +123,7 @@ function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
                 const dictionaryID = dictionaryIDArray[tableIndex]
                 const dictionaryName = dictionaryNameArray[tableIndex]
 
-                //add email and userType to the session & redirect to the dashboard
+                //add email and role to the session & redirect to the dashboard
                 addToSessionAndMoveToPage({dictionaryID: dictionaryID, dictionaryName: dictionaryName}, 'goTo', './dictionary.php')
             } );
         }//end of else: classroom has dictionaries
@@ -141,7 +141,7 @@ $(function () {
     let table = ''
     const tableDiv = 'table-dictionaries'
     // let email = emailFromSession
-    const userType = userTypeFromSession
+    const role = roleFromSession
     const classroomID = classroomIDFromSession
     const classroomName = classroomNameFromSession
 
@@ -149,7 +149,7 @@ $(function () {
 
     updateHeader(classroomName)
 
-    if(userType === 'instructor') {
+    if(role === 'instructor') {
         showStudentCountButton(classroomID, tableDiv)
         showAddDictionaryButton()
     }

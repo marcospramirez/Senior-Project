@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-//All data that can be added to the session: email, userType, classroomID, classroomName, dictionaryID, dictionaryName
+//All data that can be added to the session: email, role, classroomID, classroomName, dictionaryID, dictionaryName
 
 if(isset($_POST['email'])) {
     $email = $_POST['email'];
     $_SESSION['email'] = $email;
 }
-if(isset($_POST['userType'])) {
-    $userType = $_POST['userType'];
-    $_SESSION['userType'] = $userType;
+if(isset($_POST['role'])) {
+    $role = $_POST['role'];
+    $_SESSION['role'] = $role;
 }
 if(isset($_POST['classroomID'])) {
     $classroomID = $_POST['classroomID'];

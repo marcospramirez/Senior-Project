@@ -10,7 +10,7 @@ function showAddToDictionaryButton() {
     //show "no content in dictionary" message
     dictionaryBody.append("<h2>No Content in Dictionary</h2>\n")
     //if instructor, show button that allows them to add terms to the dictionary
-    if(userTypeFromSession == "instructor") {
+    if(roleFromSession == "instructor") {
         let addToDictionaryButton = '<button id="classroom-student-btn" class="col-sm-auto btn dark">Add to Dictionary</button>'
         dictionaryBody.append(addToDictionaryButton)
 

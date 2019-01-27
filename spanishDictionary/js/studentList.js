@@ -41,8 +41,8 @@ $(function () {
 
     setStudentListHeader()
 
-    const userType = userTypeFromSession
-    if(userType === 'instructor') {
+    const role = roleFromSession
+    if(role === 'instructor') {
         showAddStudentButton()
     }
 

@@ -10,7 +10,7 @@ printDataTablesCdn();
 printFontAwesomeIconsCdn();
 
 include_once "includes/printSessionInfo.inc.php";
-printSessionInfo(array('email', 'userType', 'classroomID', 'classroomName'));
+printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
 echo '
     <!--CUSTOM CSS-->
