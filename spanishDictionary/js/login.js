@@ -23,12 +23,12 @@ function passedErrorCheckLogin(errorMsgId, email, password) {
     return result
 }//end of passedErrorCheckLogin
 
-//jQuery to load AFTER doc is loaded
+// hijack form & authenticate user. If authentic, redirect to dashboard.
 $(function(){
     //set form variable
     let form = $('#login-form')
     let errorMsgId = ''
-    const URL = `./services/login.php`
+    const URL = `TDB.html`
 
     //hijack student register form
     form.submit(function(event) {
@@ -48,19 +48,18 @@ $(function(){
                 email: email,
                 password: password
             }
-            $.post(URL, userData, function(permission) {
-                if(permission == "instructor") {  //authenticated instructor, redirect to instructor dashboard
-                    window.location.replace(`./dashboard.php?email=${email}&permission=${permission}`)
-                } else if(permission == "student") {  //authenticated student, redirect to student dashboard
-                    window.location.replace(`./dashboard.php?email=${email}&permission=${permission}`)
-                } else if(permission == "none") { //invalid credentials
+            $.post(URL, userData, function(data) {
+                if(data == "instructor" || data == "student") {  //authenticated user, redirect to dashboard
+                    //add email and userType to the session & redirect to the dashboard
+                    addToSessionAndMoveToPage({email: email, userType: data}, 'redirectTo', './dashboard.php')
+                } else if(data == "none") { //invalid credentials
                     document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'
                 } else {
-                    document.getElementById(errorMsgId).innerHTML = 'Error! ' + permission
+                    document.getElementById(errorMsgId).innerHTML = 'Error! ' + data
                 }
             }) //end of $.post
                 .fail(function() {
-                    document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL} | User Data: ${userData}`
+                    document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL}`
                 })//end of $.fail
 
 

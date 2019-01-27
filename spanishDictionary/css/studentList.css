@@ -1,0 +1,10 @@
+div#student-list-header {
+    margin-top: 5%;
+    margin-bottom: 2%;
+}
+
+.student-list-frame {
+    /*margin: 5% auto;*/
+    padding: 5% auto;
+    background-color: white;
+}
