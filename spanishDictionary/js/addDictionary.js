@@ -34,6 +34,15 @@ function setAddDictionaryHeader(element, classroomName,) {
 }
 
 $(function () {
+
+    $("#tags-select").select2({
+        ajax: {
+            url: 'services/dictionaryService.php?Action=tags',
+            dataType: 'json'
+        }
+    });
+
+
     const classroomID = classroomIDFromSession
     const clasroomName = classroomNameFromSession
 

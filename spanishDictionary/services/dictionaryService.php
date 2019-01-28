@@ -28,6 +28,10 @@
             noDictionaryAction($conn);
             break;
 
+        case "tags":
+            getAllTags($conn);
+            break;
+
         default:
             noDictionaryAction();
             break;
@@ -183,6 +187,31 @@
         $retVal = array("error" => "no action error");
 
         echo json_encode($retVal);
+
+    }
+
+    function getAllTags($conn){
+        $sql = "SELECT * from Tag";
+        $result = $conn->query($sql);
+        
+        $response = array();
+
+        $results = [];
+      
+        
+        if ($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+
+                $record = array("id" => $row["tagID"], "text" => $row["tagText"]);
+                $results[]= $record;
+
+            }
+        }
+
+        $response["results"] = $results;
+    
+        header('Content-Type: text/html; charset=utf-8');
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     }
 
