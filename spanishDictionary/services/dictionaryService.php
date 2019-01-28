@@ -32,6 +32,10 @@
             getAllTags($conn);
             break;
 
+        case "filter":
+            getEntriesInDictionaryByTags($conn);
+            break;
+
         default:
             noDictionaryAction();
             break;
@@ -213,6 +217,38 @@
         header('Content-Type: text/html; charset=utf-8');
         echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
+    }
+
+    function getEntriesInDictionaryByTags($conn){
+        $dictionaryID;
+        $tags;
+
+        if(isset($_GET['dictionary'])) {
+            $dictionaryID = $_GET['dictionary'];
+        }
+        if(isset($_GET['tags'])){
+            $tags = $_GET['tags'];
+        }
+    
+        //SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = 36 and entryID in (SELECT entryID from entryToTag where tagID in (1,2))
+
+        $sql = "SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = '$dictionaryID' and entryID in (SELECT entryID from entryToTag where tagID in ($tags))";
+    
+        $result = $conn->query($sql);
+        
+        $records = array();
+        
+        if ($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $records[]=$row;
+                
+                //echo $row["entryText"];
+            }
+        }
+        
+        //echo json_encode($records);
+        header('Content-Type: text/html; charset=utf-8');
+        echo json_encode($records, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     
