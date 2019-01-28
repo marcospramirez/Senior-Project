@@ -96,7 +96,7 @@ function showAddDictionaryButton() {
 
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
-function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
+function showDictionaryTable(classroomID, classroomName, tableID) {
     const URL = './services/dictionaryService.php'
     const userData = {
         Action: "list",
@@ -109,12 +109,12 @@ function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
         const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
 
         if(dictionaryNameArray.length === 0) {  //classroom doesn't have dictionaries
-            $(`#${tableDiv}`).val(`No Dictionaries in Classroom ${classroomName}.`)
+            $(`#table`).val(`No Dictionaries in Classroom ${classroomName}.`)
         } else {    //classroom has dictionaries
-            table = displayDictionaryTable(dictionaryNameArray, tableDiv)
+            let table = displayDictionaryTable(dictionaryNameArray, tableID)
 
             //click on table row/dictionary name to go to dictionary
-            $(`#${tableDiv} tbody`).on('click', 'tr', function () {
+            $(`#${tableID} tbody`).on('click', 'tr', function () {
                 const tableIndex = table.row( this ).index()
                 const dictionaryID = dictionaryIDArray[tableIndex]
                 const dictionaryName = dictionaryNameArray[tableIndex]
@@ -127,15 +127,14 @@ function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
 
     })
         .fail(function() {  //connection error
-            document.getElementById(tableDiv).innerHTML = `Error, could not connect! URL: ${URL}`
+            document.getElementById(tableID).innerHTML = `Error, could not connect! URL: ${URL}`
         })
 }//end of showDictionaryTable
 
 //show table of the classroom's dictionaries. When dictionary name is clicked, go to dictionary (dictionary.php)
 //if user is instructor, allow user to view student count/add students & add a dictionary
 $(function () {
-    let table = ''
-    const tableDiv = 'table-dictionaries'
+    const tableID = 'table-dictionaries'
     // let email = emailFromSession
     const role = roleFromSession
     const classroomID = classroomIDFromSession
@@ -146,9 +145,9 @@ $(function () {
     updateHeader(classroomName)
 
     if(role === 'instructor') {
-        showStudentCountButton(classroomID, tableDiv)
+        showStudentCountButton(classroomID, tableID)
         showAddDictionaryButton()
     }
 
-    showDictionaryTable(classroomID, classroomName, table, tableDiv)
+    showDictionaryTable(classroomID, classroomName, tableID)
 }) //end of doc ready
