@@ -16,7 +16,7 @@ function addTermFields() {
                         </div>
                     </div>
                     <div class="row align-items-start"> <!--Tags-->
-                        <div class="form-group col"><input type="text" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags" required></div>
+                        <div class="form-group col"><select id="tags-select-${termCount + 1}" multiple="multiple" type="text" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags" required></div>
                     </div>
                 </div>
             </div>`
@@ -24,6 +24,13 @@ function addTermFields() {
     $('#terms').append(termHTML)
 
     termCount++
+
+    $("#tags-select-" + termCount).select2({
+        ajax: {
+            url: 'services/dictionaryService.php?Action=tags',
+            dataType: 'json'
+        }
+    });
 }
 
 function setAddDictionaryHeader(element, classroomName,) {
