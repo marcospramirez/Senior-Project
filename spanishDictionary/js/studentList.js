@@ -3,7 +3,7 @@ function setStudentListHeader() {
     //update title to reflect classroom name
     document.title = classroomName
     //update header to reflect classroom name
-    $(`#classroom-name`).val(`Students in ${classroomName}`)
+    document.getElementById('classroom-name').innerHTML = `Students in ${classroomName}`
 }
 
 function showAddStudentButton() {

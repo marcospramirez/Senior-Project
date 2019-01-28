@@ -39,7 +39,8 @@ function displayDictionaryTable(dictionaryArray, contentID) {
 function updateHeader(classroomName) {
     //update title to reflect classroom name
     document.title = classroomName
-    $('#classroom-header').val(classroomName)
+    //update header to reflect classroom name
+    document.getElementById('classroom-header').innerHTML = classroomName
 }
 
 //if no students, button allows instructor to add students (addStudent.php).
