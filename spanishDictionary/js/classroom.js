@@ -64,8 +64,8 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
 
         if (studentCount === 0) {    //if no students in classroom, allow instructor to add some
             studentButtonInnerHTML.append(`Add Students to Classroom`)
-            studentButton.click(function () {
-                window.location.href = '../addStudent.php'
+            studentButton.on( "click", function () {
+                window.location.href = './addStudent.php'
             })
         }   //end of if
         //else if there are students in the classroom,
@@ -78,8 +78,8 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
                 studentButtonInnerHTML.append('s')
             }
 
-            studentButton.click(function () {
-                window.location.href = '../studentList.php'
+            studentButton.on( "click", function () {
+                window.location.href = './studentList.php'
             })
         }   //end of else if
     })//end of $.get
@@ -90,12 +90,8 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
 
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
 function showAddDictionaryButton() {
-    let addDictionaryButton = '<button id="add-dictionary" class="btn dark col-sm-auto"><i class="fas fa-plus"></i> Add Dictionary</button>'
+    let addDictionaryButton = '<button id="add-dictionary" class="btn dark col-sm-auto" onclick="window.location.href = \'./addDictionary.php\'"><i class="fas fa-plus"></i> Add Dictionary</button>'
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
-
-    addDictionaryButton.click(function () {
-        window.location.href = '../addDictionary.php'
-    })
 }//end of showAddDictionaryButton
 
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table

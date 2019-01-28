@@ -39,9 +39,6 @@ printHeadClose();
                         <label for="importFile" class="col-form-label">Import from csv:</label>
                         <input type="file" id="importFile" class="form-control" accept=".csv" name="csv" required>
                     </div>
-                    <div id="import-hidden">
-                        <input type="hidden" name="action" value="studentcsv">
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="submit" name="submit_csv" value="Import Students" class="btn dark">
@@ -62,8 +59,8 @@ printHeadClose();
         <hr class="hr-header">
         <form id="new-students-form" enctype="multipart/form-data" action="services/studentService.php?Action=addStudents" method="POST">
             <div id="students">
-                <div id="student1"> <!--Student #1 in Classroom-->
-                    <div class="form-group"><input type="text" class="form-control" title="studentEmail" name="studentEmail[]" placeholder="Student Email" required></div>
+                <div class="student-email"> <!--Student #1 in Classroom-->
+                    <div class="form-group"><input type="text" id="student1" class="form-control" title="studentEmail" name="studentEmail[]" placeholder="Student Email" required></div>
                 </div>
             </div>
             <div class="row"> <!--Button: Add New Student Email Field-->

@@ -33,9 +33,6 @@ printHeadClose();
               </div>
               <div id="cardBody" class="card-body">
               </div>
-              <div class="card-footer">
-                  <button class="btn" onclick="window.location.href = '')">More...</button>
-              </div>
           </div>
       </div>
       <br>
