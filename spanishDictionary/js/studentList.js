@@ -29,7 +29,7 @@ function displayStudentListTable(studentList) {
 
     //display table data using DataTable
     var table = $('#table-student-list').DataTable( {
-        data: studentList,
+        data: tableDataSet,
         columns: columnSet
     })
 }//end of displayClassroomTable
