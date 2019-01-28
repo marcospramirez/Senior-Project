@@ -37,6 +37,8 @@ function displayDictionaryTable(dictionaryArray, contentID) {
 }//end of displaydictionaryTable
 
 function updateHeader(classroomName) {
+    //update title to reflect classroom name
+    document.title = classroomName
     $('#classroom-header').val(classroomName)
 }
 

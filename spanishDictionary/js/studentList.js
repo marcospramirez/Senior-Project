@@ -3,7 +3,7 @@ function setStudentListHeader() {
     //update title to reflect classroom name
     document.title = classroomName
     //update header to reflect classroom name
-    $(`#classroom-name`).append(classroomName)
+    $(`#classroom-name`).val(`Students in ${classroomName}`)
 }
 
 function showAddStudentButton() {
@@ -12,26 +12,29 @@ function showAddStudentButton() {
 }
 
 function displayStudentListTable(studentList) {
-    //parse studentList into array usable for dataTable
-    let tableDataSet = []
-    $.each(studentList, function(index, studentInfo) {
-        const studentName = studentInfo.name
-        const studentEmail = studentInfo.email
+    if(studentList.length == 0) {   //no students in classroom. redundant, but safe
+        document.getElementById('table').innerHTML = `<h2>No Students in Classroom.</h2>`
+    } else {//data in studentList
+        //parse studentList into array usable for dataTable
+        let tableDataSet = []
+        $.each(studentList, function(index, studentInfo) {
+            const studentName = studentInfo.name
+            const studentEmail = studentInfo.email
 
-        tableDataSet.push([studentName, studentEmail])
-    })
-    //parse data
+            tableDataSet.push([studentName, studentEmail])
+        })
 
-    let columnSet = [
-        {title: "Student Name"},
-        {title: "Student Email"}
-    ]
+        let columnSet = [
+            {title: "Student Name"},
+            {title: "Student Email"}
+        ]
 
-    //display table data using DataTable
-    var table = $('#table-student-list').DataTable( {
-        data: tableDataSet,
-        columns: columnSet
-    })
+        //display table data using DataTable
+        var table = $('#table-student-list').DataTable( {
+            data: tableDataSet,
+            columns: columnSet
+        })
+    }//end of else: data in studentList
 }//end of displayClassroomTable
 
 $(function () {
