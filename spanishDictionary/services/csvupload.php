@@ -69,7 +69,7 @@
 		$insertSQL = "INSERT into Dictionary (dictionaryName) VALUES ('$dictionaryName')";
 
 
-		if ($conn->query($insertSQL) === TRUE) {
+		if ($conn->query($insertSQL)) {
     		$dictID = $conn->insert_id;
 
     		$conn->query("INSERT into classRoomToDictionary (classID, dictionaryID) VALUES ('$dictID' , '$classID'");
@@ -87,7 +87,23 @@
 
 				$entryAudio = $row[2];
 
+				$entryTags = $row[3];
+
+				$entryTagsArray = explode(",", $entryTags);
+
+				$getTagsSQL = "SELECT tagID from Tag where tagText in (";
+
+				foreach ($entryTagsArray as $entryTag) {
+					$entryTag = trim($entryTag);
+
+					$getTagsSQL .= "'$entryTag', ";
+				}
+				 
+				$getTagsSQL .= "' ')";
+	
+
 				$insertNewEntry = "INSERT INTO Entry (entryText, entryDefinition, entryAudioPath) VALUES ('$entry', '$entryDef', '$entryAudio');";
+
 
 	            if($conn->query($insertNewEntry)){
 	                $last_id = $conn->insert_id;
@@ -96,7 +112,28 @@
 		            $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictID', '$last_id');";
 		            
 		            if($conn->query($addToDictionary)){
-		                header("Location: ../dictionary.html?dictionaryID=" . $dictID);
+		               
+		               $foundTags = $conn->query($getTagsSQL);
+		               
+						$entryToTagInsertSQl = "INSERT INTO entryToTag (entryID, tagID) VALUES "; 
+
+
+						$sqlArray = [];
+		               if ($foundTags->num_rows > 0){
+		                   while($row = $foundTags->fetch_assoc()){
+
+		                   	$data = "('$last_id' , '" . $row["tagID"] ."')";
+
+		                   	$sqlArray[] = $data;
+		                   }
+
+		                   $allTagsSql = implode(',' , $sqlArray);
+							
+							$entryToTagInsertSQl .= $allTagsSql;
+
+		                   $conn->query($entryToTagInsertSQl);
+		               }
+		               
 		            }
 	            }
 	            else{
@@ -105,10 +142,14 @@
 	       
 	        
 			}
+die();
+		
+		 header("Location: ../addDictionary.php");
 		}
 		else{
 			echo "Error: " . $insertSQL . "<br>" . $conn->error;
 		}
+
 
 	}
 
