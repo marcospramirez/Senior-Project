@@ -7,21 +7,20 @@ function setStudentListHeader() {
 }
 
 function showAddStudentButton() {
-    let addStudentButton = '<button id="add-student" class="col-sm-auto btn dark"><i class="fas fa-plus"></i> Add Students</button>'
-
-    $('#student-list-header').append(`            ${addStudentButton}\n`)    //extra spaces/tab for formatting purposes
-
-    addStudentButton.click(function () {
-        window.location.href = '../addStudent.php'
-    })
+    let addStudentBtnHTML = `<button id="add-student" class="col-sm-auto btn dark" onclick="window.location.href = './addStudent.php'"><i class="fas fa-plus"></i> Add Students</button>`
+    $('#student-list-header').append(`            ${addStudentBtnHTML}\n`)    //extra spaces/tab for formatting purposes
 }
 
 function displayStudentListTable(studentList) {
-    // let tableDataSet = []
-    // $.each(classroomArray, function(i, classroom) {
-    //     let tableDataRow = [classroom]
-    //     tableDataSet.push(tableDataRow)
-    // })
+    //parse studentList into array usable for dataTable
+    let tableDataSet = []
+    $.each(studentList, function(index, studentInfo) {
+        const studentName = studentInfo.name
+        const studentEmail = studentInfo.email
+
+        tableDataSet.push([studentName, studentEmail])
+    })
+    //parse data
 
     let columnSet = [
         {title: "Student Name"},

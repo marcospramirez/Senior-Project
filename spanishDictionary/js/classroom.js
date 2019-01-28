@@ -56,32 +56,33 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
         // }
 
         let classroomDiv = $('#classroom-div')
-        let studentButton = '<button id="classroom-student-btn" class="col-sm-auto btn dark"></button>'
-        classroomDiv.append(studentButton)
-        let studentButtonInnerHTML = $('#classroom-student-btn')
 
         let studentCount = parseInt(data)   //convert string to int
 
-        if (studentCount === 0) {    //if no students in classroom, allow instructor to add some
-            studentButtonInnerHTML.append(`Add Students to Classroom`)
-            studentButton.on( "click", function () {
-                window.location.href = './addStudent.php'
-            })
-        }   //end of if
-        //else if there are students in the classroom,
-        //allow instructor to view student list
+        let goToURL = ''
+        let studentBtnInnerHTML = ''
+
+        //if no students in classroom, allow instructor to add some
+        if (studentCount === 0) {
+            goToURL = "./addStudent.php"
+            studentBtnInnerHTML = '<i class="fas fa-plus"></i>Add Students'
+        }
+
+        //else if there are students in the classroom, allow instructor to view student list
         else if (studentCount > 0) {    //show student count in button body
-            studentButtonInnerHTML.append(`${studentCount} Student`)
-
-            //if count > 1, make 'Student' plural ('Student' + 's')
-            if (studentCount > 1) {
-                studentButtonInnerHTML.append('s')
+            if (studentCount == 1) {     //count > 1, print "Student" (singular)
+                goToURL = "./studentList.php"
+                studentBtnInnerHTML = `${studentCount} Student`
+            } else {    //count > 1, print "Students" (plural)
+                goToURL = "./studentList.php"
+                studentBtnInnerHTML = `${studentCount} Students`
             }
-
-            studentButton.on( "click", function () {
-                window.location.href = './studentList.php'
-            })
         }   //end of else if
+
+        let studentBtnHTML = `<button id="classroom-student-btn" class="col-sm-auto btn dark" onclick='window.location.href = "${goToURL}"'>${studentBtnInnerHTML}</button>`
+        classroomDiv.append(studentBtnHTML)
+
+
     })//end of $.get
         .fail(function () {
             document.getElementById(errorMsgDiv).innerHTML += `Error, could not display student count! URL: ${URL}`
@@ -109,7 +110,7 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
         const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
 
         if(dictionaryNameArray.length === 0) {  //classroom doesn't have dictionaries
-            $(`#table`).val(`No Dictionaries in Classroom ${classroomName}.`)
+            document.getElementById('table').innerHTML = `<h2>No Dictionaries in Classroom ${classroomName}.</h2>`
         } else {    //classroom has dictionaries
             let table = displayDictionaryTable(dictionaryNameArray, tableID)
 
