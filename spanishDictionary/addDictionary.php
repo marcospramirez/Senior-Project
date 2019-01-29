@@ -58,10 +58,6 @@ printHeadClose();
                             <label for="importFile" class="col-form-label">Import from csv:</label>
                             <input type="file" id="importFile" class="form-control" accept=".csv" name="csv" required>
                         </div>
-                        <!--todo: remove hidden-->
-                        <div id="import-hidden">
-                            <input type="hidden" name="action" value="newDictionary">
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <input type="submit" name="submit_csv" value="Import Dictionary" class="btn dark">

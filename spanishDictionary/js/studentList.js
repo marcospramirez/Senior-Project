@@ -3,36 +3,38 @@ function setStudentListHeader() {
     //update title to reflect classroom name
     document.title = classroomName
     //update header to reflect classroom name
-    $(`#classroom-name`).append(classroomName)
+    document.getElementById('classroom-name').innerHTML = `Students in ${classroomName}`
 }
 
 function showAddStudentButton() {
-    let addStudentButton = '<button id="add-student" class="col-sm-auto btn dark"><i class="fas fa-plus"></i> Add Students</button>'
-
-    $('#student-list-header').append(`            ${addStudentButton}\n`)    //extra spaces/tab for formatting purposes
-
-    addStudentButton.click(function () {
-        window.location.href = '../addStudent.php'
-    })
+    let addStudentBtnHTML = `<button id="add-student" class="col-sm-auto btn dark" onclick="window.location.href = './addStudent.php'"><i class="fas fa-plus"></i> Add Students</button>`
+    $('#student-list-header').append(`            ${addStudentBtnHTML}\n`)    //extra spaces/tab for formatting purposes
 }
 
 function displayStudentListTable(studentList) {
-    // let tableDataSet = []
-    // $.each(classroomArray, function(i, classroom) {
-    //     let tableDataRow = [classroom]
-    //     tableDataSet.push(tableDataRow)
-    // })
+    if(studentList.length == 0) {   //no students in classroom. redundant, but safe
+        document.getElementById('table').innerHTML = `<h2>No Students in Classroom.</h2>`
+    } else {//data in studentList
+        //parse studentList into array usable for dataTable
+        let tableDataSet = []
+        $.each(studentList, function(index, studentInfo) {
+            const studentName = studentInfo.name
+            const studentEmail = studentInfo.email
 
-    let columnSet = [
-        {title: "Student Name"},
-        {title: "Student Email"}
-    ]
+            tableDataSet.push([studentName, studentEmail])
+        })
 
-    //display table data using DataTable
-    var table = $('#table-student-list').DataTable( {
-        data: studentList,
-        columns: columnSet
-    })
+        let columnSet = [
+            {title: "Student Name"},
+            {title: "Student Email"}
+        ]
+
+        //display table data using DataTable
+        var table = $('#table-student-list').DataTable( {
+            data: tableDataSet,
+            columns: columnSet
+        })
+    }//end of else: data in studentList
 }//end of displayClassroomTable
 
 $(function () {

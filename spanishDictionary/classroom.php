@@ -33,7 +33,7 @@ printHeadClose();
             <div class="col"></div>
         </div>
         <br>
-        <table id="table-dictionaries" class="table table-hover" style="width:100%"></table>
+        <div id="table"><table id="table-dictionaries" class="table table-hover" style="width:100%"></table></div>
         <br>
     </div>
 </main>

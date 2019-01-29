@@ -5,3 +5,12 @@
 .card {
     margin: 3%;
 }
+
+.btn-link {
+    color: var(--off-black);
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    color: var(--dark-turquoise)
+}

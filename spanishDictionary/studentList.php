@@ -28,7 +28,7 @@ printHeadClose();
         </div>
         <div class="container student-list-frame border rounded">
             <br>
-            <table id="table-student-list" class="table table-hover" style="width:100%"></table>
+            <div id="table"><table id="table-student-list" class="table table-hover" style="width:100%"></table></div>
             <br>
         </div>
     </div>

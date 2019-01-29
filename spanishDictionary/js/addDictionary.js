@@ -42,6 +42,7 @@ function setAddDictionaryHeader(element, classroomName,) {
 
 $(function () {
 
+    //todo: wot?
     $("#tags-select").select2({
         ajax: {
             url: 'services/dictionaryService.php?Action=tags',
@@ -55,8 +56,6 @@ $(function () {
 
     setAddDictionaryHeader('add-dict-header',clasroomName)
 
-    //todo: hijack form, redirect after success
-
     //add classroomID as a hidden input named "class"
     //for both the 'import' form and the 'add dictionary' form
     const importDictionaryForm = $('#import-hidden')
@@ -64,7 +63,4 @@ $(function () {
 
     const addDictionaryForm = $('#add-dictionary-hidden')
     addHiddenInputToForm(addDictionaryForm, 'class', classroomID)
-
-    //todo: need to add a hidden input("Action": "addDictionaryCSV" & "Action": "addDictionary"),
-    //but dictionaryService.php expects them in GET, while I'm sending them through POST...
 })

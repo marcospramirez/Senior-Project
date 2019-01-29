@@ -37,7 +37,10 @@ function displayDictionaryTable(dictionaryArray, contentID) {
 }//end of displaydictionaryTable
 
 function updateHeader(classroomName) {
-    $('#classroom-header').val(classroomName)
+    //update title to reflect classroom name
+    document.title = classroomName
+    //update header to reflect classroom name
+    document.getElementById('classroom-header').innerHTML = classroomName
 }
 
 //if no students, button allows instructor to add students (addStudent.php).
@@ -56,32 +59,33 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
         // }
 
         let classroomDiv = $('#classroom-div')
-        let studentButton = '<button id="classroom-student-btn" class="col-sm-auto btn dark"></button>'
-        classroomDiv.append(studentButton)
-        let studentButtonInnerHTML = $('#classroom-student-btn')
 
         let studentCount = parseInt(data)   //convert string to int
 
-        if (studentCount === 0) {    //if no students in classroom, allow instructor to add some
-            studentButtonInnerHTML.append(`Add Students to Classroom`)
-            studentButton.click(function () {
-                window.location.href = '../addStudent.php'
-            })
-        }   //end of if
-        //else if there are students in the classroom,
-        //allow instructor to view student list
+        let goToURL = ''
+        let studentBtnInnerHTML = ''
+
+        //if no students in classroom, allow instructor to add some
+        if (studentCount === 0) {
+            goToURL = "./addStudent.php"
+            studentBtnInnerHTML = '<i class="fas fa-plus"></i>Add Students'
+        }
+
+        //else if there are students in the classroom, allow instructor to view student list
         else if (studentCount > 0) {    //show student count in button body
-            studentButtonInnerHTML.append(`${studentCount} Student`)
-
-            //if count > 1, make 'Student' plural ('Student' + 's')
-            if (studentCount > 1) {
-                studentButtonInnerHTML.append('s')
+            if (studentCount == 1) {     //count > 1, print "Student" (singular)
+                goToURL = "./studentList.php"
+                studentBtnInnerHTML = `${studentCount} Student`
+            } else {    //count > 1, print "Students" (plural)
+                goToURL = "./studentList.php"
+                studentBtnInnerHTML = `${studentCount} Students`
             }
-
-            studentButton.click(function () {
-                window.location.href = '../studentList.php'
-            })
         }   //end of else if
+
+        let studentBtnHTML = `<button id="classroom-student-btn" class="col-sm-auto btn dark" onclick='window.location.href = "${goToURL}"'>${studentBtnInnerHTML}</button>`
+        classroomDiv.append(studentBtnHTML)
+
+
     })//end of $.get
         .fail(function () {
             document.getElementById(errorMsgDiv).innerHTML += `Error, could not display student count! URL: ${URL}`
@@ -90,17 +94,13 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
 
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
 function showAddDictionaryButton() {
-    let addDictionaryButton = '<button id="add-dictionary" class="btn dark col-sm-auto"><i class="fas fa-plus"></i> Add Dictionary</button>'
+    let addDictionaryButton = '<button id="add-dictionary" class="btn dark col-sm-auto" onclick="window.location.href = \'./addDictionary.php\'"><i class="fas fa-plus"></i> Add Dictionary</button>'
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
-
-    addDictionaryButton.click(function () {
-        window.location.href = '../addDictionary.php'
-    })
 }//end of showAddDictionaryButton
 
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
-function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
+function showDictionaryTable(classroomID, classroomName, tableID) {
     const URL = './services/dictionaryService.php'
     const userData = {
         Action: "list",
@@ -113,12 +113,12 @@ function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
         const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
 
         if(dictionaryNameArray.length === 0) {  //classroom doesn't have dictionaries
-            $(`#${tableDiv}`).val(`No Dictionaries in Classroom ${classroomName}.`)
+            document.getElementById('table').innerHTML = `<h2>No Dictionaries in Classroom ${classroomName}.</h2>`
         } else {    //classroom has dictionaries
-            table = displayDictionaryTable(dictionaryNameArray, tableDiv)
+            let table = displayDictionaryTable(dictionaryNameArray, tableID)
 
             //click on table row/dictionary name to go to dictionary
-            $(`#${tableDiv} tbody`).on('click', 'tr', function () {
+            $(`#${tableID} tbody`).on('click', 'tr', function () {
                 const tableIndex = table.row( this ).index()
                 const dictionaryID = dictionaryIDArray[tableIndex]
                 const dictionaryName = dictionaryNameArray[tableIndex]
@@ -131,15 +131,14 @@ function showDictionaryTable(classroomID, classroomName, table, tableDiv) {
 
     })
         .fail(function() {  //connection error
-            document.getElementById(tableDiv).innerHTML = `Error, could not connect! URL: ${URL}`
+            document.getElementById(tableID).innerHTML = `Error, could not connect! URL: ${URL}`
         })
 }//end of showDictionaryTable
 
 //show table of the classroom's dictionaries. When dictionary name is clicked, go to dictionary (dictionary.php)
 //if user is instructor, allow user to view student count/add students & add a dictionary
 $(function () {
-    let table = ''
-    const tableDiv = 'table-dictionaries'
+    const tableID = 'table-dictionaries'
     // let email = emailFromSession
     const role = roleFromSession
     const classroomID = classroomIDFromSession
@@ -150,9 +149,9 @@ $(function () {
     updateHeader(classroomName)
 
     if(role === 'instructor') {
-        showStudentCountButton(classroomID, tableDiv)
+        showStudentCountButton(classroomID, tableID)
         showAddDictionaryButton()
     }
 
-    showDictionaryTable(classroomID, classroomName, table, tableDiv)
+    showDictionaryTable(classroomID, classroomName, tableID)
 }) //end of doc ready
