@@ -142,9 +142,9 @@
 	       
 	        
 			}
-die();
-		
-		 header("Location: ../addDictionary.php");
+		session_start();
+		$_SESSION["dictionaryID"] = $dictID;
+		header("Location: ../dictionary.php");
 		}
 		else{
 			echo "Error: " . $insertSQL . "<br>" . $conn->error;

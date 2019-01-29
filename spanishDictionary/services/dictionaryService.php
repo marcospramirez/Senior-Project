@@ -76,8 +76,8 @@
     function singleAction($conn){
 
         $dictionaryID;
-        if(isset($_GET['dictionary'])) {
-            $dictionaryID = $_GET['dictionary'];
+        if(isset($_GET['dictionaryID'])) {
+            $dictionaryID = $_GET['dictionaryID'];
         }
     
 
@@ -104,7 +104,7 @@
 
     function addDictionaryCSV($conn){
         $conn = returnConnection();
-        $classID = $_POST['classroomID'];
+        $classID = $_POST['class'];
 
         $tmpName = $_FILES['csv']['tmp_name'];
         $csvAsArray = array_map('str_getcsv', file($tmpName));
@@ -117,20 +117,21 @@
     function addDictionary($conn){
 
         if(isset($_POST["dictionaryName"])) {
-
-            $classID = $_POST['classroomID'];
+            //echo("Step 1");
+            $classID = $_POST['class'];
             $dictionaryName = $_POST["dictionaryName"];
 
             $sql = "INSERT INTO Dictionary (dictionaryID, dictionaryName) VALUES (NULL, '$dictionaryName');";
 
             if ($conn->query($sql) === TRUE) {  //success: created new dictionary, now add dictionary to classroom
                 $dictionaryID = $conn->insert_id;
-
+//echo("Step 2");
                 $sql = "INSERT INTO classroomToDictionary (classID, dictionaryID) VALUES ('$classID', '$dictionaryID');";
 
                 if ($conn->query($sql) === TRUE) {  //success: added dictionary to classroom
                     //if the new dictionary came with some entries,
                     //then process new entries
+                    //echo("Step 3");
                     if(isset($_POST["entryText"])) {
                         $entry = $_POST["entryText"];
                         foreach ($entry as $index => $entryText) {
@@ -151,7 +152,9 @@
                                 $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID', '$last_id');";
 
                                 if($conn->query($addToDictionary)){
-                                    echo "success: dictionary added"; 
+                                    session_start();
+                                    $_SESSION["dictionaryID"] = $dictionaryID;
+                                    header("Location: ../dictionary.php");
                                 }
                             }
                             else {
