@@ -28,7 +28,7 @@ printHeadClose();
             <h1 id="dictionary-header" class="col">Dictionary:</h1>
         </div>
         <hr class="hr-header">
-        <div id="dictionary-body"></div>
+        <div id="dictionary-body" class="row align-items-start"></div>
         <table id="table-dictionary" class="table table-hover" style="width:100%">
             <thead>
             <tr>

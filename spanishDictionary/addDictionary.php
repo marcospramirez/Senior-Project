@@ -88,7 +88,7 @@ printHeadClose();
                                 <div class="form-group col"><input type="text" class="form-control" title="term" name="entryText[]" placeholder="Term" required></div>
                             </div>
                             <div class="row align-items-start"> <!--Audio File-->
-                                <div class="form-group col"><input type="file" class="form-control" accept="audio/*" name="entryAudio[]" required></div>
+                                <div class="form-group col"><input type="file" class="form-control" accept="audio/*" name="entryAudio[]"></div>
                             </div>
                         </div>
                         <div class="col"> <!--Definition & Tags-->
@@ -97,7 +97,7 @@ printHeadClose();
                                 </div>
                             </div>
                             <div class="row align-items-start"> <!--Tags-->
-                                <div class="form-group col"><select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags" required></select></div>
+                                <div class="form-group col"><select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags"></select></div>
                             </div>
                         </div>
                     </div>

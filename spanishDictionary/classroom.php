@@ -25,6 +25,7 @@ printHeadClose();
 
 <main>
     <div id="classroom-div" class="row align-items-start">
+        <!-- todo: fix header spacing so that it looks like the header in studentList -->
         <h1 id="classroom-header" class="col"></h1>
     </div>
     <div class="container content-frame border rounded">

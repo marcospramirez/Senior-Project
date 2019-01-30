@@ -2,23 +2,19 @@ function updateHeader(dictionaryName) {
     $('#dictionary-header').val(`Dictionary: ${dictionaryName}`)
 }
 
-function showAddToDictionaryButton() {
-    var dictionaryBody = $('#dictionary-body')
-    //remove table
-    $('#table-dictionary').remove()
+function showAddToDictionaryButton(dictionaryBody) {
+    //if instructor, show button that allows them to add terms to the dictionary
+    let addToDictionaryButton = `<button id="classroom-student-btn" class="col-sm-auto btn dark" onclick="window.location.href = './addDictionary.php'">Add to Dictionary</button>`
+    dictionaryBody.append(addToDictionaryButton)
+}//end of showAddToDictionaryButton
+
+function hideTable(tableHtmlId, dictionaryBody) {
+    $(`#${tableHtmlId}`).DataTable().destroy()  //make dataTable back to a normal table
+    document.getElementById(tableHtmlId).style.display = "none" //hide normal table
 
     //show "no content in dictionary" message
-    dictionaryBody.append("<h2>No Content in Dictionary</h2>\n")
-    //if instructor, show button that allows them to add terms to the dictionary
-    if(roleFromSession == "instructor") {
-        let addToDictionaryButton = '<button id="classroom-student-btn" class="col-sm-auto btn dark">Add to Dictionary</button>'
-        dictionaryBody.append(addToDictionaryButton)
-
-        addToDictionaryButton.click(function () {
-            window.location.href = './services/addDictionary.php'
-        })
-    }
-}//end of showAddToDictionaryButton
+    dictionaryBody.append("<h2 class='col'>No Content in Dictionary</h2>\n")
+}
 
 function playAudio(audioPath) {
     console.log(`audio/${audioPath}`)
@@ -28,17 +24,22 @@ function playAudio(audioPath) {
 
 //display audio, terms & definitions of the dictionary in a table
 $ (function() {
+    const tableHtmlId = 'table-dictionary'
+    const dictionaryBody = $('#dictionary-body')
     const dictionaryID = dictionaryIDFromSession
     const dictionaryName = dictionaryNameFromSession
     const URL = `./services/dictionaryService.php?Action=single&dictionaryID=${dictionaryID}`
     updateHeader(dictionaryName)
 
-    var table = $('#table-dictionary').DataTable({
+    var table = $(`#${tableHtmlId}`).DataTable({
         "ajax": {
             url: URL,
             dataSrc: function (json) {
                 if(json.length === 0) { //no terms in dictionary
-                    showAddToDictionaryButton()
+                    hideTable(tableHtmlId,dictionaryBody)
+                    if(roleFromSession == "instructor") {
+                        showAddToDictionaryButton(dictionaryBody)
+                    }
                 } else {
                     var return_data = new Array();
                     for(var i=0;i< json.length; i++){
@@ -55,7 +56,7 @@ $ (function() {
         }]
     });
 
-    $('#table-dictionary tbody').on( 'click', 'button', function () {
+    $(`#${tableHtmlId} tbody`).on( 'click', 'button', function () {
         var data = table.row( $(this).parents('tr') ).data();
         var audioPath = data[0];
         playAudio(audioPath)

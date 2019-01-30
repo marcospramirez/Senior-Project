@@ -7,7 +7,7 @@ function addTermFields() {
                         <div class="form-group col"><input type="text" class="form-control" title="term" name="entryText[]" placeholder="Term" required></div>
                     </div>
                     <div class="row align-items-start"> <!--Audio File-->
-                        <div class="form-group col"><input type="file" class="form-control" accept="audio/*" name="entryAudio[]" required></div>
+                        <div class="form-group col"><input type="file" class="form-control" accept="audio/*" name="entryAudio[]"></div>
                     </div>
                 </div>
                 <div class="col"> <!--Definition & Tags-->
@@ -16,7 +16,7 @@ function addTermFields() {
                         </div>
                     </div>
                     <div class="row align-items-start"> <!--Tags-->
-                        <div class="form-group col"><select id="tags-select-${termCount + 1}" multiple="multiple" type="text" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags" required></div>
+                        <div class="form-group col"><select id="tags-select-${termCount + 1}" multiple="multiple" type="text" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags"></div>
                     </div>
                 </div>
             </div>`
