@@ -42,12 +42,12 @@ function setAddDictionaryHeader(element, classroomName,) {
 
 $(function () {
 
-    //todo: wot?
     $("#tags-select").select2({
         ajax: {
             url: 'services/dictionaryService.php?Action=tags',
             dataType: 'json'
-        }
+        },
+        placeholder: 'Tags'
     });
 
 

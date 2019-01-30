@@ -97,7 +97,7 @@ printHeadClose();
                                 </div>
                             </div>
                             <div class="row align-items-start"> <!--Tags-->
-                                <div class="form-group col"><select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags"></select></div>
+                                <div class="form-group col"><select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]"></select></div>
                             </div>
                         </div>
                     </div>
