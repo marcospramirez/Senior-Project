@@ -29,7 +29,8 @@ function addTermFields() {
         ajax: {
             url: 'services/dictionaryService.php?Action=tags',
             dataType: 'json'
-        }
+        },
+        placeholder: 'Tags'
     });
 }
 

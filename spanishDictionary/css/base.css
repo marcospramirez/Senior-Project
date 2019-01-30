@@ -51,6 +51,7 @@ h3 {
   background-color: white;
 }
 
+/*todo: move these styles out of base.css*/
 /*=============================================
                  DASHBOARD STYLES
 =============================================*/
@@ -99,11 +100,17 @@ button.audio:hover {
   color: white;
   border-color: var(--dark-turquoise);
   background-color: var(--dark-turquoise);
-  margin: 0px 15px;
+  margin: 0 15px;
 }
 
 .btn.dark:hover {
   color: white;
   border-color: var(--dark-ocean);
   background-color: var(--dark-ocean);
+}
+
+#filter-error-message {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 600;
+  color: var(--dark-turquoise);
 }

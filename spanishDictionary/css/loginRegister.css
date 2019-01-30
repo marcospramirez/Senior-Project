@@ -37,7 +37,7 @@
 }
 
 .input-login-register::placeholder {
-    color: var(--goose-gray);
+    color: var(--ghost-gray);
 }
 
 #img-login-logo {
@@ -61,5 +61,5 @@
 #register-success-message {
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 600;
-    color: var(--seafoam-cyan);
+    color: var(--dark-turquoise);
 }

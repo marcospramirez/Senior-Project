@@ -8,6 +8,7 @@ printJQueryCdn();
 printBootstrapJsCdn();
 printDataTablesCdn();
 printFontAwesomeIconsCdn();
+printSelect2Cdn();
 
 include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('role', 'dictionaryID', 'dictionaryName'));
@@ -26,15 +27,15 @@ printHeadClose();
     <div class="modal-dialog modal-dialog-centered filterDictionary" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Filter</h2>
+                <h2 class="modal-title">Filter Dictionary by Tag(s)</h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <form id="filter-dictionary-form" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <div id="filter-error-message"></div>
+                    <div style="text-align: center;"><div id="filter-error-message"></div></div>
                     <div class="form-group">
-                        <label for="dFilter" class="col-form-label">Filter Dictionary by Tag(s):</label>
-                        <select id="dFilter tags-select" multiple="multiple" class="form-control tags" title="tags" name="filterTags[]" required></select>
+                        <label for="tags-select" class="col-form-label">Filter Dictionary by Tag(s):</label>
+                        <select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="filterTags[]" required></select>
                     </div>
                 </div>
                 <div class="modal-footer">
