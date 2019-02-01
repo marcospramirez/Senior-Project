@@ -15,17 +15,12 @@ printBootstrapCssCdn();
 printJQueryCdn();
 printBootstrapJsCdn();
 printFontAwesomeIconsCdn();
+printSelect2Cdn();
 
 include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
 echo '
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-
-
-
     <!--CUSTOM CSS-->
     <link href="css/add.css" rel="stylesheet"/>
     <!--CUSTOM JS-->
@@ -88,7 +83,7 @@ printHeadClose();
                                 <div class="form-group col"><input type="text" class="form-control" title="term" name="entryText[]" placeholder="Term" required></div>
                             </div>
                             <div class="row align-items-start"> <!--Audio File-->
-                                <div class="form-group col"><input type="file" class="form-control" accept="audio/*" name="entryAudio[]" required></div>
+                                <div class="form-group col"><input type="file" class="form-control" accept="audio/*" name="entryAudio[]"></div>
                             </div>
                         </div>
                         <div class="col"> <!--Definition & Tags-->
@@ -97,7 +92,7 @@ printHeadClose();
                                 </div>
                             </div>
                             <div class="row align-items-start"> <!--Tags-->
-                                <div class="form-group col"><select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags" required></select></div>
+                                <div class="form-group col"><select id="tags-select" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]"></select></div>
                             </div>
                         </div>
                     </div>
