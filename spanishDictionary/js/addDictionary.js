@@ -16,7 +16,7 @@ function addTermFields() {
                         </div>
                     </div>
                     <div class="row align-items-start"> <!--Tags-->
-                        <div class="form-group col"><select id="tags-select-${termCount + 1}" multiple="multiple" type="text" class="form-control tags" title="tags" name="entryTags[]" placeholder="Tags"></div>
+                        <div class="form-group col"><select id="tags-select-${termCount + 1}" multiple="multiple" type="text" class="form-control tags" title="tags" name="entryTags[${termCount}][]" placeholder="Tags"></div>
                     </div>
                 </div>
             </div>`

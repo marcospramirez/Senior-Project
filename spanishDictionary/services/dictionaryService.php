@@ -144,14 +144,43 @@
                             move_uploaded_file($_FILES["entryAudio"]["tmp_name"][$index], $target_file);
                             $sql = "INSERT INTO Entry (entryText, entryDefinition, entryAudioPath) VALUES ('$entryText', '$entryDefinition', '$entryAudio');";
 
-
                             if ($conn->query($sql) === TRUE) {
                                 $last_id = $conn->insert_id;
-                                //echo "New record created successfully. Last inserted ID is: " . $last_id;
+
+
+                                //ADD TAGS TO ENTRY
+                                if(isset($_POST['entryTags'])){
+                                    $tags = $_POST['entryTags'][$index];
+
+                                    if(!is_array($tags)) {
+                                       $tags = [$tags];
+                                    }
+
+                                }
+
+                                $entryToTagInsertSQl = "INSERT INTO entryToTag (entryID, tagID) VALUES ";
+
+                                $sqlArray = [];
+                                foreach ($tags as $tag) {
+                                    $data = "('$last_id' , '" . $tag ."')";
+
+                                    $sqlArray[] = $data;
+                                }
+                                
+
+                                $allTagsSql = implode(',' , $sqlArray);
+                                
+                                $entryToTagInsertSQl .= $allTagsSql;
+
+                                $conn->query($entryToTagInsertSQl);
+
+
+                                ////ADD ENTRY TO DICTIONARY
 
                                 $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID', '$last_id');";
 
                                 if($conn->query($addToDictionary)){
+
                                     session_start();
                                     $_SESSION["dictionaryID"] = $dictionaryID;
                                     header("Location: ../dictionary.php");
