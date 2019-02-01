@@ -211,6 +211,7 @@
         }
         if(isset($_GET['tags'])){
             $tags = $_GET['tags'];
+            $tags = implode(",", $tags);
         }
     
         //SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = 36 and entryID in (SELECT entryID from entryToTag where tagID in (1,2))
