@@ -143,6 +143,7 @@
 	        
 			}
 		session_start();
+		$_SESSION["dictionaryName"] = $dictionaryName;
 		$_SESSION["dictionaryID"] = $dictID;
 		header("Location: ../dictionary.php");
 		}

@@ -182,6 +182,7 @@
                                 if($conn->query($addToDictionary)){
 
                                     session_start();
+                                    $_SESSION["dictionaryName"] = $dictionaryName;
                                     $_SESSION["dictionaryID"] = $dictionaryID;
                                     header("Location: ../dictionary.php");
                                 }
