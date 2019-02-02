@@ -1,0 +1,93 @@
+Question Service API
+
+
+### GET ALL QUESTIONS FOR A CLASS ###
+/services/questionService.php?Action=list&classroom=CLASSROOMID
+
+
+EXAMPLE : http://mramir14.create.stedwards.edu/spanishDictionary/services/questionService.php?Action=list&classroom=1
+
+[
+    {
+        "questionID": "1",
+        "questionType": "1",
+        "questionText": "Como se dice &quot;test&quot; en espanol?",
+        "starredAnswer": null,
+        "classroomID": "1",
+        "questionEmail": "", //only empty bc I added questionEmail after I inserted this into table
+        "questionName": "", //only empty bc I added questionName after I inserted this into table
+        "answerArray": [
+            {
+                "answerID": "1",
+                "questionID": "1",
+                "answerName": "testname",
+                "answerEmail": "testEmail",
+                "answerRole": "instructor",
+                "answerText": "testAnswer"
+            },
+            {
+                "answerID": "2",
+                "questionID": "1",
+                "answerName": "test2name",
+                "answerEmail": "test2email",
+                "answerRole": "student",
+                "answerText": "test2"
+            }
+        ]
+    },
+    {
+        "questionID": "2",
+        "questionType": "2",
+        "questionText": "Que significa &quot;testq2&quot;?",
+        "starredAnswer": null,
+        "classroomID": "1",
+        "questionEmail": "testqemail",
+        "questionName": "testqname",
+        "answerArray": []
+    }
+]
+
+
+### UPLOAD A QUESTION ###
+/services/questionService.php?Action=uploadQuestion
+
+POST
+	classroomID
+    questionType (integer)
+    	1 == "como se dice"
+    	2 == "que significa"
+    	3 == other
+
+    questionText 
+    questionEmail
+    questionName
+
+
+
+### UPLOAD AN ANSWER TO A QUESTION ###
+/services/questionService.php?Action=uploadAnswer
+
+POST
+    questionID
+    answerText
+    answerEmail 
+    answerName 
+    answerRole
+    	1 == instructor (if answerRole == instructor, I automatically star it in the database)
+    	2 == student
+
+
+
+### STAR AN ANSWER ###
+/services/questionService.php?Action=starAnswer
+
+POST
+	answerID
+	questionID
+
+
+### UNSTAR AN ANSWER ###
+/services/questionService.php?Action=unstarAnswer
+
+POST
+	questionID
