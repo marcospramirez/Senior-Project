@@ -43,7 +43,7 @@
         echo json_encode($retVal);
     }
 
-    function listAction($conn, $classroomID ){
+    function listAction($conn, $classroomID){
 
         $returnQuestions = [];
 
@@ -74,15 +74,40 @@
 
     }
 
-    function uploadQuestionAction($conn, $classroomID ){
+    function uploadQuestionAction($conn, $classroomID){
+
+        try{
+
+            $questionType = $_POST["questionType"];
+            $questionText = $_POST["questionText"];
+            $questionEmail = $_POST["questionEmail"];
+            $questionName = $_POST["questionName"];
+           
+            $insertQuestion = "INSERT into Question (questionType, questionText, questionEmail, questionName, classroomID) VALUES ('$questionType', '$questionText', '$questionEmail', '$questionName', '$classroomID')";
+
+        }
+        catch{
+            $retval = array("error" => "parameter not set error");
+            echo json_encode($retVal);
+
+        }
+        
+        if($conn->query($insertQuestion)){
+            $retval = array("message" => "success");
+        }
+        else{
+            $retVal = array("error" => "error uploading question");        
+        }
+
+        echo json_encode($retVal);
+
+    }
+
+    function uploadAnswerAction($conn, $classroomID){
         
     }
 
-    function uploadAnswerAction($conn, $classroomID ){
-        
-    }
-
-    function starAnswerAction($conn, $classroomID ){
+    function starAnswerAction($conn, $classroomID){
         
     }
 
