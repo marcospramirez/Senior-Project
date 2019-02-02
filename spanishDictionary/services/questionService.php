@@ -5,25 +5,25 @@
 
     $questionServiceAction = isset($_GET['Action']) ? $_GET['Action'] : "no action";
 
-    if(isset($_GET['classroom'])){
-        $classroomID = $_GET['classroom'];
-    }
 
     switch ($questionServiceAction) {
         case "list":
-            listAction($conn, $classroomID);
+            listAction($conn);
             break;
 
         case "uploadQuestion":
-            uploadQuestionAction($conn, $classroomID);
+            uploadQuestionAction($conn);
             break;
 
         case "uploadAnswer":
-            uploadAnswerAction($conn, $classroomID);
+            uploadAnswerAction($conn);
             break;
 
         case "starAnswer":
-            starAnswerAction($conn, $classroomID);
+            starAnswerAction($conn);
+            break;
+        case "unstarAnswer":
+            unstarAnswerAction($conn);
             break;
 
         case "no action":
@@ -43,7 +43,11 @@
         echo json_encode($retVal);
     }
 
-    function listAction($conn, $classroomID){
+    function listAction($conn){
+
+        if(isset($_GET['classroom'])){
+            $classroomID = $_GET['classroom'];
+        }
 
         $returnQuestions = [];
 
@@ -74,10 +78,10 @@
 
     }
 
-    function uploadQuestionAction($conn, $classroomID){
+    function uploadQuestionAction($conn){
 
         try{
-
+            $classroomID = $_POST["classroomID"];
             $questionType = $_POST["questionType"];
             $questionText = $_POST["questionText"];
             $questionEmail = $_POST["questionEmail"];
@@ -86,8 +90,8 @@
             $insertQuestion = "INSERT into Question (questionType, questionText, questionEmail, questionName, classroomID) VALUES ('$questionType', '$questionText', '$questionEmail', '$questionName', '$classroomID')";
 
         }
-        catch{
-            $retval = array("error" => "parameter not set error");
+        catch(Exception $e){
+            $retval = array("error" => $e->getMessage());
             echo json_encode($retVal);
 
         }
@@ -103,12 +107,75 @@
 
     }
 
-    function uploadAnswerAction($conn, $classroomID){
-        
+    function uploadAnswerAction($conn){
+        try{
+
+            $questionID = $_POST["questionID"];
+            $answerText = $_POST["answerText"];
+            $answerEmail = $_POST["answerEmail"];
+            $answerName = $_POST["answerName"];
+            $answerRole = $_POST["answerRole"];
+
+           
+            $insertAnswer = "INSERT into Answer (questionID, answerText, answerEmail, answerName, answerRole) VALUES ('$questionID', '$answerText', '$answerEmail', '$answerName', '$answerRole')";
+
+        }
+        catch(Exception $e){
+            $retval = array("error" => $e->getMessage());
+            echo json_encode($retVal);
+
+        }
+
+        if($conn->query($insertAnswer)){
+
+            if($answerRole == 1){
+                $lastAnswerInserted = $conn->insert_id;
+                starAnswerAction($conn, $lastAnswerInserted); 
+            }
+                
+            $retval = array("message" => "success");
+        }
+        else{
+            $retVal = array("error" => "error uploading question");        
+        }
+
+        echo json_encode($retVal);
+
+
     }
 
-    function starAnswerAction($conn, $classroomID){
-        
+    function starAnswerAction($conn, $answerID = null){
+
+        if($answerID == null){
+            $answerID = $_POST["answerID"];
+        }
+
+        $questionID = $_POST["questionID"];
+
+        $updateQuestionWithStarredAnswer = "UPDATE Question SET Question.starredAnswer = '$answerID' WHERE Question.questionID = '$questionID'";
+
+        if($conn->query($updateQuestionWithStarredAnswer)){
+            $retval = array("message" => "success");
+        }
+        else{
+            $retVal = array("error" => "error uploading question");      
+        }
+        echo json_encode($retVal);
+
+    }
+
+    function unstarAnswerAction($conn){
+        $questionID = $_POST["questionID"];
+
+        $unstarAnswerforQuestion = "UPDATE Question SET Question.starredAnswer = 0 WHERE Question.questionID = '$questionID'";
+
+        if($conn->query($unstarAnswerforQuestion)){
+            $retval = array("message" => "success");
+        }
+        else{
+            $retVal = array("error" => "error uploading question");      
+        }
+        echo json_encode($retVal);
     }
 
     function transformQuestion($question){
@@ -122,7 +189,7 @@
                 $newText = 'Como se dice &quot;' . $questionText . '&quot; en espanol?';
                 break;
             case 2:
-                $newText = "Que significa " . $questionText . "?";
+                $newText = "Que significa &quot;" . $questionText . "&quot;?";
                 break;
             case 3:
                 $newText = $questionText;
