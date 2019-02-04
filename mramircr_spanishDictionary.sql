@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 25, 2018 at 06:01 PM
--- Server version: 5.7.24
+-- Generation Time: Feb 04, 2019 at 06:54 PM
+-- Server version: 5.7.25
 -- PHP Version: 7.2.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -21,6 +21,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `mramircr_spanishDictionary`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Answer`
+--
+
+CREATE TABLE `Answer` (
+  `answerID` int(11) NOT NULL,
+  `questionID` int(11) NOT NULL,
+  `answerName` varchar(80) NOT NULL,
+  `answerEmail` varchar(80) NOT NULL,
+  `answerRole` int(11) NOT NULL,
+  `answerText` varchar(140) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -56,14 +71,6 @@ CREATE TABLE `Dictionary` (
   `dictionaryName` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `Dictionary`
---
-
-INSERT INTO `Dictionary` (`dictionaryID`, `dictionaryName`) VALUES
-(1, 'Test'),
-(2, 'Saludos y expresiones de cortesia');
-
 -- --------------------------------------------------------
 
 --
@@ -72,34 +79,10 @@ INSERT INTO `Dictionary` (`dictionaryID`, `dictionaryName`) VALUES
 
 CREATE TABLE `Entry` (
   `entryID` int(11) NOT NULL,
-  `entryText` varchar(140) NOT NULL,
-  `entryDefinition` varchar(280) NOT NULL,
-  `entryAudioPath` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `Entry`
---
-
-INSERT INTO `Entry` (`entryID`, `entryText`, `entryDefinition`, `entryAudioPath`) VALUES
-(1, 'perro', 'Dog', 'test.audio'),
-(2, 'test', 'Enter the translation', '447474__pax11__beat43-90bpm.wav'),
-(3, 'test', 'Enter the translation', '447474__pax11__beat43-90bpm.wav'),
-(4, 'test', 'Enter the translation', ''),
-(5, '', '', ''),
-(6, 'Buenos días. Buenas tardes, Buenas noches. (Muy) Buenas.', 'Good morning. Good afternoon/evening. Good night. Very good.', ''),
-(7, 'Hola. ¿Qué tal? ¿Cómo estás? ¿Cómo está?', 'Hi. How\'s it going? How are you?', ''),
-(8, 'Muy bien. Regular. Bien.', 'Fine. OK. Good.', ''),
-(9, '¿Y tú? ¿Y usted?', 'And you? And yourself?', ''),
-(10, 'Adiós. Hasta mañana. Hasta luego. Nos vemos.', 'Good bye. See you tomorrow. See you later. See you.', ''),
-(11, '¿Cómo te llamas? ¿Cómo se llama usted?', 'What is your name? What\'s your name?(formal/polite)', ''),
-(12, 'What is your name? What\'s your name?(formal/polite)', 'Where are you from? Where are you from?(formal/polite). (I\'m from) _____.', ''),
-(13, 'señor (Sr.), señora (Sra.), señorita (Srta.)', 'Mister (Mr.), Misses (Mrs.), Miss (Ms.)', ''),
-(14, 'profesor, profesora', 'Professor', ''),
-(15, 'Gracias. Muchas gracias.', 'Thanks/Thank you. Thank you very much.', ''),
-(16, 'Hola', 'Hello', ''),
-(17, 'Red', 'Rojo', ''),
-(18, 'Blue', 'Azul', '');
+  `entryText` varchar(140) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entryDefinition` varchar(280) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entryAudioPath` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -112,25 +95,27 @@ CREATE TABLE `entryToDictionary` (
   `entryID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `entryToDictionary`
+-- Table structure for table `entryToPersonalVocabList`
 --
 
-INSERT INTO `entryToDictionary` (`dictionaryID`, `entryID`) VALUES
-(1, 1),
-(1, 4),
-(2, 6),
-(2, 7),
-(2, 9),
-(2, 10),
-(2, 11),
-(2, 12),
-(2, 13),
-(2, 14),
-(2, 15),
-(1, 16),
-(1, 17),
-(1, 18);
+CREATE TABLE `entryToPersonalVocabList` (
+  `personalVocabID` int(11) NOT NULL,
+  `entryID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entryToTag`
+--
+
+CREATE TABLE `entryToTag` (
+  `tagID` int(11) NOT NULL,
+  `entryID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -147,13 +132,39 @@ CREATE TABLE `Instructor` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `PersonalVocabList`
+--
+
+CREATE TABLE `PersonalVocabList` (
+  `personalVocabID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Question`
+--
+
+CREATE TABLE `Question` (
+  `questionID` int(11) NOT NULL,
+  `questionType` int(11) NOT NULL,
+  `questionText` varchar(140) NOT NULL,
+  `starredAnswer` int(11) NOT NULL,
+  `classroomID` int(11) NOT NULL,
+  `questionEmail` varchar(80) NOT NULL,
+  `questionName` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Student`
 --
 
 CREATE TABLE `Student` (
   `email` varchar(80) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  `name` varchar(80) NOT NULL
+  `password` varchar(20) DEFAULT NULL,
+  `name` varchar(80) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -164,12 +175,31 @@ CREATE TABLE `Student` (
 
 CREATE TABLE `studentToClassroom` (
   `studentEmail` varchar(80) NOT NULL,
-  `classroomID` int(11) NOT NULL
+  `classroomID` int(11) NOT NULL,
+  `personalVocabID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Tag`
+--
+
+CREATE TABLE `Tag` (
+  `tagID` int(11) NOT NULL,
+  `tagText` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `Answer`
+--
+ALTER TABLE `Answer`
+  ADD PRIMARY KEY (`answerID`),
+  ADD KEY `questionID` (`questionID`);
 
 --
 -- Indexes for table `Classroom`
@@ -205,10 +235,36 @@ ALTER TABLE `entryToDictionary`
   ADD KEY `entryID` (`entryID`);
 
 --
+-- Indexes for table `entryToPersonalVocabList`
+--
+ALTER TABLE `entryToPersonalVocabList`
+  ADD KEY `entryConstraint` (`entryID`),
+  ADD KEY `vocablistconstraint` (`personalVocabID`);
+
+--
+-- Indexes for table `entryToTag`
+--
+ALTER TABLE `entryToTag`
+  ADD PRIMARY KEY (`tagID`,`entryID`),
+  ADD KEY `entryIDConstraint` (`entryID`);
+
+--
 -- Indexes for table `Instructor`
 --
 ALTER TABLE `Instructor`
   ADD PRIMARY KEY (`email`);
+
+--
+-- Indexes for table `PersonalVocabList`
+--
+ALTER TABLE `PersonalVocabList`
+  ADD PRIMARY KEY (`personalVocabID`);
+
+--
+-- Indexes for table `Question`
+--
+ALTER TABLE `Question`
+  ADD PRIMARY KEY (`questionID`);
 
 --
 -- Indexes for table `Student`
@@ -224,8 +280,20 @@ ALTER TABLE `studentToClassroom`
   ADD KEY `classroomIDconstraint` (`classroomID`);
 
 --
+-- Indexes for table `Tag`
+--
+ALTER TABLE `Tag`
+  ADD PRIMARY KEY (`tagID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `Answer`
+--
+ALTER TABLE `Answer`
+  MODIFY `answerID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `Classroom`
@@ -237,17 +305,41 @@ ALTER TABLE `Classroom`
 -- AUTO_INCREMENT for table `Dictionary`
 --
 ALTER TABLE `Dictionary`
-  MODIFY `dictionaryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `dictionaryID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `Entry`
 --
 ALTER TABLE `Entry`
-  MODIFY `entryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `entryID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `PersonalVocabList`
+--
+ALTER TABLE `PersonalVocabList`
+  MODIFY `personalVocabID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Question`
+--
+ALTER TABLE `Question`
+  MODIFY `questionID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Tag`
+--
+ALTER TABLE `Tag`
+  MODIFY `tagID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `Answer`
+--
+ALTER TABLE `Answer`
+  ADD CONSTRAINT `questionID` FOREIGN KEY (`questionID`) REFERENCES `Question` (`questionID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Classroom`
@@ -268,6 +360,20 @@ ALTER TABLE `classroomToDictionary`
 ALTER TABLE `entryToDictionary`
   ADD CONSTRAINT `dictionaryIDconstraint` FOREIGN KEY (`dictionaryID`) REFERENCES `Dictionary` (`dictionaryID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `entryID` FOREIGN KEY (`entryID`) REFERENCES `Entry` (`entryID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `entryToPersonalVocabList`
+--
+ALTER TABLE `entryToPersonalVocabList`
+  ADD CONSTRAINT `entryConstraint` FOREIGN KEY (`entryID`) REFERENCES `Entry` (`entryID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `vocablistconstraint` FOREIGN KEY (`personalVocabID`) REFERENCES `PersonalVocabList` (`personalVocabID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `entryToTag`
+--
+ALTER TABLE `entryToTag`
+  ADD CONSTRAINT `entryIDConstraint` FOREIGN KEY (`entryID`) REFERENCES `Entry` (`entryID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tagIDConstraint` FOREIGN KEY (`tagID`) REFERENCES `Tag` (`tagID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `studentToClassroom`

@@ -51,7 +51,7 @@
 
         $returnQuestions = [];
 
-        $selectQuestions = "SELECT * from Question where classroomID = '$classroomID'";
+        $selectQuestions = "SELECT * from Question where classroomID = '$classroomID' ORDER BY questionID DESC" ;
         $questions = $conn->query($selectQuestions);
 
         if ($questions->num_rows > 0){
@@ -186,10 +186,10 @@
 
         switch ($questionType) {
             case 1:
-                $newText = 'Como se dice &quot;' . $questionText . '&quot; en espanol?';
+                $newText = '&iquest;C&oacute;mo se dice &quot;' . $questionText . '&quot; en espa&ntilde;ol?';
                 break;
             case 2:
-                $newText = "Que significa &quot;" . $questionText . "&quot;?";
+                $newText = "&iquest;Qu&eacute; significa &quot;" . $questionText . "&quot;?";
                 break;
             case 3:
                 $newText = $questionText;
