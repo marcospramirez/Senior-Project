@@ -72,6 +72,13 @@ function printSelect2Cdn() {
     ';
 }
 
+function printMagicGridCdn() {
+    echo '
+            <!--MAGIC GRID JS-->
+            <script src="https://unpkg.com/magic-grid/dist/magic-grid.cjs.js"></script>
+    ';
+}
+
 function printHeadClose() {
     echo '
             <!--BASE CSS-->
@@ -81,7 +88,7 @@ function printHeadClose() {
     ';
 
     //show navigation bar when logged in
-    if (!isset($_SESSION['email'])) { //if there is a session, show nav bar
+    if (isset($_SESSION['email'])) { //if there is a session, show nav bar
         echo '
             <header>
                 <nav class="navbar sticky-top navbar-light bg-light justify-content-between">

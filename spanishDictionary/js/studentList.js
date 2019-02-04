@@ -3,7 +3,7 @@ function setStudentListHeader() {
     //update title to reflect classroom name
     document.title = classroomName
     //update header to reflect classroom name
-    document.getElementById('classroom-name').innerHTML = `Students in ${classroomName}`
+    document.getElementById('classroom-name').innerHTML = `<h1>Students in ${classroomName}</h1>>`
 }
 
 function showAddStudentButton() {
@@ -38,7 +38,7 @@ function displayStudentListTable(studentList) {
 }//end of displayClassroomTable
 
 $(function () {
-    const errorMsgId = 'table-classrooms'
+    const errorMsgID = 'table-classrooms'
     let classroomID = classroomIDFromSession
 
     setStudentListHeader()
@@ -60,6 +60,6 @@ $(function () {
         displayStudentListTable(studentList)
     })
         .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+            document.getElementById(errorMsgID).innerHTML = `Error, could not connect! URL: ${URL}`
         })
 }) //end of doc ready
