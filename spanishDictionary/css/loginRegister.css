@@ -37,7 +37,7 @@
 }
 
 .input-login-register::placeholder {
-    color: var(--ghost-gray);
+    color: var(--goose-gray);
 }
 
 #img-login-logo {

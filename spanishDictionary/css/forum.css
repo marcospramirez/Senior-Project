@@ -1,0 +1,47 @@
+#forum-header h1 {
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+}
+
+.question {
+    width: 30rem;
+    min-width: 3rem;
+    padding: 3%;
+}
+
+.answer {
+    padding: 2%;
+    margin-bottom: 2%;
+    margin-top: 0%;
+}
+
+.answer-header .col {
+    padding-left: 0%;
+}
+
+
+.question-name {
+    transform: translate(-15px);
+}
+
+.question-name .col, .answer-name .col {
+    color: darkgray;
+}
+
+.question-body {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.answer-list {
+    width: 75%;
+}
+
+.answer-name {
+    text-align: right;
+}
+.suggest-answer {
+    padding: 2%;
+    margin-top: 5%
+}

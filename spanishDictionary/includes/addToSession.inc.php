@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+if(!(isset($_SESSION['email']) || isset($_POST['email']))) {    //not accessed internally or through login
+    //redirect user back to login
+    header("Location: ./login.php");
+    exit();
+}
+
 //All data that can be added to the session: email, role, classroomID, classroomName, dictionaryID, dictionaryName, personalVocabID
 
 if(isset($_POST['email'])) {
