@@ -23,7 +23,7 @@ printHeadClose();
 ?>
 
 <main class="container">
-    <div id="forum-header"><h1>SPAN 2350-02 Forum</h1></div>
+    <div id="forum-header"></div>
     <div id="forum" class="container">
     </div>
 </main>

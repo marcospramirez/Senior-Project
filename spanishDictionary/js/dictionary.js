@@ -1,12 +1,12 @@
 function displayTable(dictionaryID, tableHtmlId, dictionaryBody) {
     const URL = `./services/dictionaryService.php?Action=single&dictionaryID=${dictionaryID}`
     var table = $(`#${tableHtmlId}`).DataTable({
-        "ajax": {
+        ajax: {
             url: URL,
             dataSrc: function (json) {
                 if(json.length === 0) { //no terms in dictionary
                     hideTable(tableHtmlId,dictionaryBody)
-                    hideFilterTableButton()
+                    // hideFilterTableButton()  //todo: implement this lol
                     if(roleFromSession == "instructor") {
                         showAddToDictionaryButton(dictionaryBody)
                     }
@@ -19,7 +19,7 @@ function displayTable(dictionaryID, tableHtmlId, dictionaryBody) {
                 }
             }
         },
-        "columnDefs": [{
+        columnDefs: [{
             "targets": 0,
             "data": null,
             "defaultContent": "<button class=\"btn btn-outline-success audio\"><i class=\"fas fa-volume-down\"></i></button>"
@@ -57,7 +57,6 @@ function hideTable(tableHtmlId, dictionaryBody) {
 }
 
 function playAudio(audioPath) {
-    console.log(`audio/${audioPath}`)
     var audio = new Audio(`audio/${audioPath}`)
     audio.play()
 }
@@ -120,27 +119,20 @@ $ (function() {
             if(data.length === 0) { //no terms match filter
                 document.getElementById(errorMsgId).innerHTML = 'Nope'
             } else {    //terms match!
+                //parse data to display in new table
+                var tableData = new Array();
+                $.each(data, function (index, entry) {
+                    tableData.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
+                })
+
                 $('#filter-dictionary').modal('hide');  //hide modal
-
                 //make dataTable back to a normal table
-                $(`#${tableHtmlId}`).DataTable().clear()
-                $(`#${tableHtmlId}`).DataTable().destroy()
-
+                $(`#${tableHtmlId}`).DataTable().clear().destroy()
 
                 //show table with new data
                 var table = $(`#${tableHtmlId}`).DataTable({
-                    data: function () {
-                        if(data.length === 0) { //no terms in dictionary
-                            document.getElementById('filter-error-message').innerHTML = 'Nope'
-                        } else {
-                            var return_data = new Array();
-                            $.each(json, function (index, entry) {
-                                return_data.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
-                            })
-                            return return_data;
-                        }
-                    },
-                    "columnDefs": [{
+                    data: tableData,
+                    columnDefs: [{
                         "targets": 0,
                         "data": null,
                         "defaultContent": "<button class=\"btn btn-outline-success audio\"><i class=\"fas fa-volume-down\"></i></button>"

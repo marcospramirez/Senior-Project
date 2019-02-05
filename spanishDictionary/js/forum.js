@@ -3,12 +3,21 @@ function setForumHeader() {
     //update title to reflect classroom name
     document.title = `${classroomName} Forum`
     //update header to reflect classroom name
-    document.getElementById('forum-header').innerHTML = `${classroomName} Forum`
+    document.getElementById('forum-header').innerHTML = `<h1>${classroomName} Forum</h1>`
 }
-function displayForum(data) {
-    const forumHTML = getForumHTML(data)
+function displayForum(data, forumID) {
+    let forumHTML = null
+    let questionCount = null
+    if(data.length == 0) {
+        forumHTML = '<div><h2 style="text-align: center;">No Questions in Forum.</h2></div>'
+        let questionCount = 1
+    } else {
+        forumHTML = getForumHTML(data)
+        questionCount = data.length
+    }
 
-    const questionCount = data.length
+    document.getElementById(forumID).innerHTML = forumHTML
+
     let magicGrid = new MagicGrid({
         container: '#forum',
         gutter: 30,
@@ -16,11 +25,14 @@ function displayForum(data) {
         items: questionCount
     })
     magicGrid.listen();
+
 }
 
 function getForumHTML(data) {
     //parse data and create HTML for the questions
     let forumHTML = ''
+    let unansweredQuestionsHTML = ''
+    let answeredQuestionsHTML = ''
 
     //for each question, get question data & answer(s) data & fill into the HTML
     $.each(data, function(index, questionData) {
@@ -79,9 +91,12 @@ function getForumHTML(data) {
 
         questionHTML += '</div> </div> </div>'
 
-        forumHTML += questionHTML
+        if(questionData.starredAnswer === null) unansweredQuestionsHTML += questionHTML
+        else answeredQuestionsHTML += questionHTML
+
     })  //end of for each question
 
+    forumHTML = unansweredQuestionsHTML + answeredQuestionsHTML
     return forumHTML
 }
 
@@ -102,7 +117,7 @@ $(function() {
     //using AJAX, get list of all questions for the class
     //and display into forum
     $.get(URL, userData, function(data) {
-        displayForum(data);
+        displayForum(JSON.parse(data), forumID);
     })
         .fail(function() {
             document.getElementById(forumID).innerHTML = `Error, could not connect! URL: ${URL}`
