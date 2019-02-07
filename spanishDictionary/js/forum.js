@@ -222,11 +222,11 @@ function answerQuestion(questionID) {
 
 }//end of answerQuestion
 
-function setNewQuestionDropDown(forumHTMLID) {
+function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     let select = document.getElementById("question-type-select")
     let selectedQuestionType = select.value
     //todo: make sure that this null thing works like I want it to v
-    if(selectedQuestionType === "") document.getElementById(forumHTMLID).innerHTML = `Error, could not set dropdown! URL: ${URL}`  //if no question type selected then show error message
+    if(selectedQuestionType === "") document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not set dropdown! URL: ${URL}`  //if no question type selected then show error message
     else {  //questionType is valid: add options to select html
         const URL = './services/questionService.php?Action=TBD'  //todo: add actual action
         const userData = {}     //todo: add actual userData, probably won't need any though lol
@@ -236,7 +236,7 @@ function setNewQuestionDropDown(forumHTMLID) {
             select.innerHTML += optionListHTML
         })
         .fail(function() {
-            document.getElementById(forumHTMLID).innerHTML = `Error, could not connect! URL: ${URL}`
+            document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
         })
     }
 }//end of setNewQuestionDropDown
@@ -291,8 +291,7 @@ function displayQuestionInput() {
     }//end of else, question type selected: construct question text field and show input field
 }
 
-function uploadQuestion(forumHTMLID) {
-    const errorMsgId = 'filter-error-message'
+function uploadQuestion(forumHTMLID, errorMsgId) {
     const questionType = document.getElementById("question-type-select").value
     const questionTerm = document.getElementById("questionTerm").value
     const URL = `./services/questionService.php?Action=uploadQuestion`
@@ -349,16 +348,17 @@ function addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTe
 $(function() {
     const classroomID = classroomIDFromSession
     const forumHTMLID = 'forum'
+    const askQuestionErrorMsgId ='ask-question-error-message'
 
     setForumHeader();
     displayForum(forumHTMLID, classroomID)
-    setNewQuestionDropDown(forumHTMLID)
+    setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId)
 
     //hijack filter form to display filtered table
     let askQuestionForm = $('#ask-question-form')
     askQuestionForm.submit(function (event) {
         event.preventDefault()
-        uploadQuestion(forumHTMLID)
+        uploadQuestion(forumHTMLID, askQuestionErrorMsgId)
     })
 
 })

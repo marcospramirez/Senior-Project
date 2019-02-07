@@ -33,7 +33,7 @@ printHeadClose();
             </div>
             <form id="ask-question-form" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <div style="text-align: center;"><div id="filter-error-message"></div></div>
+                    <div style="text-align: center;"><div id="ask-question-error-message"></div></div>
                     <div class="form-group">
                         <select id="question-type-select" class="form-control custom-select question-type" title="questionType" name="questionType[]" onchange="displayQuestionInput()" required>
                             <option value="" selected disabled hidden>Select a question type</option>
