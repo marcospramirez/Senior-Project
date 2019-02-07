@@ -226,8 +226,10 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     let select = document.getElementById("question-type-select")
     let selectedQuestionType = select.value
     //todo: make sure that this null thing works like I want it to v
-    if(selectedQuestionType === "") document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not set dropdown! URL: ${URL}`  //if no question type selected then show error message
-    else {  //questionType is valid: add options to select html
+    if(selectedQuestionType === "") {   //if no question type selected then show error message & hide dropdown
+        document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not set dropdown!`
+        select.style.display = "none"   //hide select dropdown
+    } else {  //questionType is valid: add options to select html
         const URL = './services/questionService.php?Action=TBD'  //todo: add actual action
         const userData = {}     //todo: add actual userData, probably won't need any though lol
         $.get(URL, userData, function(data) {

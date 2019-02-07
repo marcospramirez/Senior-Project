@@ -37,9 +37,6 @@ printHeadClose();
                     <div class="form-group">
                         <select id="question-type-select" class="form-control custom-select question-type" title="questionType" name="questionType[]" onchange="displayQuestionInput()" required>
                             <option value="" selected disabled hidden>Select a question type</option>
-                            <option value="1">Como se dice "___" en espanol?</option>
-                            <option value="2">Que significa "___" en ingles?</option>
-                            <option value="3">Other</option>
                         </select>
                         <div id="ask-question-field"></div>
                     </div>
