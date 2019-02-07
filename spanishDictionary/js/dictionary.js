@@ -61,6 +61,62 @@ function playAudio(audioPath) {
     audio.play()
 }
 
+//get tags, destroy current table and replace with table with filtered terms
+function displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId) {
+    //clear error messages
+    errorMsgId = 'filter-error-message'
+    document.getElementById(errorMsgId).innerHTML = ''
+
+    //get tags from select
+    const selectData = $(tagSelectHTMLId).select2('data');
+    const tagData = parseSelectData(selectData)
+    const tagIdArray = tagData.idArray
+    // const tagTextArray = tagData.textArray
+
+    //AJAX request term data that matches the selectData
+    URL = './services/dictionaryService.php'
+    const userData = {
+        Action: 'filter',
+        dictionary: dictionaryID,
+        tags: tagIdArray
+    }
+    $.get(URL, userData, function(data) {
+        data = JSON.parse(data)
+        if(data.length === 0) { //no terms match filter
+            document.getElementById(errorMsgId).innerHTML = 'Nope'
+        } else {    //terms match!
+            //parse data to display in new table
+            var tableData = new Array();
+            $.each(data, function (index, entry) {
+                tableData.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
+            })
+
+            $('#filter-dictionary').modal('hide');  //hide modal
+            //make dataTable back to a normal table
+            $(`#${tableHtmlId}`).DataTable().clear().destroy()
+
+            //show table with new data
+            var table = $(`#${tableHtmlId}`).DataTable({
+                data: tableData,
+                columnDefs: [{
+                    "targets": 0,
+                    "data": null,
+                    "defaultContent": "<button class=\"btn btn-outline-success audio\"><i class=\"fas fa-volume-down\"></i></button>"
+                }]
+            });
+
+            $(`#${tableHtmlId} tbody`).on( 'click', 'button', function () {
+                var data = table.row( $(this).parents('tr') ).data();
+                var audioPath = data[0];
+                playAudio(audioPath)
+            });
+        }//end of else
+    })
+        .fail(function() {
+            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+        })
+}//end of displayFilteredTable
+
 //parse select data into two arrays, tagIdArray & tagTextArray
 function parseSelectData(selectData) {
     let tagIdArray = []
@@ -71,7 +127,7 @@ function parseSelectData(selectData) {
     })
 
     return {idArray: tagIdArray, textArray: tagTextArray}
-}
+}//end of parseSelectData
 
 //display audio, terms & definitions of the dictionary in a table
 $ (function() {
@@ -83,6 +139,7 @@ $ (function() {
     updateHeader(dictionaryName)
     displayTable(dictionaryID, tableHtmlId, dictionaryBody)
 
+    //use select2 to have dynamic tag selection
     const tagSelectHTMLId = "#tags-select"
     $(tagSelectHTMLId).select2({
         ajax: {
@@ -93,61 +150,11 @@ $ (function() {
         width: '100%'
     });
 
+    //hijack filter form to display filtered table
     let filterForm = $('#filter-dictionary-form')
     filterForm.submit(function (event) {
         event.preventDefault()
 
-        //clear error messages
-        errorMsgId = 'filter-error-message'
-        document.getElementById(errorMsgId).innerHTML = ''
-
-        //get tags from select
-        const selectData = $(tagSelectHTMLId).select2('data');
-        const tagData = parseSelectData(selectData)
-        const tagIdArray = tagData.idArray
-        // const tagTextArray = tagData.textArray
-
-        //AJAX request term data that matches the selectData
-        URL = './services/dictionaryService.php'
-        const userData = {
-            Action: 'filter',
-            dictionary: dictionaryID,
-            tags: tagIdArray
-        }
-        $.get(URL, userData, function(data) {
-            data = JSON.parse(data)
-            if(data.length === 0) { //no terms match filter
-                document.getElementById(errorMsgId).innerHTML = 'Nope'
-            } else {    //terms match!
-                //parse data to display in new table
-                var tableData = new Array();
-                $.each(data, function (index, entry) {
-                    tableData.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
-                })
-
-                $('#filter-dictionary').modal('hide');  //hide modal
-                //make dataTable back to a normal table
-                $(`#${tableHtmlId}`).DataTable().clear().destroy()
-
-                //show table with new data
-                var table = $(`#${tableHtmlId}`).DataTable({
-                    data: tableData,
-                    columnDefs: [{
-                        "targets": 0,
-                        "data": null,
-                        "defaultContent": "<button class=\"btn btn-outline-success audio\"><i class=\"fas fa-volume-down\"></i></button>"
-                    }]
-                });
-
-                $(`#${tableHtmlId} tbody`).on( 'click', 'button', function () {
-                    var data = table.row( $(this).parents('tr') ).data();
-                    var audioPath = data[0];
-                    playAudio(audioPath)
-                });
-            }//end of else
-        })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
+        displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId)
     })
 });
