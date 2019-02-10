@@ -89,12 +89,54 @@ function printHeadClose() {
 
     //show navigation bar when logged in
     if (isset($_SESSION['email'])) { //if there is a session, show nav bar
-        echo '
+
+ 
+
+        $navHtml = '
             <header>
-                <nav class="navbar sticky-top navbar-light bg-light justify-content-between">
-                    <a class="navbar-brand">Marcos<b>&</b>Vickie</a>
+                <nav style="justify-content:left" class="navbar sticky-top navbar-light bg-light">
+                    <a href="http://mramir14.create.stedwards.edu/spanishDictionary/dashboard.php" class="navbar-brand">Dashboard</a>
+
+                    <div class="dropdown" style="margin-right: 1rem">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Switch Classrooms
+                      </button>
+
+                        <div class="dropdown-menu" aria-labelledby="switchClassrooms">
+                            <a class="dropdown-item" href="#">Classroom 1</a>
+                            <a class="dropdown-item" href="#">classroom 2</a>';
+
+        if(isset($_SESSION['role']) && $_SESSION['role'] == "instructor"){
+            $navHtml .=     '<div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Add Classroom</a>';
+        }
+                           
+        $navHtml .=     '</div>
+                    </div>';
+
+        if(isset($_SESSION['classroomID']) && isset($_SESSION['classroomName'])) {
+            $currentClassroomID = $_SESSION['classroomID'];
+            $currentClassroomName = $_SESSION['classroomName'];
+
+            $navHtml .= '<div class="dropdown" style="margin-right: 1rem">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                        $currentClassroomName.'
+                      </button>
+
+                      <div class="dropdown-menu" aria-labelledby="classroomNavigation">
+                        <a class="dropdown-item" href="http://mramir14.create.stedwards.edu/spanishDictionary/classroom.php">Dictionaries</a>
+                        <a class="dropdown-item" href="http://mramir14.create.stedwards.edu/spanishDictionary/forum.php">Forum</a>
+                      </div>
+                    </div>';
+        }
+                                        
+                    
+            $navHtml .='                           
+                    <button type="button" class="btn">Logout</button>
                 </nav>
             </header>';
+
+        echo $navHtml;
     }
 
 }

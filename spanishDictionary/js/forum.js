@@ -153,6 +153,7 @@ function toggleStarredAnswer(questionID, answerID, isCurrentlyStarred) {
     if(!isCurrentlyStarred) { userData.answerID = answerID }  //if trying to star answer, add answerID to data sent to backend
 
     $.post(URL, userData, function(data) {
+        data = JSON.parse(data);
         if(data.hasOwnProperty("message") && data.message === "success") {  //if post was successful: star/unstar current answer
             //remove star
             if(isCurrentlyStarred) { //if current answer is starred, remove class from current answer
@@ -161,15 +162,17 @@ function toggleStarredAnswer(questionID, answerID, isCurrentlyStarred) {
                 const answerArray = document.getElementsByClassName(`question-${questionID}-answer`)
                 let i = 0
                 let starredAnswerNotFound = true
-                while(starredAnswerNotFound) {
+                while(starredAnswerNotFound && i < answerArray.length) {
                     const answer = answerArray[i]
-                    if(answer.classList.contains("starred")) answer.classList.remove("starred")
-                    starredAnswerNotFound = false
+                    if(answer.classList.contains("starred")) {  //found starred answer: unstar
+                        answer.classList.remove("starred")
+                        starredAnswerNotFound = false
+                    }
+                    i += 1
                 }
                 currentAnswer.classList.add("starred")  //add star to current answer
             }//end of else, find starred answer, remove star & add star to current answer
 
-            currentAnswer.innerHTML = ''    //clear suggest-answer input field
         } else {    //else, backend error: show error message
             window.alert(`Error! ${data.error}. URL: ${URL}`)
         }//end of else, post was successful: star/unstar current answer
@@ -192,6 +195,7 @@ function answerQuestion(questionID) {
     //using AJAX, add answer to DB. If role === instructor, then remove input field
     //else, allow student to add more than one answer
     $.post(URL, userData, function(data) {
+        data = JSON.parse(data);
         if(data.hasOwnProperty("message") && data.message === "success") {  //if post was successful: star/unstar current answer
             //fixme: got back answerID & answerName
             const answerID = ''
@@ -226,21 +230,18 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     let select = document.getElementById("question-type-select")
     let selectedQuestionType = select.value
     //todo: make sure that this null thing works like I want it to v
-    if(selectedQuestionType === "") {   //if no question type selected then show error message & hide dropdown
-        document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not set dropdown!`
-        select.style.display = "none"   //hide select dropdown
-    } else {  //questionType is valid: add options to select html
-        const URL = './services/questionService.php?Action=TBD'  //todo: add actual action
-        const userData = {}     //todo: add actual userData, probably won't need any though lol
-        $.get(URL, userData, function(data) {
-            //todo: do backend error checking/else: not correct response show error message
-            const optionListHTML = getQuestionTypeOptions(data)
-            select.innerHTML += optionListHTML
-        })
-        .fail(function() {
-            document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
-    }
+  
+    const URL = './services/questionService.php?Action=getQuestionTypes'  //todo: add actual action
+    const userData = {}     //todo: add actual userData, probably won't need any though lol
+    $.get(URL, userData, function(data) {
+        //todo: do backend error checking/else: not correct response show error message
+        const optionListHTML = getQuestionTypeOptions(data)
+        select.innerHTML += optionListHTML
+    })
+    .fail(function() {
+        document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+    })
+    
 }//end of setNewQuestionDropDown
 
 function getQuestionTypeOptions(data) {
@@ -303,10 +304,11 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
         classroomID: classroomIDFromSession,
         questionType: questionType,
         questionText: questionTerm,
-        questionEmail: emailFromSession
+        questionEmail: emailFromSession,
         questionRole: questionRole
     }
     $.post(URL, userData, function(data) {  //send AJAX request to add question to forum
+        data = JSON.parse(data);
         //todo: do backend error checking/else: not correct response show error message
         if(data.hasOwnProperty("message") && data.message === "success") {  //if post was successful, show new question in forum
             //todo: get questionID & questionName from data

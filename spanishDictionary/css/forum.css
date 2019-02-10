@@ -68,7 +68,6 @@
     color: white;
     background-color: transparent;
     border: none;
-    pointer-events: none;
     overflow: hidden;
     outline:none;
 }

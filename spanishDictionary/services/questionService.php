@@ -106,20 +106,20 @@
 
         }
         catch(Exception $e){
-            $retval = array("error" => $e->getMessage());
-            echo json_encode($retVal);
+            echo json_encode(array("error" => $e->getMessage()));
 
         }
         
         if($conn->query($insertQuestion)){
             $lastQuestionnserted = $conn->insert_id;
-            $retval = array("message" => "success", "questionID" => $lastQuestionnserted, "questionName" => $name);
+            echo(json_encode(array("message" => "success", "questionID" => $lastQuestionnserted, "questionName" => "$name")));
+
         }
         else{
-            $retVal = array("error" => "error uploading question");        
+            echo(json_encode(array("error" => "error uploading question")));        
         }
 
-        echo json_encode($retVal);
+        
 
     }
 
@@ -147,8 +147,7 @@
 
         }
         catch(Exception $e){
-            $retval = array("error" => $e->getMessage());
-            echo json_encode($retVal);
+            echo json_encode(array("error" => $e->getMessage()));
 
         }
 
@@ -160,35 +159,36 @@
                 starAnswerAction($conn, $lastAnswerInserted); 
             }
                 
-            $retval = array("message" => "success", "answerID" => $lastAnswerInserted, "answerName" => $name);
+            echo(json_encode(array("message" => "success", "answerID" => $lastAnswerInserted, "answerName" => $name)));
         }
         else{
-            $retVal = array("error" => "error uploading question");        
+            echo(json_encode(array("error" => "error uploading question")));        
         }
-
-        echo json_encode($retVal);
 
 
     }
 
     function starAnswerAction($conn, $answerID = null){
 
+        $isSoloStarAction = false;
         if($answerID == null){
             $answerID = $_POST["answerID"];
+            $isSoloStarAction = true;
         }
 
         $questionID = $_POST["questionID"];
 
         $updateQuestionWithStarredAnswer = "UPDATE Question SET Question.starredAnswer = '$answerID' WHERE Question.questionID = '$questionID'";
 
-        if($conn->query($updateQuestionWithStarredAnswer)){
-            $retval = array("message" => "success");
+        if($isSoloStarAction){
+            if($conn->query($updateQuestionWithStarredAnswer)){
+                echo json_encode(array("message" => "success"));
+            }
+            else{
+                echo json_encode(array("error" => "error uploading question"));      
+            }
         }
-        else{
-            $retVal = array("error" => "error uploading question");      
-        }
-        echo json_encode($retVal);
-
+       
     }
 
     function unstarAnswerAction($conn){
@@ -197,12 +197,11 @@
         $unstarAnswerforQuestion = "UPDATE Question SET Question.starredAnswer = 0 WHERE Question.questionID = '$questionID'";
 
         if($conn->query($unstarAnswerforQuestion)){
-            $retval = array("message" => "success");
+            echo json_encode(array("message" => "success"));
         }
         else{
-            $retVal = array("error" => "error uploading question");      
+           echo json_encode(array("error" => "error uploading question"));      
         }
-        echo json_encode($retVal);
     }
 
     function transformQuestion($question){
@@ -256,9 +255,9 @@
     function getQuestionTypeIdsAction(){
         
         $returnArray = [];
-        $returnArray[] = array("questionType" => 1, "questionText" => '&iquest;C&oacute;mo se dice &quot;||&quot; en espa&ntilde;ol?');
-        $returnArray[] = array("questionType" => 2, "questionText" =>  "&iquest;Qu&eacute; significa &quot;||&quot;?");
-        $returnArray[] = array("questionType" =>3, "questionText" => "other");
+        $returnArray[] = array("questionType" => 1, "questionText" => '&iquest;C&oacute;mo se dice || en espa&ntilde;ol?');
+        $returnArray[] = array("questionType" => 2, "questionText" =>  "&iquest;Qu&eacute; significa ||?");
+        $returnArray[] = array("questionType" =>3, "questionText" => "Other");
 
         echo json_encode($returnArray);
     }
