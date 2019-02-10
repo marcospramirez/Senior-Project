@@ -26,6 +26,10 @@
             unstarAnswerAction($conn);
             break;
 
+        case "getQuestionTypes":
+            getQuestionTypeIdsAction();
+            break;
+
         case "no action":
             noAction();
             break;
@@ -85,9 +89,20 @@
             $questionType = $_POST["questionType"];
             $questionText = $_POST["questionText"];
             $questionEmail = $_POST["questionEmail"];
-            $questionName = $_POST["questionName"];
-           
-            $insertQuestion = "INSERT into Question (questionType, questionText, questionEmail, questionName, classroomID) VALUES ('$questionType', '$questionText', '$questionEmail', '$questionName', '$classroomID')";
+            //$questionName = $_POST["questionName"];
+            $questionRole = $_POST["questionRole"];
+
+            $table = $questionRole == "1" ? "Instructor" : "Student";
+
+            $getNameSql = "SELECT name from $table where email = '$questionEmail'";
+
+            $name;
+            $nameResults = $conn->query($getNameSql);
+            while($nameRow = $nameResults->fetch_assoc()){
+                $name = $nameRow["name"];
+            }
+
+            $insertQuestion = "INSERT into Question (questionType, questionText, questionEmail, questionName, classroomID) VALUES ('$questionType', '$questionText', '$questionEmail', '$name', '$classroomID')";
 
         }
         catch(Exception $e){
@@ -97,7 +112,8 @@
         }
         
         if($conn->query($insertQuestion)){
-            $retval = array("message" => "success");
+            $lastQuestionnserted = $conn->insert_id;
+            $retval = array("message" => "success", "questionID" => $lastQuestionnserted, "questionName" => $name);
         }
         else{
             $retVal = array("error" => "error uploading question");        
@@ -113,11 +129,21 @@
             $questionID = $_POST["questionID"];
             $answerText = $_POST["answerText"];
             $answerEmail = $_POST["answerEmail"];
-            $answerName = $_POST["answerName"];
+            //$answerName = $_POST["answerName"];
             $answerRole = $_POST["answerRole"];
 
+            $table = $answerRole == "1" ? "Instructor" : "Student";
+
+            $getNameSql = "SELECT name from $table where email = '$answerEmail'";
+
+            $name;
+            $nameResults = $conn->query($getNameSql);
+            while($nameRow = $nameResults->fetch_assoc()){
+                $name = $nameRow["name"];
+            }
+
            
-            $insertAnswer = "INSERT into Answer (questionID, answerText, answerEmail, answerName, answerRole) VALUES ('$questionID', '$answerText', '$answerEmail', '$answerName', '$answerRole')";
+            $insertAnswer = "INSERT into Answer (questionID, answerText, answerEmail, answerName, answerRole) VALUES ('$questionID', '$answerText', '$answerEmail', '$name', '$answerRole')";
 
         }
         catch(Exception $e){
@@ -127,13 +153,14 @@
         }
 
         if($conn->query($insertAnswer)){
-
+            $lastAnswerInserted = $conn->insert_id;
+            
             if($answerRole == 1){
-                $lastAnswerInserted = $conn->insert_id;
+                
                 starAnswerAction($conn, $lastAnswerInserted); 
             }
                 
-            $retval = array("message" => "success");
+            $retval = array("message" => "success", "answerID" => $lastAnswerInserted, "answerName" => $name);
         }
         else{
             $retVal = array("error" => "error uploading question");        
@@ -224,6 +251,16 @@
 
         return $answer;
 
+    }
+
+    function getQuestionTypeIdsAction(){
+        
+        $returnArray = [];
+        $returnArray[] = array("questionType" => 1, "questionText" => '&iquest;C&oacute;mo se dice &quot;||&quot; en espa&ntilde;ol?');
+        $returnArray[] = array("questionType" => 2, "questionText" =>  "&iquest;Qu&eacute; significa &quot;||&quot;?");
+        $returnArray[] = array("questionType" =>3, "questionText" => "other");
+
+        echo json_encode($returnArray);
     }
 
 

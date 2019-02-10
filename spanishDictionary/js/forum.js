@@ -297,11 +297,14 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
     const questionType = document.getElementById("question-type-select").value
     const questionTerm = document.getElementById("questionTerm").value
     const URL = `./services/questionService.php?Action=uploadQuestion`
+    const questionRole = roleFromSession == "instructor" ? 1 : 2
+
     const userData = {
         classroomID: classroomIDFromSession,
         questionType: questionType,
         questionText: questionTerm,
         questionEmail: emailFromSession
+        questionRole: questionRole
     }
     $.post(URL, userData, function(data) {  //send AJAX request to add question to forum
         //todo: do backend error checking/else: not correct response show error message
