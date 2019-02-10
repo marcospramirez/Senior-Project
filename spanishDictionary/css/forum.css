@@ -45,3 +45,37 @@
     padding: 2%;
     margin-top: 5%
 }
+
+.starred.answer {
+    color: white;
+    background-color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+}
+
+.answer .btn {
+    color: var(--dark-turquoise);
+    background-color: transparent;
+    border-radius: 100%;
+}
+
+.answer .btn:hover {
+    color: white;
+    background-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+
+.starred .btn {
+    color: white;
+    background-color: transparent;
+    border: none;
+    pointer-events: none;
+    overflow: hidden;
+    outline:none;
+}
+#ask-question-field {
+    width: 100%;
+    padding-top: 3%;
+}
+#ask-question-field input {
+    width: 100%
+}
