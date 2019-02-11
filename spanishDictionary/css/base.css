@@ -115,3 +115,9 @@ button.audio:hover {
   font-weight: 600;
   color: var(--dark-turquoise);
 }
+
+.error-message {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 600;
+  color: var(--dark-turquoise);
+}
