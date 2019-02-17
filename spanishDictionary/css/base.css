@@ -8,6 +8,7 @@
   --dark-turquoise: #236477;
   --goose-gray: #d0cece;
   --ghost-gray: #0000001a;   /*black w/ very little opacity*/
+  --danger-red: #ce0000;
 }
 
 /*=============================================
@@ -82,17 +83,27 @@ button.truncate {
 /*=============================================
                  DICTIONARY STYLES
 =============================================*/
-button.audio {  /*outline button*/
+button.term {  /*outline button*/
+  width: 40px;
+  background-color: transparent;
+  background-image: none;
   color: var(--dark-ocean);
   border-color: var(--dark-ocean);
   border-radius: 100%;
 }
 
-button.audio:hover {
+button.term:hover {
+  width: 40px;
+  background-image: none;
   color: white;
   border-color: var(--dark-ocean);
   background-color: var(--dark-ocean);
   border-radius: 100%;
+}
+
+button.term.delete:hover {
+  border-color: var(--danger-red);
+  background-color: var(--danger-red);
 }
 
 .btn.dark {

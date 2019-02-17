@@ -8,3 +8,26 @@ div#student-list-header {
     padding: 5% auto;
     background-color: white;
 }
+
+button.student {  /*outline button*/
+    width: 40px;
+    background-color: transparent;
+    background-image: none;
+    color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+
+button.student:hover {
+    width: 40px;
+    background-image: none;
+    color: white;
+    border-color: var(--dark-ocean);
+    background-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+
+button.student.delete:hover {
+    border-color: var(--danger-red);
+    background-color: var(--danger-red);
+}

@@ -23,9 +23,10 @@ echo '
 printHeadClose();
 ?>
 
-<main>
+<!--fixme: convert all window.location.href buttons into links because then user can right-click new tab-->
+
+<main class="container">
     <div id="classroom-div" class="row align-items-start">
-        <!-- todo: fix header spacing so that it looks like the header in studentList -->
         <h1 id="classroom-header" class="col"></h1>
         <button class="col-sm-auto btn dark" onclick='window.location.href = "./forum.php"'>View Forum</button>
     </div>

@@ -34,14 +34,42 @@ function addTermFields() {
     });
 }
 
-function setAddDictionaryHeader(element, classroomName,) {
-    //update page title to reflect classroom name
-    document.title = `${classroomName} - Add Dictionary`
-    //update header to reflect classroom name
-    $(`#${element}`).append(classroomName)
+//don't really need to input a dictionary name if you're adding to a preexisting dictionary
+function removeDictionaryInput() {
+    const dictionaryNameCSV = document.getElementById('dict-name-csv')
+    const dictionaryName = document.getElementById('dict-name')
+    dictionaryNameCSV.parentNode.removeChild(dictionaryNameCSV);
+    dictionaryName.parentNode.removeChild(dictionaryName);
 }
 
+function setAddDictionaryHeader(element, customHeaderData, addDictionaryFlag) {
+    let documentTitle = ''
+    let headerText = ''
+    if(addDictionaryFlag === 'populatedDictionary') {   //add terms to populated dictionary
+        documentTitle = `${customHeaderData} - Add To Dictionary`
+        headerText = `Add Terms to ${customHeaderData}`
+    } else {    //add terms to new/empty dictionary
+        documentTitle = `${customHeaderData} - Add Dictionary`
+        headerText = `Add Dictionary to ${customHeaderData}`
+    }
+
+    //update page title to reflect classroom name
+    document.title = documentTitle
+    //update header to reflect classroom name
+    document.getElementById(element).innerHTML = headerText
+}//end of setAddDictionaryHeader
+
 $(function () {
+    const classroomID = classroomIDFromSession
+    const clasroomName = classroomNameFromSession
+    const addDictionaryFlag = addDictionaryFlagFromSession
+    let dictionaryID = undefined
+    let dictionaryName = undefined
+    if(addDictionaryFlag === 'populatedDictionary') {
+        dictionaryID = dictionaryIDFromSession
+        dictionaryName = dictionaryNameFromSession
+        removeDictionaryInput()
+    }
 
     $("#tags-select").select2({
         ajax: {
@@ -51,17 +79,15 @@ $(function () {
         placeholder: 'Tags'
     });
 
-
-    const classroomID = classroomIDFromSession
-    const clasroomName = classroomNameFromSession
-
-    setAddDictionaryHeader('add-dict-header',clasroomName)
+    //change header depending on how
+    const customHeaderData = addDictionaryFlag === 'populatedDictionary' ? dictionaryName : clasroomName
+    setAddDictionaryHeader('add-dict-header', customHeaderData, addDictionaryFlag)
 
     //add classroomID as a hidden input named "class"
     //for both the 'import' form and the 'add dictionary' form
-    const importDictionaryForm = $('#import-hidden')
-    addHiddenInputToForm(importDictionaryForm, 'class', classroomID)
-
+    // const importDictionaryForm = $('#import-hidden')
     const addDictionaryForm = $('#add-dictionary-hidden')
     addHiddenInputToForm(addDictionaryForm, 'class', classroomID)
+    //if adding to populated dictionary, add dictionaryID to form data
+    if(addDictionaryFlag === 'populatedDictionary') addHiddenInputToForm(addDictionaryForm, 'dictionaryID', dictionaryID)
 })

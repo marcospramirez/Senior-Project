@@ -1,5 +1,13 @@
 <?php
 
+//if not accessed internally nor through login, redirect to login
+$currentPage = basename($_SERVER['PHP_SELF']);
+if(!(isset($_SESSION['email']) || $currentPage == 'login.php')) {
+    //redirect user back to login
+    header("Location: ./login.php");
+    exit();
+}
+
 function printHeadOpen($title) {
     echo "
     <!DOCTYPE html>
@@ -76,6 +84,13 @@ function printMagicGridCdn() {
     echo '
             <!--MAGIC GRID JS-->
             <script src="https://unpkg.com/magic-grid/dist/magic-grid.cjs.js"></script>
+    ';
+}
+
+function printJQueryColorCdn() {
+    echo '
+            <!--JQUERY COLOR JS-->
+            <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
     ';
 }
 
