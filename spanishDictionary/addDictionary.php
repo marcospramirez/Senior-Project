@@ -1,15 +1,40 @@
 <?php
 session_start();
+include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
 
+//todo: do this for all instructor only pages
 //INSTRUCTOR ONLY PAGE - redirect if not instructor
 if($_SESSION['role'] !== "instructor") {
-    //redirect user back to login
+    //todo: redirect user back to login or maybe just redirect to previous page, if that's possible??
     header("Location: login.php");
     exit();
 }
 
-include_once "includes/head.inc.php";
-printHeadOpen('Add Dictionary');
+$dictionaryFlag = getAddDictionaryFlag();
+$csvAction = '';
+$normalAction = '';
+$pageTitle = '';
+$sessionInfo = array();
+if($dictionaryFlag == "newDictionary") {
+    $csvAction = 'addDictionaryCSV';
+    $normalAction = 'addDictionary';
+    $pageTitle = 'Add Dictionary';
+    array_push($sessionInfo, 'email', 'role', 'classroomID', 'classroomName', 'addDictionaryFlag');
+}
+else if($dictionaryFlag == "populatedDictionary") {
+    $csvAction = 'addToDictionaryCSV';
+    $normalAction = 'addToDictionary';
+    $pageTitle = 'Add To Dictionary';
+    array_push($sessionInfo, 'email', 'role', 'classroomID', 'classroomName', 'dictionaryID', 'dictionaryName', 'addDictionaryFlag');
+}
+else {  //something went wrong, but i
+    //todo: redirect user back to login or maybe just redirect to previous page, if that's possible??
+    header("Location: login.php");
+    exit();
+}
+
+printHeadOpen($pageTitle);
 printGoogleFontsCdn();
 printBootstrapCssCdn();
 printJQueryCdn();
@@ -17,8 +42,7 @@ printBootstrapJsCdn();
 printFontAwesomeIconsCdn();
 printSelect2Cdn();
 
-include_once "includes/printSessionInfo.inc.php";
-printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
+printSessionInfo($sessionInfo);
 
 echo '
     <!--CUSTOM CSS-->
@@ -42,10 +66,10 @@ printHeadClose();
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="import-dictionary-form" action="services/dictionaryService.php?Action=addDictionaryCSV" method="POST" enctype="multipart/form-data">
+                <form id="import-dictionary-form" action="services/dictionaryService.php?Action=<?php echo $csvAction;?>" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div id="import-error-message"></div>
-                        <div class="form-group">
+                        <div id="dict-name-csv" class="form-group">
                             <label for="dName" class="col-form-label">Dictionary Name:</label>
                             <input type="text" class="form-control" id="dName" required name="dictionaryName">
                         </div>
@@ -67,13 +91,13 @@ printHeadClose();
         <div class="container content-frame border rounded">
             <br>
             <div class="row align-items-start">
-                <h1 id="add-dict-header" class="col">Add Dictionary to </h1>
+                <h1 id="add-dict-header" class="col"></h1>
                 <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Dictionary</button>
             </div>
             <hr class="hr-header">
-            <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php?Action=addDictionary" method="POST">
+            <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php?Action=<?php echo $normalAction;?>" method="POST">
                 <!--Dictionary Name-->
-                <div class="row align-items-start">
+                <div id="dict-name" class="row align-items-start">
                     <div class="col-sm-auto"><input type="text" id="dictionary-name" class="form-control" title="dictionary" name="dictionaryName" placeholder="Dictionary Name" required></div>
                 </div>
                 <div id="terms">

@@ -106,13 +106,11 @@ function getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, 
     if(answerID === starredAnswerID) {    //current answer is the starred answer
         isStarredClass = 'starred' //add starred class to answer to change styling
         if(role == "instructor") {   //if instructor, see star button & names in forum
-            const isCurrentlyStarred = true
-            starButtonHTML = `<button class="btn btn-sm" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${isCurrentlyStarred})"><i class="fas fa-star"></i></button>`
+            starButtonHTML = `<button class="btn btn-sm" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="fas fa-star"></i></button>`
             answerNameHTML = answerName === null ? '' : `<div class="answer-name" class="row"><div class="col">${answerName}</div></div>`    //if there's no answerName, then don't show HTML for it
         }
     } else if(role == "instructor") {    //if instructor, show unstarred button next to answer
-        const isStarred = false
-        starButtonHTML = `<button class="btn btn-sm" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${isStarred})"><i class="far fa-star"></i></button>`
+        starButtonHTML = `<button class="btn btn-sm" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="far fa-star"></i></button>`
 
     }   //else, role == student: don't show star buttons
 
@@ -132,11 +130,12 @@ function getSuggestAnswerHTML(questionID) {
             <div id="question-${questionID}-suggest-answer" class="suggest-answer content-frame border rounded">
                 <div class="answer-body row align-items-center">
                     <div class="col">
-                        <div id=suggest-answer-form">
+                        <div id="suggest-answer-form">
                             <div class="row">
                                 <div class="col"><input type="text" id="question-${questionID}-suggest-answer-text" class="form-control" placeholder="Suggest an answer" required></div>
                                 <div class="col-sm-auto"><button class="btn dark" onclick="answerQuestion(${questionID})">Answer</button></div>
                             </div>
+                            <div class="row"><div class="col error-message" id="question-${questionID}-suggest-answer-error-message"></div></div>
                         </div>
                     </div>
                 </div>
@@ -145,8 +144,9 @@ function getSuggestAnswerHTML(questionID) {
 }//end of getSuggestAnswerHTML
 
 //using AJAX, request to change starredAnswer to answerID OR unstar answer at answerID and display change
-function toggleStarredAnswer(questionID, answerID, isCurrentlyStarred) {
+function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
     const currentAnswer = document.getElementById(`answer-${answerID}`)
+    const isCurrentlyStarred = answerID === starredAnswerID
     const action = isCurrentlyStarred ? 'unstarAnswer' : 'starAnswer'    //if answer is starred, then toggle to unstar & vice versa
     const URL = `./services/questionService.php?Action=${action}`
     const userData = {questionID: questionID}
@@ -154,27 +154,41 @@ function toggleStarredAnswer(questionID, answerID, isCurrentlyStarred) {
 
     $.post(URL, userData, function(data) {
         data = JSON.parse(data);
-        if(data.hasOwnProperty("message") && data.message === "success") {  //if post was successful: star/unstar current answer
-            //remove star
-            if(isCurrentlyStarred) { //if current answer is starred, remove class from current answer
-                currentAnswer.classList.remove("starred")
-            } else { //else, find starred answer, remove star & add star to current answer
-                const answerArray = document.getElementsByClassName(`question-${questionID}-answer`)
-                let i = 0
-                let starredAnswerNotFound = true
-                while(starredAnswerNotFound && i < answerArray.length) {
-                    const answer = answerArray[i]
-                    if(answer.classList.contains("starred")) {  //found starred answer: unstar
-                        answer.classList.remove("starred")
-                        starredAnswerNotFound = false
-                    }
-                    i += 1
-                }
-                currentAnswer.classList.add("starred")  //add star to current answer
-            }//end of else, find starred answer, remove star & add star to current answer
+        if(data.hasOwnProperty("message")) {
+            if(data.message === "success") { //if post was successful: star/unstar current answer
+                const answerList = document.getElementById(`question-${questionID}-answerlist`)
+                if(starredAnswerID === null) {  //no starred answer for question: star answer, remove "suggested answer" form
+                    //remove suggest answer input
+                    const suggestAnswerField = document.getElementById(`question-${questionID}-suggest-answer`)
+                    answerList.removeChild(suggestAnswerField)
 
-        } else {    //else, backend error: show error message
-            window.alert(`Error! ${data.error}. URL: ${URL}`)
+                    currentAnswer.classList.add("starred")  //add star to current answer
+                    toggleStarIcon(answerID, isCurrentlyStarred)
+                }
+                else if(isCurrentlyStarred) { //if current answer is starred, unstar: remove class from current answer & show suggest answer form
+                    currentAnswer.classList.remove("starred")
+                    toggleStarIcon(answerID, isCurrentlyStarred)
+
+                    //append "suggest answer" form to answer list
+                    answerList.innerHTML += getSuggestAnswerHTML(questionID)
+                } else { //else current answer is not starred: find starred answer, remove star & add star to current answer
+                    const answerArray = document.getElementsByClassName(`question-${questionID}-answer`)
+                    let i = 0
+                    let starredAnswerNotFound = true
+                    while(starredAnswerNotFound && i < answerArray.length) {
+                        const answer = answerArray[i]
+                        if(answer.classList.contains("starred")) {  //found starred answer: unstar
+                            answer.classList.remove("starred")
+                            starredAnswerNotFound = false
+                        }
+                        i += 1  //increment loop
+                    }
+                    currentAnswer.classList.add("starred")  //add star to current answer
+                    toggleStarIcon(answerID, isCurrentlyStarred)
+                }//end of else, find starred answer, remove star & add star to current answer
+        }} else {    //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            window.alert(`Error! ${errorMsg}. URL: ${URL}`)
         }//end of else, post was successful: star/unstar current answer
     })//end of post
     .fail(function() {
@@ -182,59 +196,80 @@ function toggleStarredAnswer(questionID, answerID, isCurrentlyStarred) {
     })
 }//end of toggleStarredAnswer
 
-function answerQuestion(questionID) {
-    const answerText = $(`#question-${questionID}-suggest-answer-text`).val()
-    const answerRole = roleFromSession == "instructor" ? 1 : 2
-    const URL = `./services/questionService.php?Action=uploadAnswer`
-    const userData = {
-        questionID: questionID,
-        answerText: answerText,
-        answerEmail: emailFromSession,
-        answerRole: answerRole
+function toggleStarIcon(answerID, isStarred) {
+    let starIcon = document.getElementById(`answer-${answerID}-star`)
+    if(isStarred) {
+        starIcon.classList.remove("fas")
+        starIcon.classList.add("far")
     }
-    //using AJAX, add answer to DB. If role === instructor, then remove input field
-    //else, allow student to add more than one answer
-    $.post(URL, userData, function(data) {
-        data = JSON.parse(data);
-        if(data.hasOwnProperty("message") && data.message === "success") {  //if post was successful: star/unstar current answer
-            //fixme: got back answerID & answerName
-            const answerID = ''
-            const answerName = ''
-            const question = document.getElementById(`question-${questionID}`)
-            const starredAnswerID = answerRole === 1 ? answerID : undefined    //if instructor posted answer, automatically star answer
+    else {
+        starIcon.classList.remove("far")
+        starIcon.classList.add("fas")
+    }
+}   //end of toggleStarIcon
 
-            //remove suggest answer input field so inputted answer is at the bottom
-            const suggestAnswerField = document.getElementById(`question-${questionID}-suggest-answer`)
-            question.removeChild(suggestAnswerField)
+function answerQuestion(questionID) {
+    const answerErrorMessage = document.getElementById(`question-${questionID}-suggest-answer-error-message`)
+    answerErrorMessage.innerHTML = ''   //clear error message
+    const answerText = $(`#question-${questionID}-suggest-answer-text`).val()
+    if(answerPassedErrorCheck(answerText, answerErrorMessage)) {
+        const answerRole = roleFromSession == "instructor" ? 1 : 2
+        const URL = `./services/questionService.php?Action=uploadAnswer`
+        const userData = {
+            questionID: questionID,
+            answerText: answerText,
+            answerEmail: emailFromSession,
+            answerRole: answerRole
+        }
+        //using AJAX, add answer to DB. If role === instructor, then remove input field
+        //else, allow student to add more than one answer
+        $.post(URL, userData, function(data) {
+            data = JSON.parse(data);
+            if(data.hasOwnProperty("message")) {
+                if(data.message === "success") {  //if post was successful: star/unstar current answer
+                    const answerID = data.answerID
+                    const answerName = data.answerName
+                    const answerList = document.getElementById(`question-${questionID}-answerlist`)
+                    const starredAnswerID = answerRole === 1 ? answerID : undefined    //if instructor posted answer, automatically star answer
 
-            //add answer to bottom of question
-            const answer = getAnswerHTML(roleFromSession, questionID, starredAnswerID, answerID, answerText, answerName)
-            question.innerHTML += answer
+                    //remove suggest answer input field so inputted answer is at the bottom
+                    const suggestAnswerField = document.getElementById(`question-${questionID}-suggest-answer`)
+                    answerList.removeChild(suggestAnswerField)
 
-            //if student, you need to be able to add more than one comment, so add input field back in
-            if(answerRole === 2) {
-                const suggestAnswerFieldHTML = getSuggestAnswerHTML(questionID)
-                question.innerHTML += suggestAnswerFieldHTML
-            }
-        } else {    //else, backend error: show error message
-            window.alert(`Error! ${data.error}. URL: ${URL}`)
-        }   //end of else, backend error: show error message
+                    //add answer to bottom of answer list
+                    const answer = getAnswerHTML(roleFromSession, questionID, starredAnswerID, answerID, answerText, answerName)
+                    answerList.innerHTML += answer
+
+                    //if student, you need to be able to add more than one comment, so add input field back in
+                    if(answerRole === 2) {
+                        const suggestAnswerFieldHTML = getSuggestAnswerHTML(questionID)
+                        answerList.innerHTML += suggestAnswerFieldHTML
+                    }
+                }} else {    //else, backend error: show error message
+                const errorMsg = data.hasOwnProperty("error") ? data.error : data
+                window.alert(`Error! ${errorMsg}. URL: ${URL}`)
+            }   //end of else, backend error: show error message
         })//end of post
-    .fail(function() {
-        window.alert(`Error, could not connect! Please try to answer at a later time. URL: ${URL}`)
-    })
-
+        .fail(function() {
+            window.alert(`Error, could not connect! Please try to answer at a later time. URL: ${URL}`)
+        })
+    }//end of if(answerPassedErrorCheck)
 }//end of answerQuestion
+
+function answerPassedErrorCheck(answer, answerErrorMessage) {
+    if($.trim(answer) == '') {//error: password(s) filled with spaces
+        answerErrorMessage.innerHTML = "Please fill out this field"
+        return false    //answer did not pass error checking
+    }
+    return true //answer passsed error checking!
+}
 
 function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     let select = document.getElementById("question-type-select")
-    let selectedQuestionType = select.value
-    //todo: make sure that this null thing works like I want it to v
-  
-    const URL = './services/questionService.php?Action=getQuestionTypes'  //todo: add actual action
-    const userData = {}     //todo: add actual userData, probably won't need any though lol
-    $.get(URL, userData, function(data) {
+    const URL = './services/questionService.php?Action=getQuestionTypes'
+    $.get(URL, {}, function(data) {
         //todo: do backend error checking/else: not correct response show error message
+        data = JSON.parse(data)
         const optionListHTML = getQuestionTypeOptions(data)
         select.innerHTML += optionListHTML
     })
@@ -244,14 +279,13 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     
 }//end of setNewQuestionDropDown
 
-function getQuestionTypeOptions(data) {
+function getQuestionTypeOptions(questionTypeData) {
     let optionListHTML = ''
-    const questionTypeArray = JSON.parse(data)
-    $.each(questionTypeArray, function(index, questionTypeData) { //for each questionType, add option to the dropdown
-        const questionType = questionTypeData.questionType
-        const questionText = String(questionTypeData.questionText)
+    $.each(questionTypeData, function(index, questionData) { //for each questionType, add option to the dropdown
+        const questionType = questionData.questionType
+        const questionText = String(questionData.questionText)
         let optionText = ''
-        if(questionText.toLowerCase() === "other") optionText = questionText    //todo: make sure that "other" is correct lol
+        if(questionText.toLowerCase() === "other") optionText = questionText
         else {
             const questionTextSet = parseQuestionTypeText(questionText, '||')
             const questionTextStart = questionTextSet.startText
@@ -310,13 +344,14 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
     $.post(URL, userData, function(data) {  //send AJAX request to add question to forum
         data = JSON.parse(data);
         //todo: do backend error checking/else: not correct response show error message
-        if(data.hasOwnProperty("message") && data.message === "success") {  //if post was successful, show new question in forum
-            //todo: get questionID & questionName from data
-            const questionID = ''
-            const questionName = ''
-            addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTerm)
-        } else {    //else, backend error: show error message
-            document.getElementById(errorMsgId).innerHTML = `Error! ${data.error}. URL: ${URL}`
+        if(data.hasOwnProperty("message")) {
+            if(data.message === "success") {    //if post was successful, show new question in forum
+                const questionID = data.questionID
+                const questionName = data.questionName
+                addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTerm)
+        }} else {    //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
         }   //end of else, backend error: show error message
     })//end of post
     .fail(function() {
@@ -326,8 +361,8 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
 }
 
 function addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTerm) {
-    const questionTextStart = document.getElementById("question-text-start").value
-    const questionTextEnd = document.getElementById("question-text-end").value
+    const questionTextStart = document.getElementById("question-text-start").innerHTML
+    const questionTextEnd = document.getElementById("question-text-end").innerHTML
     const questionText = `${questionTextStart} "${questionTerm}" ${questionTextEnd}`
 
     //construct HTML for question
@@ -349,8 +384,8 @@ function addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTe
     magicGrid.positionItems();  //reposition items
     magicGrid.listen(); //listen for changes in window size
 
-
-}
+    $('#ask-question').modal('hide');  //hide modal
+}//end of addNewQuestionToForum
 
 $(function() {
     const classroomID = classroomIDFromSession
@@ -361,7 +396,7 @@ $(function() {
     displayForum(forumHTMLID, classroomID)
     setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId)
 
-    //hijack filter form to display filtered table
+    //hijack ask question form to upload question to db & show in forum
     let askQuestionForm = $('#ask-question-form')
     askQuestionForm.submit(function (event) {
         event.preventDefault()
