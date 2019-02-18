@@ -1,5 +1,7 @@
 <?php
 
+require_once("services/db.php");
+
 function printHeadOpen($title) {
     echo "
     <!DOCTYPE html>
@@ -95,24 +97,12 @@ function printHeadClose() {
         $navHtml = '
             <header>
                 <nav style="justify-content:left" class="navbar sticky-top navbar-light bg-light">
-                    <a href="http://mramir14.create.stedwards.edu/spanishDictionary/dashboard.php" class="navbar-brand">Dashboard</a>
+                    <a href="http://mramir14.create.stedwards.edu/spanishDictionary/dashboard.php" class="navbar-brand">Dashboard</a>';
 
-                    <div class="dropdown" style="margin-right: 1rem">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Switch Classrooms
-                      </button>
 
-                        <div class="dropdown-menu" aria-labelledby="switchClassrooms">
-                            <a class="dropdown-item" href="#">Classroom 1</a>
-                            <a class="dropdown-item" href="#">classroom 2</a>';
-
-        if(isset($_SESSION['role']) && $_SESSION['role'] == "instructor"){
-            $navHtml .=     '<div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Add Classroom</a>';
+        if(isset($_SESSION['role'])){
+            $navHtml .= getClassroomsForNavHtml($_SESSION['email'], $_SESSION["role"]);
         }
-                           
-        $navHtml .=     '</div>
-                    </div>';
 
         if(isset($_SESSION['classroomID']) && isset($_SESSION['classroomName'])) {
             $currentClassroomID = $_SESSION['classroomID'];
@@ -132,11 +122,66 @@ function printHeadClose() {
                                         
                     
             $navHtml .='                           
-                    <button type="button" class="btn">Logout</button>
+                    <button type="button" class="btn" onclick="logout()">Logout</button>
                 </nav>
             </header>';
 
         echo $navHtml;
     }
+
+}
+
+function getClassroomsForNavHtml($email, $role){
+    $currentClass = -1;
+    if(isset($_SESSION['classroomID'])){
+        $currentClass = $_SESSION['classroomID'];
+    }
+    $html = "";
+    $sql;
+    if($role =="instructor"){
+        $sql = "SELECT classID, className FROM Classroom, Instructor WHERE instructorEmail = email AND email = '$email';";
+    }
+    else{
+        $sql = "SELECT classID, className FROM Classroom, studentToClassroom WHERE studentToClassroom.studentEmail = '$email' and studentToClassroom.classroomID = Classroom.classID";
+    }
+
+    $conn = returnConnection();
+
+    if ($result = $conn->query($sql)) { //query successful
+        $html .= '<div class="dropdown" style="margin-right: 1rem">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Switch Classrooms
+                </button>
+
+            <div class="dropdown-menu" aria-labelledby="switchClassrooms">';
+
+        if ($result->num_rows > 0){
+
+            while($row = $result->fetch_assoc()){
+                $className = $row["className"];
+                $classID = $row["classID"];
+
+                $activeClass = "";
+                if($classID == $currentClass){
+                    $activeClass = "active";
+                }
+
+                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="switchtoClassroom('.$classID.' ,\'' .$className . '\')">'.$className.'</button>';
+            }
+        }
+        
+        if($role == "instructor"){
+            $html .= '<div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Add Classroom</a>';
+        }
+                           
+        $html .=     '</div>
+                    </div>'; 
+
+    }
+
+    return $html;
+
+
 
 }

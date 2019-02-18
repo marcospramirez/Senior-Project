@@ -16,11 +16,11 @@
             countAction($conn);
             break;
 
-        case "addStudentCSV":
+        case "addStudentsCSV":
             addStudentCSV($conn);
             break;
 
-        case "addStudent":
+        case "addStudents":
             addStudent($conn);
             break;
 
@@ -82,7 +82,7 @@
 
     function addStudentCSV($conn){
         $conn = returnConnection();
-        $classID = $_POST['classroomID'];
+        $classID = $_POST['class'];
 
         $tmpName = $_FILES['csv']['tmp_name'];
         $csvAsArray = array_map('str_getcsv', file($tmpName));
@@ -100,13 +100,22 @@
         if(isset($_POST['studentEmail'])) {
             $emails = $_POST['studentEmail'];
             foreach ($emails as $index => $email) { //add student
-                $sql = "INSERT INTO Student (email, password, name) VALUES ('$email', NULL, NULL);";
+                $sql = "INSERT INTO Student (email, password, name) VALUES ('$email', NULL, NULL) ON DUPLICATE KEY UPDATE email=email;";
 
                 if($conn->query($sql) === TRUE) {  //success: now add student to classroom
-                    $sql = "INSERT INTO studentToClassroom (studentEmail, classroomID) VALUES ('$email', '$classID');";
+                    //$sql = "INSERT INTO studentToClassroom (studentEmail, classroomID) VALUES ('$email', '$classID');";
+
+                    $createPersonalVocab = "INSERT INTO `PersonalVocabList` (`personalVocabID`) VALUES (NULL);";
+
+                    $conn->query($createPersonalVocab);
+                    $last_id = $conn->insert_id;
+
+
+                    $sql = "INSERT into studentToClassroom (studentEmail, classroomID, personalVocabID) VALUES ('$email', '$classID', '$last_id')";
+        
 
                     if($conn->query($sql) === TRUE) {   //success: go view students in classroom
-                        header("Location: ../students.html?classroom=" . $classID);
+                         header("Location: ../studentList.php");
 
                         // echo "SUCCESSFULLY INSERTED!!!";
                     } else {
@@ -117,20 +126,7 @@
                 }
             }
 
-        } elseif (isset($_GET['classID'])) {    //get all students in the class
-            $classroomID = $_GET["classID"];
-            $sql = "SELECT s.name, s.email FROM Classroom c, studentToClassroom t, Student s WHERE c.classID = t.classroomID AND t.studentEmail = s.email AND c.classID = '$classroomID';";
-
-            $studentString = '';
-
-            if ($result = $conn->query($sql)) { //query successful
-                while ($row = $result->fetch_assoc()) {
-                    $studentString .= $row['name']."//";
-                    $studentString .= $row['email']."||";
-                }
-                print $studentString;
-            }
-        }
+        } 
 
     }
 

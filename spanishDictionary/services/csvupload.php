@@ -47,7 +47,7 @@
 				$studentToClassRoom = "INSERT into studentToClassroom (studentEmail, classroomID, personalVocabID) VALUES ('$email', '$classID', '$last_id')";
 	    
 	            if($conn->query($studentToClassRoom)){
-	               echo "Success!";
+	               header("Location: ../studentList.php");
 	            }
 	            else{
 	            	echo($conn->error);

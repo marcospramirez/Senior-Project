@@ -37,4 +37,7 @@ if(isset($_POST['personalVocabID'])) {
     $personalVocabID = $_POST['personalVocabID'];
     $_SESSION['personalVocabID'] = $personalVocabID;
 }
+if(isset($_POST["logout"])){
+    session_destroy();
+}
 

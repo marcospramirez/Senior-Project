@@ -43,3 +43,18 @@ function addToSessionAndMoveToPage(userData, movementFlag, URL) {
         console.log("Error! " + data)
     })
 }
+
+function logout(){
+    const addToSessionURL = "./includes/addToSession.inc.php"
+    $.post(addToSessionURL, {logout : true}, function() {  //added userData successfully
+        window.location.href = "./login.php"   //go to ULR, adding past location to history
+    })
+    .fail(function(data){  //failed to connect
+        console.log("Error! " + data)
+    })
+}
+
+function switchtoClassroom(classID , className){
+    let currentPage =  window.location.href;
+    addToSessionAndMoveToPage({classroomID: classID, classroomName: className}, 'redirectTo', currentPage);
+}

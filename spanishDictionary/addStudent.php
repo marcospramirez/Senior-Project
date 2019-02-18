@@ -41,6 +41,7 @@ printHeadClose();
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div id="import-hidden"></div>
                     <input type="submit" name="submit_csv" value="Import Students" class="btn dark">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
