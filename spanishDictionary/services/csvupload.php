@@ -154,6 +154,78 @@
 
 	}
 
+	function addToDictionary($conn, $dictionaryID, $csvAsArray){
+
+		foreach ($csvAsArray as $index => $row) {
+			$entry = $row[0];
+			$entry = remove_utf8_bom($entry);
+
+			$entryDef = $row[1];
+
+			if($entry === "" || $entryDef ===""){
+				$msg["msg"] = "Error, one of the entries was blank";
+				break;
+			}
+
+			$entryAudio = $row[2];
+
+			$entryTags = $row[3];
+
+			$entryTagsArray = explode(",", $entryTags);
+
+			$getTagsSQL = "SELECT tagID from Tag where tagText in (";
+
+			foreach ($entryTagsArray as $entryTag) {
+				$entryTag = trim($entryTag);
+
+				$getTagsSQL .= "'$entryTag', ";
+			}
+			 
+			$getTagsSQL .= "' ')";
+
+
+			$insertNewEntry = "INSERT INTO Entry (entryText, entryDefinition, entryAudioPath) VALUES ('$entry', '$entryDef', '$entryAudio');";
+
+
+            if($conn->query($insertNewEntry)){
+                $last_id = $conn->insert_id;
+	            //echo "New record created successfully. Last inserted ID is: " . $last_id;
+	            
+	            $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID', '$last_id');";
+	            
+	            if($conn->query($addToDictionary)){
+	               
+	               $foundTags = $conn->query($getTagsSQL);
+	               
+					$entryToTagInsertSQl = "INSERT INTO entryToTag (entryID, tagID) VALUES "; 
+
+
+					$sqlArray = [];
+	               if ($foundTags->num_rows > 0){
+	                   while($row = $foundTags->fetch_assoc()){
+
+	                   	$data = "('$last_id' , '" . $row["tagID"] ."')";
+
+	                   	$sqlArray[] = $data;
+	                   }
+
+	                   $allTagsSql = implode(',' , $sqlArray);
+						
+						$entryToTagInsertSQl .= $allTagsSql;
+
+	                   $conn->query($entryToTagInsertSQl);
+	               }
+	               
+	            }
+            }
+            else{
+            	echo($conn->error);
+            }
+       
+        
+		}
+	}
+
 
 
 ?>
