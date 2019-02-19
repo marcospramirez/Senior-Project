@@ -36,6 +36,10 @@
             getEntriesInDictionaryByTags($conn);
             break;
 
+        case "dictionarySelect":
+            getDictionarySelectItems($conn);
+            break;
+
         case "addToDictionary":
             addToDictionary($conn);
             break;
