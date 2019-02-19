@@ -232,6 +232,32 @@
 
     }
 
+    function getDictionarySelectItems($conn){
+        $classroomID = $_GET["classroomID"];
+
+        $sql = "SELECT Dictionary.dictionaryID, Dictionary.dictionaryName from Dictionary, classroomToDictionary WHERE classroomToDictionary.classID = '$classroomID' and classroomToDictionary.dictionaryID = Dictionary.dictionaryID";
+
+         $response = array();
+
+        $results = [];
+      
+        
+        if ($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+
+                $record = array("id" => $row["dictionaryID"], "text" => $row["dictionaryName"]);
+                $results[]= $record;
+
+            }
+        }
+
+        $response["results"] = $results;
+    
+        header('Content-Type: text/html; charset=utf-8');
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    }
+
     function getEntriesInDictionaryByTags($conn){
         $dictionaryID;
         $tags;
