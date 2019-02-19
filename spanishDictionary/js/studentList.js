@@ -100,6 +100,7 @@ function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
     //delete student in database and delete table row
     $(`#${tableHtmlId} tbody`).on( 'click', 'button.delete', function () {
         const row = table.row($(this).parents('tr'))
+        const classroomID = classroomIDFromSession
         const studentName = row.data()[0]
         const studentEmail = row.data()[1]
         const deleteModalID = 'delete-student'
@@ -109,7 +110,7 @@ function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
 
         //user confirmed delete: delete entry
         $(`#submit-delete`).on( 'click', function () {
-            deleteStudent(row, studentEmail, deleteModalID)
+            deleteStudent(row, classroomID, studentEmail, deleteModalID)
         })
     })
 }//end of setStudentButtonListeners
@@ -139,10 +140,14 @@ function editStudent(table, row, formData, plainTextFormData, editModalID, error
 }//end of editStudent
 
 //AJAX request to delete term at studentEmail. If success, remove row from table
-function deleteStudent(row, studentEmail, deleteModalID) {
+function deleteStudent(row, classroomID, studentEmail, deleteModalID) {
     const errorMsgId = 'delete-error-message'
     const URL = './services/studentService.php?Action=singleDelete'  //todo marcos: add to studentService
-    $.post(URL, {studentEmail: studentEmail}, function(data) {
+    const userData = {
+        class: classroomID,
+        studentEmail: studentEmail
+    }
+    $.post(URL, userData, function(data) {
         data = JSON.parse(data)
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, remove row from table
