@@ -28,6 +28,14 @@
             noAction($conn);
             break;
 
+        // case "singleEdit":
+        //     editStudent($conn);
+        //     break;
+
+        case "singleDelete":
+            deleteStudentFromClass($conn);
+            break;
+
         default:
             noAction();
             break;
@@ -134,6 +142,43 @@
         $retVal = array("error" => "no action error");
 
         echo json_encode($retVal);
+    }
+
+    // function editStudent($conn){
+    //     try {
+    //         $studentOldEmail = $_POST["studentOldEmail"];
+    //         $studentNewEmail = $_POST["studentNewEmail"];
+
+    //         $studentName = $_POST["studentName"];
+
+    //         $updateStudentProfile = "UPDATE Student set email ='$studentNewEmail' and name = '$studentName' where email = '$studentOldEmail'";
+
+    //         $updateQuestions = "UPDATE Question set questionEmail = '$studentNewEmail' where questionEmail = '$studentOldEmail'";
+
+    //         $updateAnswers = "UPDATE Question set questionEmail = '$studentNewEmail' where questionEmail = '$studentOldEmail'";
+
+    //         echo json_encode(array("msg" => "success"));
+
+    //     } catch (Exception $e) {
+    //         echo json_encode(array("error" => $e->getMessage()));
+    //     }
+    // }
+
+    function deleteStudentFromClass($conn){
+        try {
+            $studentEmail = $_POST["studentEmail"];
+            $classID = $_POST["classroomID"];
+
+
+            $deleteStudentFromClass = "DELETE from studentToClassroom where classroomID = '$classID' and studentEmail = '$studentEmail'";
+
+            $conn->query($deleteStudentFromClass);
+
+            echo json_encode(array("msg" => "success"));
+
+        } catch (Exception $e) {
+            echo json_encode(array("error" => $e->getMessage()));
+        }
     }
 
 
