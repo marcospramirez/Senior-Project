@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
 printHeadOpen('Forum');
 printGoogleFontsCdn();
 printBootstrapCssCdn();
@@ -9,7 +10,6 @@ printBootstrapJsCdn();
 printMagicGridCdn();
 printFontAwesomeIconsCdn();
 
-include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
 echo '
@@ -54,6 +54,7 @@ printHeadClose();
 <main class="container">
     <div class="row align-items-start"><div id="forum-header" class="col"></div></div>
     <div style="justify-content: center;" class="row"><button id="ask-question-btn" class="col-sm-auto btn dark" data-toggle="modal" data-target="#ask-question"><i class="fas fa-plus"></i> Ask a Question</button></div>
+    <div class="row"><div id="error-message" class="col error-message"></div></div>
     <div id="forum" class="container"></div>
 </main>
 

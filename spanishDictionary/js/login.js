@@ -51,7 +51,7 @@ $(function(){
             $.post(URL, userData, function(data) {
                 if(data == "instructor" || data == "student") {  //authenticated user, redirect to dashboard
                     //add email and role to the session & redirect to the dashboard
-                    addToSessionAndMoveToPage({email: email, role: data}, 'redirectTo', './dashboard.php')
+                    addToSession({email: email, role: data}, 'redirectTo', './dashboard.php')
                 } else if(data == "none") { //invalid credentials
                     document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'
                 } else {

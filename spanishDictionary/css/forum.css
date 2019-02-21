@@ -1,3 +1,6 @@
+/*=============================================
+                 FORUM STYLES
+=============================================*/
 #forum-header h1 {
     margin-top: 3%;
     display: flex;
@@ -19,7 +22,6 @@
 .answer-header .col {
     padding-left: 0%;
 }
-
 
 .question-name {
     transform: translate(-15px);
@@ -71,10 +73,12 @@
     overflow: hidden;
     outline:none;
 }
+
 #ask-question-field {
     width: 100%;
     padding-top: 3%;
 }
+
 #ask-question-field input {
     width: 100%
 }

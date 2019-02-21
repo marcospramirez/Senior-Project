@@ -35,7 +35,7 @@ function goToClassroom(classroomID, classroomName, personalVocabID) {
         classroomName: classroomName,
         personalVocabID: personalVocabID    //will be -1 if role=="instructor"
     }
-    addToSessionAndMoveToPage(userData, 'goTo', './classroom.php')
+    addToSession(userData, 'goTo', './classroom.php')
 }
 
 //create html to classroom name. when clicked, go to classroom.php

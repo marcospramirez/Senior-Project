@@ -10,33 +10,33 @@ let questionCount = null
 //using AJAX, get list of all questions (and their respective answers) for the class and display into forum
 function displayForum(forumHTMLID, classroomID) {
     const URL = `./services/questionService.php`
-    //todo: only give me data that is pertinent to the user role, aka, don't give me names if student
     const userData = {
         Action: 'list',
         classroom: classroomID
     }
     $.get(URL, userData, function(data) {
-        //todo: do error checking/if get error message from backend
         data = JSON.parse(data) //parse data from string to JSON
+        if(data.length === 0) document.getElementById('error-message').innerHTML = `No questions in the forum. Add one now!`
+        else {  //questions in forum, show questions
+            let forumHTML = null
+            if(data.length == 0) {
+                forumHTML = '<div><h2 style="text-align: center;">No Questions in Forum.</h2></div>'
+                questionCount = 1
+            } else {
+                forumHTML = getForumHTML(data)
+                questionCount = data.length
+            }
 
-        let forumHTML = null
-        if(data.length == 0) {
-            forumHTML = '<div><h2 style="text-align: center;">No Questions in Forum.</h2></div>'
-            questionCount = 1
-        } else {
-            forumHTML = getForumHTML(data)
-            questionCount = data.length
-        }
+            document.getElementById(forumHTMLID).innerHTML = forumHTML
 
-        document.getElementById(forumHTMLID).innerHTML = forumHTML
-
-        let magicGrid = new MagicGrid({
-            container: '#forum',
-            gutter: 30,
-            static: false,
-            items: questionCount
-        })
-        magicGrid.listen(); //listen for changes in window size
+            let magicGrid = new MagicGrid({
+                container: '#forum',
+                gutter: 30,
+                static: false,
+                items: questionCount
+            })
+            magicGrid.listen(); //listen for changes in window size
+        }//end of else: questions in forum, show questions
     })
     .fail(function() {
         document.getElementById(forumHTMLID).innerHTML = `Error, could not connect! URL: ${URL}`
@@ -188,11 +188,11 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                 }//end of else, find starred answer, remove star & add star to current answer
         }} else {    //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            window.alert(`Error! ${errorMsg}. URL: ${URL}`)
+            document.getElementById('error-message').innerHTML = `Error! ${errorMsg}. URL: ${URL}`
         }//end of else, post was successful: star/unstar current answer
     })//end of post
     .fail(function() {
-        window.alert(`Error, could not connect! URL: ${URL}`)
+        document.getElementById('error-message').innerHTML = `Error, could not connect! URL: ${URL}`
     })
 }//end of toggleStarredAnswer
 
@@ -247,11 +247,11 @@ function answerQuestion(questionID) {
                     }
                 }} else {    //else, backend error: show error message
                 const errorMsg = data.hasOwnProperty("error") ? data.error : data
-                window.alert(`Error! ${errorMsg}. URL: ${URL}`)
+                document.getElementById('error-message').innerHTML = `Error! ${errorMsg}. URL: ${URL}`
             }   //end of else, backend error: show error message
         })//end of post
         .fail(function() {
-            window.alert(`Error, could not connect! Please try to answer at a later time. URL: ${URL}`)
+            document.getElementById('error-message').innerHTML = `Error, could not connect! Please try to answer at a later time. URL: ${URL}`
         })
     }//end of if(answerPassedErrorCheck)
 }//end of answerQuestion
@@ -268,10 +268,15 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     let select = document.getElementById("question-type-select")
     const URL = './services/questionService.php?Action=getQuestionTypes'
     $.get(URL, {}, function(data) {
-        //todo: do backend error checking/else: not correct response show error message
         data = JSON.parse(data)
-        const optionListHTML = getQuestionTypeOptions(data)
-        select.innerHTML += optionListHTML
+        if(data.hasOwnProperty("message")) {
+            if(data.message === "success") {    //if post was successful, set question dropdown
+                const optionListHTML = getQuestionTypeOptions(data)
+                select.innerHTML += optionListHTML
+            }} else {   //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            document.getElementById(askQuestionErrorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
+        }
     })
     .fail(function() {
         document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
@@ -343,7 +348,6 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
     }
     $.post(URL, userData, function(data) {  //send AJAX request to add question to forum
         data = JSON.parse(data);
-        //todo: do backend error checking/else: not correct response show error message
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, show new question in forum
                 const questionID = data.questionID

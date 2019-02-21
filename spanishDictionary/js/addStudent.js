@@ -30,6 +30,4 @@ $(function () {
 
     const addStudentForm = $('#add-students-hidden')
     addHiddenInputToForm(addStudentForm, 'class', classroomID)
-
-    //todo: "addStudents" vs "addStudent"?? Marcos has it like the prior in studentService.php
-})
+})//end of doc ready

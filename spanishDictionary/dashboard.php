@@ -1,13 +1,13 @@
 <?php
 session_start();
 include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
 printHeadOpen('Dashboard');
 printGoogleFontsCdn();
 printJQueryCdn();
 printBootstrapCssCdn();
 printBootstrapJsCdn();
 
-include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('email', 'role'));
 
 echo '

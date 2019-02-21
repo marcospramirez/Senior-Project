@@ -1,7 +1,7 @@
 /*=============================================
-         LOGIN AND REGISTER PAGE STYLES
+           LOGIN & REGISTER STYLES
 =============================================*/
-.hr-login-register {
+hr {
     align: center;
     margin-left: 10%;
     margin-right: 10%;
@@ -10,56 +10,38 @@
     border-radius: 15px;
 }
 
-.btn-login-register {
-    background-color: var(--dark-ocean);
-    border-color: var(--dark-ocean);
-    color: white;
-}
-
-.btn-login-register:hover {
-    background-color: var(--dark-turquoise);
-    border-color: var(--dark-turquoise);
-    color: white;
-}
-
-.container-login-register {
+.container {
     text-align: center;
     width: 40%;
     padding: 2% 3%;
     /*margin: 2% auto;*/
 }
 
-.input-login-register {
+.btn {
+    background-color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+    color: white;
+}
+.btn:hover {
+    background-color: var(--dark-turquoise);
+    border-color: var(--dark-turquoise);
+    color: white;
+}
+
+.input {
     margin: 2% auto;
     width: 60%;
     text-align: center;
-    color: var(--off-black);
 }
 
-.input-login-register::placeholder {
-    color: var(--goose-gray);
-}
+/*#img-login-logo {*/
+    /*max-width: 40%;*/
+    /*height: auto;*/
+    /*padding: 5%;*/
+/*}*/
 
-#img-login-logo {
-    max-width: 40%;
-    height: auto;
-    padding: 5%;
-}
-
-#img-register-logo {
-    max-width: 30%;
-    height: auto;
-    padding: 5%;
-}
-
-#login-error-message, #register-error-message {
-    font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 600;
-    color: red;
-}
-
-#register-success-message {
-    font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 600;
-    color: var(--dark-turquoise);
-}
+/*#img-register-logo {*/
+    /*max-width: 30%;*/
+    /*height: auto;*/
+    /*padding: 5%;*/
+/*}*/

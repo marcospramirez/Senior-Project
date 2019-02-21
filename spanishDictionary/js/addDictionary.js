@@ -38,8 +38,8 @@ function addTermFields() {
 function removeDictionaryInput() {
     const dictionaryNameCSV = document.getElementById('dict-name-csv')
     const dictionaryName = document.getElementById('dict-name')
-    dictionaryNameCSV.parentNode.removeChild(dictionaryNameCSV);
-    dictionaryName.parentNode.removeChild(dictionaryName);
+    dictionaryNameCSV.parentNode.removeChild(dictionaryNameCSV)
+    dictionaryName.parentNode.removeChild(dictionaryName)
 }
 
 function setAddDictionaryHeader(element, customHeaderData, addDictionaryFlag) {

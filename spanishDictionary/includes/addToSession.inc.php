@@ -16,36 +16,5 @@ if(isset($_POST['dictionaryID'])) $_SESSION['dictionaryID'] = $_POST['dictionary
 if(isset($_POST['dictionaryName'])) $_SESSION['dictionaryName'] = $_POST['dictionaryName'];
 if(isset($_POST['personalVocabID'])) $_SESSION['personalVocabID'] = $_POST['personalVocabID'];
 if(isset($_POST['addDictionaryFlag'])) $_SESSION['addDictionaryFlag'] = $_POST['addDictionaryFlag'];
-
-if(isset($_POST['email'])) {
-    $email = $_POST['email'];
-    $_SESSION['email'] = $email;
-}
-if(isset($_POST['role'])) {
-    $role = $_POST['role'];
-    $_SESSION['role'] = $role;
-}
-if(isset($_POST['classroomID'])) {
-    $classroomID = $_POST['classroomID'];
-    $_SESSION['classroomID'] = $classroomID;
-}
-if(isset($_POST['classroomName'])) {
-    $classroomName = $_POST['classroomName'];
-    $_SESSION['classroomName'] = $classroomName;
-}
-if(isset($_POST['dictionaryID'])) {
-    $dictionaryID = $_POST['dictionaryID'];
-    $_SESSION['dictionaryID'] = $dictionaryID;
-}
-if(isset($_POST['dictionaryName'])) {
-    $dictionaryName = $_POST['dictionaryName'];
-    $_SESSION['dictionaryName'] = $dictionaryName;
-}
-if(isset($_POST['personalVocabID'])) {
-    $personalVocabID = $_POST['personalVocabID'];
-    $_SESSION['personalVocabID'] = $personalVocabID;
-}
-if(isset($_POST["logout"])){
-    session_destroy();
-}
+if(isset($_POST["logout"])) session_destroy();  //destroy session
 

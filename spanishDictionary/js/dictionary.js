@@ -1,5 +1,5 @@
 let entryIDArray = []
-function displayTable(dictionaryID, tableHtmlId, dictionaryBody) {
+function displayTable(dictionaryID, tableHtmlId) {
     const role = roleFromSession
 
     //initialize table
@@ -9,18 +9,16 @@ function displayTable(dictionaryID, tableHtmlId, dictionaryBody) {
             url: URL,
             dataSrc: function (json) {
                 if(json.length === 0) { //no terms in dictionary, hide content
-                    hideTable(tableHtmlId,dictionaryBody)
-                    // hideFilterTableButton()  //todo: implement this lol
-                    if(role === "instructor") showAddToDictionaryButton(dictionaryBody, 'newDictionary')
+                    setEmptyDictionaryView(role, tableHtmlId)
                 } else {
                     //allow instructor to add more terms to the dictionary
-                    if(roleFromSession === 'instructor') showAddToDictionaryButton($('#add-more'), 'populatedDictionary')
+                    if(roleFromSession === 'instructor') showAddToDictionaryButton('add-more', 'populatedDictionary')
 
                     let return_data = []
                     $.each(json, function (index, entry) {
                         return_data.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
                         if(role === "instructor") {
-                            entry.entryID = index   //todo marcos: add entryID to the return data, but only for instructors
+                            entry.entryID = index
                             entryIDArray.push(entry.entryID)
                         }
                     })
@@ -77,27 +75,12 @@ function setDictionaryButtonListeners(role, table, tableHtmlId) {
             const entryText = data[1]
             const entryDefinition = data[2]
             const editModalID = 'edit-term'
-
-            //SET MODAL DATA: maybe someday todo into it's own function
-            //show entry data in edit form & show form/modal
-            document.getElementById('entryText').value = entryText
-            document.getElementById('entryDef').value = entryDefinition
-
-            //use select2 to have dynamic tag selection for the current entry/term
             const tagSelectHTMLId = "#edit-tags"
-            $(tagSelectHTMLId).select2({
-                ajax: {
-                    url: `services/dictionaryService.php?Action=singleTags?entryID=${entryID}`, //todo marcos: get tags for a specific entry
-                    dataType: 'json'
-                },
-                placeholder: 'Tags',
-                width: '100%'
-            });
-            //get unedited tags from select
-            let selectData = $(tagSelectHTMLId).select2('data');
-            const entryTagIDArray = parseSelectData(selectData).idArray
 
+            setDictionaryModalData(entryID, entryText, entryDefinition)
             $(`#${editModalID}`).modal('show')
+
+            const entryTagIDArray = getTagData(tagSelectHTMLId).idArray //get unedited entry's tag id's
 
             let editTermForm = document.forms.namedItem("editTermForm")
             editTermForm.addEventListener('submit', function(event) {
@@ -109,12 +92,11 @@ function setDictionaryButtonListeners(role, table, tableHtmlId) {
                 const newEntryText = document.getElementById('entryText').value
                 const newEntryDefinition = document.getElementById('entryDef').value
                 //get new tags from select
-                selectData = $(tagSelectHTMLId).select2('data');
-                const newEntryTagIDArray = parseSelectData(selectData).idArray
+                const newEntryTagIDArray = getTagData(tagSelectHTMLId).idArray
                 const newEntryAudio = document.getElementById('entryAudio').value.split('\\').pop().split('/').pop()
                 //^split & pop along filepath slashes (both Windows & Linux/Unix/Mac) to get filename from filepath:
                 //split string along windows filepath slashes (\) & pop to get last array item (which should be the filename)
-                //then, //split string along linux/unix/mac) filepath slashes (/) & pop to get last array item (which should be the filename).
+                //then, split string along linux/unix/mac) filepath slashes (/) & pop to get last array item (which should be the filename).
 
                 //check that the user actually changed the data
                 if(dictionaryEntryChange(entryText, entryDefinition, entryTagIDArray, entryAudio, newEntryText, newEntryDefinition, newEntryTagIDArray, newEntryAudio)) {
@@ -143,11 +125,33 @@ function setDictionaryButtonListeners(role, table, tableHtmlId) {
 
             //user confirmed delete: delete entry
             $(`#submit-delete`).on( 'click', function () {
-                deleteEntry(row, entryID, deleteModalID)
+                const tableSize = table.column(0).data().length
+                deleteEntry(row, entryID, deleteModalID, tableSize)
             })
         })
     }//end of setting listeners for instructor functions
 }//end of setDictionaryButtonListeners
+
+//show entry data in edit form & return entry
+function setDictionaryModalData(tagSelectHTMLId, entryID, entryText, entryDefinition) {
+    document.getElementById('entryText').value = entryText
+    document.getElementById('entryDef').value = entryDefinition
+
+    //use select2 to have dynamic tag selection for the current entry/term
+    $(tagSelectHTMLId).select2({
+        ajax: {
+            url: `services/dictionaryService.php?Action=singleTags?entryID=${entryID}`, //todo marcos: get tags for a specific entry
+            dataType: 'json'
+        },
+        placeholder: 'Tags',
+        width: '100%'
+    });
+}//end of setDictionaryModalData
+
+function getTagData(selectHTMLId) {
+    let selectData = $(selectHTMLId).select2('data');
+    return parseSelectData(selectData)
+}
 
 //make sure that the entry data has been changed, otherwise, don't submit
 function dictionaryEntryChange(entryText, entryDefinition, entryTagIDArray, entryAudio, newEntryText, newEntryDefinition, newEntryTagIDArray, newEntryAudio) {
@@ -191,15 +195,18 @@ function editEntry(table, row, formData, plainTextFormData, editModalID, errorMs
 }//end of editEntry
 
 //AJAX request to delete term at entryID. If success, remove row from table
-function deleteEntry(row, entryID, deleteModalID) {
+function deleteEntry(row, entryID, deleteModalID, previousTableSize, tableHtmlId) {
     const errorMsgId = 'delete-error-message'
     const URL = './services/dictionaryService.php?Action=singleDelete'  //todo marcos: add to dictService
     $.post(URL, {entry: entryID}, function(data) {
         data = JSON.parse(data)
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, remove row from table
-                entryIDArray.splice(row.index(), 1)  //remove remove entryID at index
-                row.remove().draw(false) //remove row and redraw, but don't reset the table's page
+                if(previousTableSize-1 === 0) setEmptyDictionaryView(roleFromSession, tableHtmlId)  //just deleted last term in the dictionary
+                else {  //table not empty
+                    entryIDArray.splice(row.index(), 1)  //remove remove entryID at index
+                    row.remove().draw(false) //remove row and redraw, but don't reset the table's page
+                }
                 $(`#${deleteModalID}`).modal('hide') //hide modal to show table change
             }} else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
@@ -217,24 +224,46 @@ function updateHeader(dictionaryName) {
     //update page title to reflect classroom name
     document.title = `${dictionaryName} Dictionary`
 
-    $('#dictionary-header').append(dictionaryName)
+    $('#dictionary-name').append(dictionaryName)
 }
 
 //addDictionaryFlag === "newDictionary" or "populatedDictionary"
-function showAddToDictionaryButton(html, addDictionaryFlag) {
+function showAddToDictionaryButton(htmlId, addDictionaryFlag) {
     //add dictionaryFlag to the session but don't redirect anywhere
-    addToSessionAndMoveToPage({addDictionaryFlag: addDictionaryFlag})
+    addToSession({addDictionaryFlag: addDictionaryFlag})
     //as instructor, show button that allows them to add terms to the dictionary
-    let addToDictionaryButton = `<button class="col-sm-auto btn dark" onclick="window.location.href = './addDictionary.php'">Add to Dictionary</button>`
-    html.append(addToDictionaryButton)
+    let addToDictionaryButton = `<a class="col-sm-auto btn dark" href="./addDictionary.php">Add to Dictionary</a>`
+    document.getElementById(htmlId).innerHTML = addToDictionaryButton
 }//end of showAddToDictionaryButton
+
+function setEmptyDictionaryView(role, tableHtmlId) {
+    const dictionaryBodyHtmlId = 'dictionary-body'
+
+    hideTable(tableHtmlId, dictionaryBodyHtmlId)
+    document.getElementById('filter-dictionary-btn').style.display = "none" //hide filter button
+    if(role === "instructor") showAddToDictionaryButton(dictionaryBodyHtmlId, 'newDictionary')
+}
 
 function hideTable(tableHtmlId, dictionaryBody) {
     $(`#${tableHtmlId}`).DataTable().destroy()  //make dataTable back to a normal table
     document.getElementById(tableHtmlId).style.display = "none" //hide normal table
 
-    //show "no content in dictionary" message
-    dictionaryBody.append("<h2 class='col'>No Content in Dictionary</h2>\n")
+    dictionaryBody.append("<h2 class='col'>No Content in Dictionary</h2>\n")    //show "no content in dictionary" message
+}
+
+function showClearFilterButton(dictionaryID, tableHtmlId) {
+    const headerId = 'dictionary-header'
+    const clearFilterButton = `<button id="clear-filter" class="col-sm-auto btn btn-light" onclick="clearFilter(${dictionaryID}, '${tableHtmlId}')">Clear Filters</button>`
+    document.getElementById(headerId).innerHTML += clearFilterButton
+}
+
+//delete the whole table and then make the default one again
+function clearFilter(dictionaryID, tableHtmlId) {
+    const clearFilterButtonId = document.getElementById('clear-filter')
+    clearFilterButtonId.parentNode.removeChild(clearFilterButtonId)
+
+    $(`#${tableHtmlId}`).DataTable().clear().destroy()
+    displayTable(dictionaryID, tableHtmlId)
 }
 
 function playAudio(audioPath) {
@@ -249,11 +278,7 @@ function displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId) {
     errorMsgId = 'filter-error-message'
     document.getElementById(errorMsgId).innerHTML = ''
 
-    //get tags from select
-    const selectData = $(tagSelectHTMLId).select2('data');
-    const tagData = parseSelectData(selectData)
-    const tagIdArray = tagData.idArray
-    // const tagTextArray = tagData.textArray
+    const tagIdArray = getTagData(tagSelectHTMLId).idArray
 
     //AJAX request term data that matches the selectData
     URL = './services/dictionaryService.php'
@@ -265,7 +290,7 @@ function displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId) {
     $.get(URL, userData, function(data) {
         data = JSON.parse(data)
         if(data.length === 0) { //no terms match filter
-            document.getElementById(errorMsgId).innerHTML = 'Nope'  //todo: make better error message lol
+            document.getElementById(errorMsgId).innerHTML = 'No terms in dictionary have those tags!'
         } else {    //found match(es)! show matching terms in table
             //parse data to display in new table
             let tableData = []
@@ -283,6 +308,7 @@ function displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId) {
                 columns: getDictionaryColumnData(role)
             });
 
+            showClearFilterButton(dictionaryID, tableHtmlId)
             setDictionaryButtonListeners(role, table, tableHtmlId)
         }//end of else
     })
@@ -303,17 +329,13 @@ function parseSelectData(selectData) {
     return {idArray: tagIdArray, textArray: tagTextArray}
 }//end of parseSelectData
 
-
-//todo:if ever the case that the user deletes all the terms, hide table & show addDictionaryButton
-
 $ (function() {
     const tableHtmlId = 'table-dictionary'
-    const dictionaryBody = $('#dictionary-body')
     const dictionaryID = dictionaryIDFromSession
     const dictionaryName = dictionaryNameFromSession
 
     updateHeader(dictionaryName)
-    displayTable(dictionaryID, tableHtmlId, dictionaryBody)
+    displayTable(dictionaryID, tableHtmlId)
 
     //use select2 to have dynamic tag selection
     const tagSelectHTMLId = "#tags-select"
@@ -325,9 +347,6 @@ $ (function() {
         placeholder: 'Tags',
         width: '100%'
     });
-
-    //todo: add button that clears filters/back to normal dictionary
-    //essentially, clear.destroy table, then call displayTable again lol
 
     //hijack filter form to display filtered table
     let filterForm = $('#filter-dictionary-form')

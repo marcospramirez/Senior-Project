@@ -112,7 +112,7 @@ function printHeadClose() {
         $navHtml = '
             <header>
                 <nav style="justify-content:left" class="navbar sticky-top navbar-light bg-light">
-                    <a href="http://mramir14.create.stedwards.edu/spanishDictionary/dashboard.php" class="navbar-brand">Dashboard</a>';
+                    <a href="./dashboard.php" class="navbar-brand">Dashboard</a>';
 
 
         if(isset($_SESSION['role'])){
@@ -129,15 +129,15 @@ function printHeadClose() {
                       </button>
 
                       <div class="dropdown-menu" aria-labelledby="classroomNavigation">
-                        <a class="dropdown-item" href="http://mramir14.create.stedwards.edu/spanishDictionary/classroom.php">Dictionaries</a>
-                        <a class="dropdown-item" href="http://mramir14.create.stedwards.edu/spanishDictionary/forum.php">Forum</a>
+                        <a class="dropdown-item" href="./classroom.php">Dictionaries</a>
+                        <a class="dropdown-item" href="./forum.php">Forum</a>
                       </div>
                     </div>';
         }
                                         
                     
             $navHtml .='                           
-                    <button type="button" class="btn" onclick="logout()">Logout</button>
+                    <button type="button" class="btn" onclick="addToSession({logout: true}, \'goTo\', \'./login.php\')">Logout</button>
                 </nav>
             </header>';
 
