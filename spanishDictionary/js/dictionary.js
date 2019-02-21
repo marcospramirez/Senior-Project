@@ -75,9 +75,9 @@ function setDictionaryButtonListeners(role, table, tableHtmlId) {
             const entryText = data[1]
             const entryDefinition = data[2]
             const editModalID = 'edit-term'
-            const tagSelectHTMLId = "#edit-tags"
+            const tagSelectHTMLId = 'edit-tags'
 
-            setDictionaryModalData(entryID, entryText, entryDefinition)
+            setDictionaryModalData(tagSelectHTMLId, entryID, entryText, entryDefinition)
             $(`#${editModalID}`).modal('show')
 
             const entryTagIDArray = getTagData(tagSelectHTMLId).idArray //get unedited entry's tag id's
@@ -137,16 +137,51 @@ function setDictionaryModalData(tagSelectHTMLId, entryID, entryText, entryDefini
     document.getElementById('entryText').value = entryText
     document.getElementById('entryDef').value = entryDefinition
 
-    //use select2 to have dynamic tag selection for the current entry/term
-    $(tagSelectHTMLId).select2({
+    setSelectData(entryID)
+    setTagLibrary(tagSelectHTMLId)
+}//end of setDictionaryModalData
+
+function setSelectData(entryID) {
+    const URL = `services/dictionaryService.php?Action=singleTags`
+    $.post(URL, {entryID: entryID}, function(data) {
+        data = JSON.parse(data)
+        if(data.hasOwnProperty("error")) {  //remove filter button and filter modal
+            disableFiltering()
+            document.getElementById('dictionary-body').innerHTML = `Error! ${data.error}. URL: ${URL}`
+        }
+        else {  //else, no backend error: set tags in select element
+            $.each(data, function(index, tagData) {
+                $(`#${tagSelectHTMLId}`).append(`<option value="${tagData.tagID}" selected>${tagData.tagText}</option>`)
+            })
+        }
+    })
+        .fail(function() {
+            disableFiltering()
+            document.getElementById('dictionary-body').innerHTML = `Error, could not connect! URL: ${URL}`
+        })
+}//end of setSelectData
+
+//set the tag library in select2, which allows dynamic tag selection for the current entry/term
+function setTagLibrary(tagSelectHTMLId) {
+    $(`#${tagSelectHTMLId}`).select2({
         ajax: {
-            url: `services/dictionaryService.php?Action=singleTags?entryID=${entryID}`, //todo marcos: get tags for a specific entry
+            url: 'services/dictionaryService.php?Action=tags',
             dataType: 'json'
         },
         placeholder: 'Tags',
         width: '100%'
     });
-}//end of setDictionaryModalData
+}//end of setTagLibrary
+
+function disableFiltering() {
+    //remove element for filter button
+    const filterButtonHTML = document.getElementById('filter-dictionary-btn')
+    filterButtonHTML.parentNode.removeChild(filterButtonHTML)
+
+    //remove element for filter modal
+    const filterModalHTML = document.getElementById('filter-dictionary')
+    filterModalHTML.parentNode.removeChild(filterModalHTML)
+}//end of disableFiltering
 
 function getTagData(selectHTMLId) {
     let selectData = $(selectHTMLId).select2('data');
@@ -177,12 +212,12 @@ function areMatchingArrays(array1, array2) {
 }//end of areMatchingArrays
 
 function editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId) {
-    const URL = "./services/dictionaryService.php?Action=singleEdit"    //todo marcos: add action to dictService
+    const URL = "./services/dictionaryService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
     xmlRequest.onload = function() {
-        let data = JSON.parse(xmlRequest.responseText)  //todo marcos: data = success message
-        if(data.hasOwnProperty("message")) {
+        let data = JSON.parse(xmlRequest.responseText)
+        if(data.hasOwnProperty("msg")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newTermData = [plainTextFormData.entryAudioPath, plainTextFormData.entryText, plainTextFormData.entryDefinition]
                 editTableRow(newTermData, table, row,editModalID)
@@ -197,10 +232,10 @@ function editEntry(table, row, formData, plainTextFormData, editModalID, errorMs
 //AJAX request to delete term at entryID. If success, remove row from table
 function deleteEntry(row, entryID, deleteModalID, previousTableSize, tableHtmlId) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/dictionaryService.php?Action=singleDelete'  //todo marcos: add to dictService
+    const URL = './services/dictionaryService.php?Action=singleDelete'
     $.post(URL, {entry: entryID}, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
+        if(data.hasOwnProperty("msg")) {
             if(data.message === "success") {    //if post was successful, remove row from table
                 if(previousTableSize-1 === 0) setEmptyDictionaryView(roleFromSession, tableHtmlId)  //just deleted last term in the dictionary
                 else {  //table not empty
@@ -336,17 +371,7 @@ $ (function() {
 
     updateHeader(dictionaryName)
     displayTable(dictionaryID, tableHtmlId)
-
-    //use select2 to have dynamic tag selection
-    const tagSelectHTMLId = "#tags-select"
-    $(tagSelectHTMLId).select2({
-        ajax: {
-            url: 'services/dictionaryService.php?Action=tags',
-            dataType: 'json'
-        },
-        placeholder: 'Tags',
-        width: '100%'
-    });
+    setTagLibrary('tags-select')    //use select2 to have dynamic tag selection
 
     //hijack filter form to display filtered table
     let filterForm = $('#filter-dictionary-form')

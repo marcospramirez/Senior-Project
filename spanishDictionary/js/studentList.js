@@ -122,11 +122,11 @@ function studentChange(tableSName, tableSEmail, newStudentName, newStudentEmail)
 }//end of studentChange
 
 function editStudent(table, row, formData, plainTextFormData, editModalID, errorMsgId) {
-    const URL = "./services/studentService.php?Action=singleEdit"    //todo marcos: add action to studentService
+    const URL = "./services/studentService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
     xmlRequest.onload = function() {
-        let data = JSON.parse(xmlRequest.responseText)  //todo marcos: data = success message
+        let data = JSON.parse(xmlRequest.responseText)
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newStudentData = [plainTextFormData.studentEmail, plainTextFormData.studentName]
@@ -142,14 +142,14 @@ function editStudent(table, row, formData, plainTextFormData, editModalID, error
 //AJAX request to delete term at studentEmail. If success, remove row from table
 function deleteStudent(row, classroomID, studentEmail, deleteModalID) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/studentService.php?Action=singleDelete'  //todo marcos: add to studentService
+    const URL = './services/studentService.php?Action=singleDelete'
     const userData = {
         class: classroomID,
         studentEmail: studentEmail
     }
     $.post(URL, userData, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
+        if(data.hasOwnProperty("msg")) {
             if(data.message === "success") {    //if post was successful, remove row from table
                 row.remove().draw(false) //remove row and redraw, but don't reset the table's page
                 $(`#${deleteModalID}`).modal('hide') //hide modal to show table change
