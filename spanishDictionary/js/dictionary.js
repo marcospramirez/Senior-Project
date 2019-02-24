@@ -28,7 +28,7 @@ function displayTable(dictionaryID, tableHtmlId) {
         },
         columns: getDictionaryColumnData(role)
     })
-    setDictionaryButtonListeners(role, table, tableHtmlId)
+    setDictionaryButtonListeners(role, tableHtmlId)
 }//end of displayTable
 
 function getDictionaryColumnData(role) {
@@ -58,8 +58,9 @@ function getDictionaryColumnData(role) {
     return columnData
 }//end of getDictionaryColumnData
 
-function setDictionaryButtonListeners(role, table, tableHtmlId) {
+function setDictionaryButtonListeners(role, tableHtmlId) {
     $(`#${tableHtmlId} tbody`).on( 'click', 'button.audio', function () {
+        const table = $(`#${tableHtmlId}`).DataTable()
         const audioPath = table.row($(this).parents('tr')).data()[0]
         playAudio(audioPath)
     })
@@ -68,6 +69,7 @@ function setDictionaryButtonListeners(role, table, tableHtmlId) {
         $(`#${tableHtmlId} tbody`).on( 'click', 'button.edit', function () {
             //grab entry text & definition and populate modal data with it.
             //once submit data for edit, send to server & once complete, show changes on table
+            const table = $(`#${tableHtmlId}`).DataTable()
             const row = table.row($(this).parents('tr'))
             const data = row.data()
             const entryID = entryIDArray[row.index()]
@@ -115,6 +117,7 @@ function setDictionaryButtonListeners(role, table, tableHtmlId) {
         //delete button clicked: show modal to confirm delete. If confirmed,
         //delete entry in database and delete table row
         $(`#${tableHtmlId} tbody`).on( 'click', 'button.delete', function () {
+            const table = $(`#${tableHtmlId}`).DataTable()
             const row = table.row($(this).parents('tr'))
             const entryID = entryIDArray[row.index()]
             const entryText = row.data()[1]
@@ -184,7 +187,7 @@ function disableFiltering() {
 }//end of disableFiltering
 
 function getTagData(selectHTMLId) {
-    let selectData = $(selectHTMLId).select2('data');
+    let selectData = $(`#${selectHTMLId}`).select2('data');
     return parseSelectData(selectData)
 }
 
@@ -333,7 +336,7 @@ function displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId) {
                 tableData.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
             })
 
-            $('#filter-dictionary').modal('hide');  //hide modal
+            $('#filter-dictionary').modal('hide')  //hide modal
             //make dataTable back to a normal table
             $(`#${tableHtmlId}`).DataTable().clear().destroy()
 
@@ -344,7 +347,7 @@ function displayFilteredTable(tagSelectHTMLId, dictionaryID, tableHtmlId) {
             });
 
             showClearFilterButton(dictionaryID, tableHtmlId)
-            setDictionaryButtonListeners(role, table, tableHtmlId)
+            setDictionaryButtonListeners(role, tableHtmlId)
         }//end of else
     })
     .fail(function() {
@@ -368,10 +371,11 @@ $ (function() {
     const tableHtmlId = 'table-dictionary'
     const dictionaryID = dictionaryIDFromSession
     const dictionaryName = dictionaryNameFromSession
+    const tagSelectHTMLId = 'tags-select'
 
     updateHeader(dictionaryName)
     displayTable(dictionaryID, tableHtmlId)
-    setTagLibrary('tags-select')    //use select2 to have dynamic tag selection
+    setTagLibrary(tagSelectHTMLId)    //use select2 to have dynamic tag selection
 
     //hijack filter form to display filtered table
     let filterForm = $('#filter-dictionary-form')

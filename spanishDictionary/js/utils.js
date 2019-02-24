@@ -1,17 +1,34 @@
+function getDictionaryIdNameSet(data) {
+    let dictionaryIDArray = []
+    let dictionaryNameArray = []
+
+    const dictionaryIDNameData = JSON.parse(data)
+
+    $.each(dictionaryIDNameData, function (i, dictionaryNameID) {
+        const dictionaryID = dictionaryNameID.dictionaryID
+        const dictionaryName = dictionaryNameID.dictionaryName
+
+        dictionaryIDArray.push(dictionaryID)
+        dictionaryNameArray.push(dictionaryName)
+    })
+
+    return {dictionaryIdArray: dictionaryIDArray, dictionaryNameArray: dictionaryNameArray}
+}//end of getDictionaryIdNameSet
+
 function addHiddenInputToForm(form, name, data) {
     form.append(`<input type="hidden" name="${name}" value="${data}">`)
 }
 
 //add user data to session and then move to a different file.
-//movementFlag: "redirectTo"- move to different file without adding the movement to the history stack
-//              "goTo"- move to a different file, adding the movement to the history stack
-//              null - add data to the session and stay on current page (don't move)
+//movementFlag (optional): "redirectTo"- move to different file without adding the movement to the history stack
+//                         "goTo"- move to a different file, adding the movement to the history stack
+//         URL (optional): if moving to a page, this is the URL of the page
 function addToSession(userData, movementFlag = null, URL = null) {
     const addToSessionURL = "./includes/addToSession.inc.php"
     $.post(addToSessionURL, userData, function() {  //added userData successfully
         if(movementFlag === 'redirectTo') {window.location.replace(URL)}  //redirect to URL/don't add to history
         else if(movementFlag === 'goTo') {window.location.href = URL}   //go to URL, adding past location to history
-        //else, stay on current page
+        //else, movementFlag === null: stay on current page
     })
     .fail(function(data){  //failed to connect
         console.log("Error! " + data)

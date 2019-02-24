@@ -12,7 +12,7 @@ function showAddStudentButton() {
 }
 
 function displayStudentListTable(studentList) {
-    if(studentList.length == 0) {   //no students in classroom. redundant, but safe
+    if(studentList.length === 0) {   //no students in classroom. redundant, but safe
         document.getElementById('table').innerHTML = `<h2>No Students in Classroom.</h2>`
     } else {//data in studentList
         const tableHtmlId = 'table-student-list'

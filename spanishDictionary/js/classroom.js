@@ -1,36 +1,13 @@
-function getDictionaryIdNameSet(data) {
-    let dictionaryIDArray = []
-    let dictionaryNameArray = []
-
-    const dictionaryIDNameData = JSON.parse(data)
-
-    $.each(dictionaryIDNameData, function (i, dictionaryNameID) {
-        const dictionaryID = dictionaryNameID.dictionaryID
-        const dictionaryName = dictionaryNameID.dictionaryName
-
-        dictionaryIDArray.push(dictionaryID)
-        dictionaryNameArray.push(dictionaryName)
-    })
-
-    return {dictionaryIdArray: dictionaryIDArray, dictionaryNameArray: dictionaryNameArray}
-}
-
 function displayDictionaryTable(dictionaryArray, contentID) {
-    let tableDataSet = []
-    $.each(dictionaryArray, function(i, dictionary) {
-        let tableDataRow = [dictionary]
-        tableDataSet.push(tableDataRow)
-    })
+    let tableData = []
 
-    let columnSet = [
-        {title: "Dictionaries"}
-    ]
+    $.each(dictionaryArray, function(i, dictionary) { tableData.push([dictionary]) })
 
     //display table data using DataTable
-    var tableID = `#${contentID}`
-    var table = $(tableID).DataTable( {
-        data: tableDataSet,
-        columns: columnSet
+    let tableID = `#${contentID}`
+    let table = $(tableID).DataTable( {
+        data: tableData,
+        columns: [{title: "Dictionaries"}]
     })
 
     return table
@@ -69,7 +46,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
 
             //else if there are students in the classroom, allow instructor to view student list
             else if (studentCount > 0) {    //show student count in button body
-                if (studentCount == 1) {     //count > 1, print "Student" (singular)
+                if (studentCount === 1) {     //count > 1, print "Student" (singular)
                     goToURL = "./studentList.php"
                     studentBtnInnerHTML = `${studentCount} Student`
                 } else {    //count > 1, print "Students" (plural)
@@ -96,12 +73,8 @@ function showAddDictionaryButton() {
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
 function showDictionaryTable(classroomID, classroomName, tableID) {
-    const URL = './services/dictionaryService.php'
-    const userData = {
-        Action: "list",
-        classroomID: classroomID
-    }
-    $.get(URL, userData, function(data) {
+    const URL = './services/dictionaryService.php?Action=list'
+    $.get(URL, {classroomID: classroomID}, function(data) {
         //separate dictionary data into separate arrays
         const dictionaryIDNameSet = getDictionaryIdNameSet(data)
         const dictionaryIDArray = dictionaryIDNameSet.dictionaryIdArray

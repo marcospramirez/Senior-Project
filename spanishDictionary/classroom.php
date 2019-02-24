@@ -24,7 +24,7 @@ printHeadClose();
 <main class="container">
     <div id="classroom-div" class="header row align-items-start">
         <h1 id="classroom-header" class="col"></h1>
-        <a class="col-sm-auto btn dark" href="./forum.php">View Forum</a>
+        <a class="col-sm-auto btn dark" href="forum.php">View Forum</a>
     </div>
     <div class="container content-frame border rounded">
         <br>
