@@ -33,9 +33,9 @@ function goToClassroom(classroomID, classroomName, personalVocabID) {
     const userData = {
         classroomID: classroomID,
         classroomName: classroomName,
-        personalVocabID: personalVocabID    //will be -1 if role=="instructor"
+        personalVocabID: personalVocabID    //will be -1 if role==="instructor"
     }
-    addToSessionAndMoveToPage(userData, 'goTo', './classroom.php')
+    addToSession(userData, 'goTo', './classroom.php')
 }
 
 //create html to classroom name. when clicked, go to classroom.php
@@ -63,11 +63,11 @@ $(function () {
         let personalVocabIDArray = []
         let classroomNameHTML = '';
 
-        if(roleFromSession == "student") { personalVocabIDArray = getPersonalVocabIDArray(data) }
+        if(roleFromSession === "student") { personalVocabIDArray = getPersonalVocabIDArray(data) }
 
         $.each(classroomNameArray, function (index, classroomName) {
             const classroomID = classroomIDArray[index]
-            const personalVocabID = personalVocabIDArray.length == 0 ? personalVocabIDArray[index] : -1 //if personalVocabIDArray is empty, then default personalVocabID is -1
+            const personalVocabID = personalVocabIDArray.length === 0 ? personalVocabIDArray[index] : -1 //if personalVocabIDArray is empty, then default personalVocabID is -1
             classroomNameHTML += getClickableClassroomName(index, classroomID, classroomName, personalVocabID)
             if((index + 1) <= classroomNameArray.length) { classroomNameHTML += '<br>'} //print breaks between classroom names
         })

@@ -2,14 +2,14 @@
 //if not, display error messages
 function passedErrorCheckLogin(errorMsgId, email, password) {
     var errArray = []
-    if($.trim(password) == '') {//error: password(s) filled with spaces
+    if($.trim(password) === '') {//error: password(s) filled with spaces
         errArray.push("Invalid password. Password is filled with spaces.")
     }
     if(!RegExp("^[a-zA-Z0-9]*$").test(password)) {//error: password is not alphanumeric
         errArray.push("Invalid password. Password must be alphanumeric.")
     }
     //toString array
-    if(errArray.length != 0) {
+    if(errArray.length !== 0) {
         let errorMsgString = errArray[0]
         if(errArray.length > 1) {  //if more than one error add br tag between errors
             for(let i = 1; i < errArray.length; i++) {
@@ -19,7 +19,7 @@ function passedErrorCheckLogin(errorMsgId, email, password) {
         //display error message string in html
         document.getElementById(errorMsgId).innerHTML = errorMsgString
     }
-    const result = errArray.length == 0  //check if any errors were saved in errArray
+    const result = errArray.length === 0  //check if any errors were saved in errArray
     return result
 }//end of passedErrorCheckLogin
 
@@ -49,10 +49,10 @@ $(function(){
                 password: password
             }
             $.post(URL, userData, function(data) {
-                if(data == "instructor" || data == "student") {  //authenticated user, redirect to dashboard
+                if(data === "instructor" || data === "student") {  //authenticated user, redirect to dashboard
                     //add email and role to the session & redirect to the dashboard
-                    addToSessionAndMoveToPage({email: email, role: data}, 'redirectTo', './dashboard.php')
-                } else if(data == "none") { //invalid credentials
+                    addToSession({email: email, role: data}, 'redirectTo', './dashboard.php')
+                } else if(data === "none") { //invalid credentials
                     document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'
                 } else {
                     document.getElementById(errorMsgId).innerHTML = 'Error! ' + data

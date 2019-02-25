@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
 printHeadOpen('Classroom');
 printGoogleFontsCdn();
 printBootstrapCssCdn();
@@ -9,12 +10,9 @@ printBootstrapJsCdn();
 printDataTablesCdn();
 printFontAwesomeIconsCdn();
 
-include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
 echo '
-    <!--CUSTOM CSS-->
-    <link href="css/classroom.css" rel="stylesheet"/>
     <!--CUSTOM JS-->
     <script src="js/utils.js"></script>
     <script src="js/classroom.js"></script>
@@ -23,12 +21,10 @@ echo '
 printHeadClose();
 ?>
 
-<!--fixme: convert all window.location.href buttons into links because then user can right-click new tab-->
-
 <main class="container">
-    <div id="classroom-div" class="row align-items-start">
+    <div id="classroom-div" class="header row align-items-start">
         <h1 id="classroom-header" class="col"></h1>
-        <button class="col-sm-auto btn dark" onclick='window.location.href = "./forum.php"'>View Forum</button>
+        <a class="col-sm-auto btn dark" href="forum.php">View Forum</a>
     </div>
     <div class="container content-frame border rounded">
         <br>

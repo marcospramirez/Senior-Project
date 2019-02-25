@@ -1,36 +1,13 @@
-function getDictionaryIdNameSet(data) {
-    let dictionaryIDArray = []
-    let dictionaryNameArray = []
-
-    const dictionaryIDNameData = JSON.parse(data)
-
-    $.each(dictionaryIDNameData, function (i, dictionaryNameID) {
-        const dictionaryID = dictionaryNameID.dictionaryID
-        const dictionaryName = dictionaryNameID.dictionaryName
-
-        dictionaryIDArray.push(dictionaryID)
-        dictionaryNameArray.push(dictionaryName)
-    })
-
-    return {dictionaryIdArray: dictionaryIDArray, dictionaryNameArray: dictionaryNameArray}
-}
-
 function displayDictionaryTable(dictionaryArray, contentID) {
-    let tableDataSet = []
-    $.each(dictionaryArray, function(i, dictionary) {
-        let tableDataRow = [dictionary]
-        tableDataSet.push(tableDataRow)
-    })
+    let tableData = []
 
-    let columnSet = [
-        {title: "Dictionaries"}
-    ]
+    $.each(dictionaryArray, function(i, dictionary) { tableData.push([dictionary]) })
 
     //display table data using DataTable
-    var tableID = `#${contentID}`
-    var table = $(tableID).DataTable( {
-        data: tableDataSet,
-        columns: columnSet
+    let tableID = `#${contentID}`
+    let table = $(tableID).DataTable( {
+        data: tableData,
+        columns: [{title: "Dictionaries"}]
     })
 
     return table
@@ -53,39 +30,34 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
         classroomID: classroomID
     }
     $.get(URL, userData, function (data) { //get student count of classroom
-        //todo: Marcos, standardize your error message. Sometimes it's an key:value array, sometimes it's a string
-        // if(data.hasOwnProperty(error)) {
-        //     document.getElementById(errorMsgDiv).innerHTML += `Error, could not find classroom!`
-        // }
-
         let classroomDiv = $('#classroom-div')
+        const studentCount = parseInt(data)   //convert string to int
+        if(isNaN(studentCount)) {
+            document.getElementById(errorMsgDiv).innerHTML += `Error, could not find classroom!`
+        } else {    //received an student count number
+            let goToURL = ''
+            let studentBtnInnerHTML = ''
 
-        let studentCount = parseInt(data)   //convert string to int
-
-        let goToURL = ''
-        let studentBtnInnerHTML = ''
-
-        //if no students in classroom, allow instructor to add some
-        if (studentCount === 0) {
-            goToURL = "./addStudent.php"
-            studentBtnInnerHTML = '<i class="fas fa-plus"></i>Add Students'
-        }
-
-        //else if there are students in the classroom, allow instructor to view student list
-        else if (studentCount > 0) {    //show student count in button body
-            if (studentCount == 1) {     //count > 1, print "Student" (singular)
-                goToURL = "./studentList.php"
-                studentBtnInnerHTML = `${studentCount} Student`
-            } else {    //count > 1, print "Students" (plural)
-                goToURL = "./studentList.php"
-                studentBtnInnerHTML = `${studentCount} Students`
+            //if no students in classroom, allow instructor to add some
+            if (studentCount === 0) {
+                goToURL = "./addStudent.php"
+                studentBtnInnerHTML = '<i class="fas fa-plus"></i>Add Students'
             }
-        }   //end of else if
 
-        let studentBtnHTML = `<button id="classroom-student-btn" class="col-sm-auto btn dark" onclick='window.location.href = "${goToURL}"'>${studentBtnInnerHTML}</button>`
-        classroomDiv.append(studentBtnHTML)
+            //else if there are students in the classroom, allow instructor to view student list
+            else if (studentCount > 0) {    //show student count in button body
+                if (studentCount === 1) {     //count > 1, print "Student" (singular)
+                    goToURL = "./studentList.php"
+                    studentBtnInnerHTML = `${studentCount} Student`
+                } else {    //count > 1, print "Students" (plural)
+                    goToURL = "./studentList.php"
+                    studentBtnInnerHTML = `${studentCount} Students`
+                }
+            }   //end of else if
 
-
+            let studentBtnHTML = `<a id="classroom-student-btn" class="col-sm-auto btn dark" href="${goToURL}">${studentBtnInnerHTML}</a>`
+            classroomDiv.append(studentBtnHTML)
+        }//end of else: received an student count number
     })//end of $.get
         .fail(function () {
             document.getElementById(errorMsgDiv).innerHTML += `Error, could not display student count! URL: ${URL}`
@@ -94,19 +66,15 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
 
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
 function showAddDictionaryButton() {
-    let addDictionaryButton = '<button id="add-dictionary" class="btn dark col-sm-auto" onclick="window.location.href = \'./addDictionary.php\'"><i class="fas fa-plus"></i> Add Dictionary</button>'
+    let addDictionaryButton = `<a id="add-dictionary" class="btn dark col-sm-auto" href="./addDictionary.php"><i class="fas fa-plus"></i> Add Dictionary</a>`
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
 }//end of showAddDictionaryButton
 
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
 function showDictionaryTable(classroomID, classroomName, tableID) {
-    const URL = './services/dictionaryService.php'
-    const userData = {
-        Action: "list",
-        classroomID: classroomID
-    }
-    $.get(URL, userData, function(data) {
+    const URL = './services/dictionaryService.php?Action=list'
+    $.get(URL, {classroomID: classroomID}, function(data) {
         //separate dictionary data into separate arrays
         const dictionaryIDNameSet = getDictionaryIdNameSet(data)
         const dictionaryIDArray = dictionaryIDNameSet.dictionaryIdArray
@@ -124,7 +92,7 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
                 const dictionaryName = dictionaryNameArray[tableIndex]
 
                 //add email and role to the session & redirect to the dashboard
-                addToSessionAndMoveToPage({dictionaryID: dictionaryID, dictionaryName: dictionaryName}, 'goTo', './dictionary.php')
+                addToSession({dictionaryID: dictionaryID, dictionaryName: dictionaryName}, 'goTo', './dictionary.php')
             } );
         }//end of else: classroom has dictionaries
 
@@ -143,8 +111,6 @@ $(function () {
     const role = roleFromSession
     const classroomID = classroomIDFromSession
     const classroomName = classroomNameFromSession
-
-    //todo: error checking data that comes from session, specifically, catching empty or undefined variables
 
     updateHeader(classroomName)
 

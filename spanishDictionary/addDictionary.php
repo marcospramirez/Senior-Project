@@ -3,10 +3,8 @@ session_start();
 include_once "includes/head.inc.php";
 include_once "includes/printSessionInfo.inc.php";
 
-//todo: do this for all instructor only pages
 //INSTRUCTOR ONLY PAGE - redirect if not instructor
 if($_SESSION['role'] !== "instructor") {
-    //todo: redirect user back to login or maybe just redirect to previous page, if that's possible??
     header("Location: login.php");
     exit();
 }
@@ -28,9 +26,8 @@ else if($dictionaryFlag == "populatedDictionary") {
     $pageTitle = 'Add To Dictionary';
     array_push($sessionInfo, 'email', 'role', 'classroomID', 'classroomName', 'dictionaryID', 'dictionaryName', 'addDictionaryFlag');
 }
-else {  //something went wrong, but i
-    //todo: redirect user back to login or maybe just redirect to previous page, if that's possible??
-    header("Location: login.php");
+else {  //dictionaryFlag is wrong, redirect back to dictionary to try again
+    header("Location: dictionary.php");
     exit();
 }
 

@@ -1,3 +1,6 @@
+/*=============================================
+      ADD DICTIONARY & ADD STUDENT STYLES
+=============================================*/
 input#dictionary-name {
     width: 200%;
     height: calc(3.3rem + 2px);

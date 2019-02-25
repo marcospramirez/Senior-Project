@@ -1,7 +1,9 @@
 /*=============================================
-             STUDENT LIST STYLES
+              DICTIONARY STYLES
 =============================================*/
-button.student {  /*outline button*/
+.btn-light {margin: 0 15px}
+
+button.term {  /*outline button*/
     width: 40px;
     background-color: transparent;
     background-image: none;
@@ -10,7 +12,7 @@ button.student {  /*outline button*/
     border-radius: 100%;
 }
 
-button.student:hover {
+button.term:hover {
     width: 40px;
     background-image: none;
     color: white;
@@ -19,7 +21,7 @@ button.student:hover {
     border-radius: 100%;
 }
 
-button.student.delete:hover {
+button.term.delete:hover {
     border-color: var(--danger-red);
     background-color: var(--danger-red);
 }

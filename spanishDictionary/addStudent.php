@@ -1,6 +1,14 @@
 <?php
 session_start();
 include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
+
+//INSTRUCTOR ONLY PAGE - redirect if not instructor
+if($_SESSION['role'] !== "instructor") {
+    header("Location: login.php");
+    exit();
+}
+
 printHeadOpen('Add Students');
 printGoogleFontsCdn();
 printBootstrapCssCdn();
@@ -8,7 +16,6 @@ printJQueryCdn();
 printBootstrapJsCdn();
 printFontAwesomeIconsCdn();
 
-include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('role', 'classroomID', 'classroomName'));
 
 echo '

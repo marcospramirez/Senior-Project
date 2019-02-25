@@ -7,12 +7,12 @@ function setStudentListHeader() {
 }
 
 function showAddStudentButton() {
-    let addStudentBtnHTML = `<button id="add-student" class="col-sm-auto btn dark" onclick="window.location.href = './addStudent.php'"><i class="fas fa-plus"></i> Add Students</button>`
+    let addStudentBtnHTML = `<a id="add-student" class="col-sm-auto btn dark" href="./addStudent.php"><i class="fas fa-plus"></i> Add Students</a>`
     $('#student-list-header').append(`            ${addStudentBtnHTML}\n`)    //extra spaces/tab for formatting purposes
 }
 
 function displayStudentListTable(studentList) {
-    if(studentList.length == 0) {   //no students in classroom. redundant, but safe
+    if(studentList.length === 0) {   //no students in classroom. redundant, but safe
         document.getElementById('table').innerHTML = `<h2>No Students in Classroom.</h2>`
     } else {//data in studentList
         const tableHtmlId = 'table-student-list'
@@ -41,12 +41,13 @@ function getStudentColumnData(role) {
         {title: "Student Email"}]
 
     if(role === "instructor") { //if instructor, allow user to edit and delete student details
-        columnData.push({
-                orderable: false,
-                data: "edit",
-                width: "5%",
-                defaultContent: "<button class=\"btn btn-outline-info student edit\"><i class=\"fas fa-edit\"></i></button>"
-            },
+        columnData.push(
+            // {
+            //     orderable: false,
+            //     data: "edit",
+            //     width: "5%",
+            //     defaultContent: "<button class=\"btn btn-outline-info student edit\"><i class=\"fas fa-edit\"></i></button>"
+            // },
             {
                 orderable: false,
                 data: "delete",
@@ -58,6 +59,7 @@ function getStudentColumnData(role) {
 }//end of getStudentColumnData
 
 function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
+    /*
     $(`#${tableHtmlId} tbody`).on( 'click', 'button.edit', function () {
         //grab entry text & definition and populate modal data with it.
         //once submit data for edit, send to server & once complete, show changes on table
@@ -67,7 +69,6 @@ function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
         const tableSEmail = data[1]
         const editModalID = 'edit-student'
 
-        //SET MODAL DATA: maybe someday todo into it's own function
         //show student data in edit form & show form/modal
         document.getElementById('studentName').value = tableSName
         document.getElementById('studentEmail').value = tableSEmail
@@ -89,12 +90,12 @@ function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
                 let formData = new FormData(editTermForm)
                 const plainTextFormData = {studentEmail: newStudentEmail, studentName: newStudentName}
                 editStudent(table, row, formData, plainTextFormData, editModalID, errorMsgId)
-            }else { //user didn't change student data, show error message
+            } else { //user didn't change student data, show error message
                 document.getElementById(errorMsgId).innerHTML = 'Please edit the term or close the dialog box.'
             }
         })//end of form submit event listener
     })//end of button.edit onclick
-
+    */
 
     //delete button clicked: show modal to confirm delete. If confirmed,
     //delete student in database and delete table row
@@ -109,7 +110,7 @@ function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
 
         //user confirmed delete: delete entry
         $(`#submit-delete`).on( 'click', function () {
-            deleteStudent(row, studentEmail, deleteModalID)
+            deleteStudent(row, classroomIDFromSession, studentEmail, deleteModalID)
         })
     })
 }//end of setStudentButtonListeners
@@ -121,11 +122,11 @@ function studentChange(tableSName, tableSEmail, newStudentName, newStudentEmail)
 }//end of studentChange
 
 function editStudent(table, row, formData, plainTextFormData, editModalID, errorMsgId) {
-    const URL = "./services/studentService.php?Action=singleEdit"    //todo marcos: add action to studentService
+    const URL = "./services/studentService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
     xmlRequest.onload = function() {
-        let data = JSON.parse(xmlRequest.responseText)  //todo marcos: data = success message
+        let data = JSON.parse(xmlRequest.responseText)
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newStudentData = [plainTextFormData.studentEmail, plainTextFormData.studentName]
@@ -139,12 +140,16 @@ function editStudent(table, row, formData, plainTextFormData, editModalID, error
 }//end of editStudent
 
 //AJAX request to delete term at studentEmail. If success, remove row from table
-function deleteStudent(row, studentEmail, deleteModalID) {
+function deleteStudent(row, classroomID, studentEmail, deleteModalID) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/studentService.php?Action=singleDelete'  //todo marcos: add to studentService
-    $.post(URL, {studentEmail: studentEmail}, function(data) {
+    const URL = './services/studentService.php?Action=singleDelete'
+    const userData = {
+        class: classroomID,
+        studentEmail: studentEmail
+    }
+    $.post(URL, userData, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
+        if(data.hasOwnProperty("msg")) {
             if(data.message === "success") {    //if post was successful, remove row from table
                 row.remove().draw(false) //remove row and redraw, but don't reset the table's page
                 $(`#${deleteModalID}`).modal('hide') //hide modal to show table change

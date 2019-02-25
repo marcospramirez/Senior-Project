@@ -1,6 +1,14 @@
 <?php
 session_start();
 include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
+
+//INSTRUCTOR ONLY PAGE - redirect if not instructor
+if($_SESSION['role'] !== "instructor") {
+    header("Location: login.php");
+    exit();
+}
+
 printHeadOpen('Student List');
 printGoogleFontsCdn();
 printBootstrapCssCdn();
@@ -10,7 +18,6 @@ printBootstrapJsCdn();
 printDataTablesCdn();
 printFontAwesomeIconsCdn();
 
-include_once "includes/printSessionInfo.inc.php";
 printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
 echo '
@@ -25,10 +32,10 @@ printHeadClose();
 ?>
 
     <main class="container">
-        <div id="student-list-header" class="row align-items-start">
+        <div id="student-list-header" class="header row align-items-start">
             <h1 id="classroom-name" class="col"></h1>
         </div>
-        <div class="container student-list-frame border rounded">
+        <div class="container content-frame border rounded">
             <br>
             <div id="table"><table id="table-student-list" class="table table-hover" style="width:100%"></table></div>
             <br>
