@@ -11,7 +11,7 @@
         }elseif($insertUserResult == "DUPLICATE") {
             print("duplicate");
         }else {
-            print($insertUserResult);
+            echo json_encode(array("error" => $insertUserResult));
         }
     }//end of check if there is data in post
 
@@ -35,7 +35,7 @@ function registerUser($user, $conn) {
         if($conn->errno == 1062) {    //1062: duplicate entry
             return "DUPLICATE";
         }
-        return "Error: " . $sql . "<br>" . $conn->error;
+        return $conn->error;
     }
 }//end of insertUser
 

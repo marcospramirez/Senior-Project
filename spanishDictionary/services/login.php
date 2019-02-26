@@ -25,6 +25,9 @@ function checkUser($conn) {
     } elseif($checkUserStudentResult == "EMPTY" || $checkUserInstructorResult == "EMPTY") {   //user doesn't exist
         return "none";
     }
+    else{
+        echo json_encode(array("error" => $checkUserStudentResult));
+    }
     //how do i handle uncaught errors???????
 }
 
@@ -36,7 +39,7 @@ function checkUserStudent($conn, $email, $password) {
     } elseif($conn->affected_rows == 0) {   //no results, student doesn't exist
         return "EMPTY";
     } else {
-        return "Error: " . $sql . "<br>" . $conn->error;
+        return $conn->error;
     }
 }
 
@@ -48,7 +51,7 @@ function checkUserInstructor($conn, $email, $password) {
     } elseif($conn->affected_rows == 0) {   //no results, instructor doesn't exist
         return "EMPTY";
     } else {
-        return "Error: " . $sql . "<br>" . $conn->error;
+        return $conn->error;
     }
 }
 
