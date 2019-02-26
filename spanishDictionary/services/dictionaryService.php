@@ -368,6 +368,7 @@
                         $addToDictionary = "INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID', '$last_id');";
 
                         $conn->query($addToDictionary);
+                        header("Location: ../dictionary.php");
                             
                     }
                     else {
@@ -390,8 +391,9 @@
             $tmpName = $_FILES['csv']['tmp_name'];
             $csvAsArray = array_map('str_getcsv', file($tmpName));
 
-            addToDictionary($conn, $dictionaryID, $csvAsArray);
+            addToDictionaryFromFile($conn, $dictionaryID, $csvAsArray);
 
+            header("Location: ../dictionary.php");
             
         } catch (Exception $e) {
             echo json_encode(array("error" => $e->getMessage()));

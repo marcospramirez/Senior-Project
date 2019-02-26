@@ -154,7 +154,7 @@
 
 	}
 
-	function addToDictionary($conn, $dictionaryID, $csvAsArray){
+	function addToDictionaryFromFile($conn, $dictionaryID, $csvAsArray){
 
 		foreach ($csvAsArray as $index => $row) {
 			$entry = $row[0];
