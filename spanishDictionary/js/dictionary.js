@@ -220,7 +220,7 @@ function editEntry(table, row, formData, plainTextFormData, editModalID, errorMs
     xmlRequest.open("POST", URL)
     xmlRequest.onload = function() {
         let data = JSON.parse(xmlRequest.responseText)
-        if(data.hasOwnProperty("msg")) {
+        if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newTermData = [plainTextFormData.entryAudioPath, plainTextFormData.entryText, plainTextFormData.entryDefinition]
                 editTableRow(newTermData, table, row,editModalID)
@@ -238,7 +238,7 @@ function deleteEntry(row, entryID, deleteModalID, previousTableSize, tableHtmlId
     const URL = './services/dictionaryService.php?Action=singleDelete'
     $.post(URL, {entry: entryID}, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("msg")) {
+        if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, remove row from table
                 if(previousTableSize-1 === 0) setEmptyDictionaryView(roleFromSession, tableHtmlId)  //just deleted last term in the dictionary
                 else {  //table not empty

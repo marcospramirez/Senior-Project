@@ -9,6 +9,7 @@ printJQueryCdn();
 printBootstrapJsCdn();
 printMagicGridCdn();
 printFontAwesomeIconsCdn();
+printSelect2Cdn();
 
 printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
@@ -73,7 +74,7 @@ printHeadClose();
                     <div class="form-group">
                         <div id="select-dictionary-body">
                             <label id="dictionary-select-label" for="dictionary-select" class="col-form-label"></label>
-                            <select id="dictionary-select" class="form-control custom-select" title="Select a Dictionary" name="dictionary" required>
+                            <select id="dictionary-select" class="form-control custom-select" title="Select a Dictionary" name="dictionary" style="width: 100%" required>
                                 <option value="" selected disabled hidden>Select a dictionary</option>
                             </select>
                         </div>

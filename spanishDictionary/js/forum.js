@@ -104,7 +104,7 @@ function getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, 
     let addToDictionaryButtonHTML = ''
 
     if(role === 'instructor') { //instructors can view names, star questions and add question-answer pair to a dictionary
-        starButtonHTML = `<div class="col col-sm-auto"><button class="btn btn-sm" title="Click to star answer" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="far fa-star"></i></button></div>`
+        starButtonHTML = `<div class="col col-sm-auto"><button id="answer-${answerID}-star-btn" class="btn btn-sm" title="Click to star answer" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="far fa-star"></i></button></div>`
         answerNameHTML = answerName ? `<div class="answer-name" class="row"><div class="col">${answerName}</div></div>` : ''    //if there's no answerName, then don't create HTML for it
         if(answerID === starredAnswerID) {  //if answer is starred, change HTML accordingly
             addStarredClass = 'starred'  //add 'starred' class to change styling of answer
@@ -146,7 +146,7 @@ function addQuestionToDictionary(questionID) {
         }
         $.post(URL, userData, function(data) {
             data = JSON.parse(data)
-            if(data.hasOwnProperty("msg")) {
+            if(data.hasOwnProperty("message")) {
                 //if post was successful, delete question from forum & show button to go to dictionary
                 if(data.message === "success") {
                     deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dictionaryName, errorMsgId)
@@ -193,12 +193,15 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") { //if post was successful: star/unstar current answer
                 const answerList = document.getElementById(`question-${questionID}-answerlist`)
-                if(starredAnswerID === null) {  //no starred answer for question: star answer, remove "suggested answer" form
+                if(!starredAnswerID) {  //no answer is starred: star current answer, remove "suggested answer" form
                     //remove suggest answer input
                     const suggestAnswerField = document.getElementById(`question-${questionID}-suggest-answer`)
                     answerList.removeChild(suggestAnswerField)
 
                     currentAnswer.classList.add("starred")  //add star to current answer
+                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)
+                    //todo: for every answer in the question, change the starred answer ID to whatever it is now (null, answerID, whatever)
+                    //$(`#answer-${answerID}-star-btn`).attr("onclick",`toggleStarredAnswer(${questionID}, ${answerID}, ${answerID})`)
                     toggleStarIcon(answerID, isCurrentlyStarred)
                 }
                 else if(isCurrentlyStarred) { //if current answer is starred, unstar: remove class from current answer & show suggest answer form
@@ -223,11 +226,13 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                     toggleStarIcon(answerID, isCurrentlyStarred)
                 }//end of else, find starred answer, remove star & add star to current answer
         }} else {    //else, backend error: show error message
+            //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one below
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById('error-message').innerHTML = `Error! ${errorMsg}. URL: ${URL}`
         }//end of else, post was successful: star/unstar current answer
     })//end of post
     .fail(function() {
+        //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one above
         document.getElementById('error-message').innerHTML = `Error, could not connect! URL: ${URL}`
     })
 }//end of toggleStarredAnswer
@@ -243,6 +248,19 @@ function toggleStarIcon(answerID, isStarred) {
         starIcon.classList.add("fas")
     }
 }   //end of toggleStarIcon
+
+function setNewStarredAnswerID(questionID, answerID, starredAnswerID) {
+    const isCurrentlyStarred = answerID === starredAnswerID
+    if(!starredAnswerID) starredAnswerID = answerID //no answer was starred: current answerID is now starredAnswerID
+    else if(isCurrentlyStarred) starredAnswerID = null //current answer is starred: change starredAnswerID to null
+    else starredAnswerID = answerID //else current answer is not starred: current answerID is now starredAnswerID
+
+    const answerArray = document.getElementsByClassName(`question-${questionID}-answer`)
+    $.each(answerArray, function(index, answer) {
+        const starButton = answer.childNodes[1].childNodes[1].childNodes[0]
+        starButton.setAttribute("onclick", `toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})`)
+    })
+}//end of setNewStarredAnswerID
 
 function answerQuestion(questionID) {
     const answerErrorMessage = document.getElementById(`question-${questionID}-suggest-answer-error-message`)
@@ -347,7 +365,7 @@ function parseQuestionTypeText(questionText,splitString) {
 
 function setAddQuestionToDictionaryDropdown(classroomID) {
     const errorMsgId = 'add-to-dict-error-message'
-    let select = $("#add-to-dict")
+    let select = $("#dictionary-select")
     const URL = './services/dictionaryService.php?Action=list'
     $.get(URL, {classroomID: classroomID}, function(data) {
         const dictionaryIDNameSet = getDictionaryIdNameSet(data)
@@ -370,7 +388,7 @@ function deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dic
     const URL = './services/questionService.php?Action=singleDelete'    //todo: 1) is the action correct? 2) is that all the data i have to send?
     $.post(URL, {questionID: questionID}, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("msg")) {
+        if(data.hasOwnProperty("message")) {
             //if post was successful, delete question from forum & show button to go to dictionary
             if(data.message === "success") {
                 showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
