@@ -261,11 +261,11 @@
 
         $sql = "SELECT Dictionary.dictionaryID, Dictionary.dictionaryName from Dictionary, classroomToDictionary WHERE classroomToDictionary.classID = '$classroomID' and classroomToDictionary.dictionaryID = Dictionary.dictionaryID";
 
-         $response = array();
+        $response = array();
 
         $results = [];
       
-        
+        $result = $conn->query($sql);
         if ($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
 
