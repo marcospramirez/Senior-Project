@@ -30,7 +30,7 @@ if(isset($_GET["email"])) {  //if data in post, check user
 
     }
     else {  //fail: show error message
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo json_encode(array("error" => $conn->error));
     }
 }//end of check if there is data in post
 

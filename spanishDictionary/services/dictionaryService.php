@@ -437,7 +437,7 @@
 
                 $conn->query($entryToTagInsertSQl);
 
-                echo json_encode(array("msg" => "success"));
+                echo json_encode(array("message" => "success"));
 
             }
 
@@ -454,7 +454,7 @@
 
             $conn->query($deleteEntry);
 
-            echo json_encode(array("msg" => "success"));
+            echo json_encode(array("message" => "success"));
 
         } catch (Exception $e) {
             echo json_encode(array("error" => $e->getMessage()));
