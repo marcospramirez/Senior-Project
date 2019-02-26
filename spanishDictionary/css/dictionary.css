@@ -1,0 +1,27 @@
+/*=============================================
+              DICTIONARY STYLES
+=============================================*/
+.btn-light {margin: 0 15px}
+
+button.term {  /*outline button*/
+    width: 40px;
+    background-color: transparent;
+    background-image: none;
+    color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+
+button.term:hover {
+    width: 40px;
+    background-image: none;
+    color: white;
+    border-color: var(--dark-ocean);
+    background-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+
+button.term.delete:hover {
+    border-color: var(--danger-red);
+    background-color: var(--danger-red);
+}

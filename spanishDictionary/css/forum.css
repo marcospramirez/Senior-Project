@@ -1,0 +1,84 @@
+/*=============================================
+                 FORUM STYLES
+=============================================*/
+#forum-header h1 {
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+}
+
+.question {
+    width: 30rem;
+    min-width: 3rem;
+    padding: 3%;
+}
+
+.answer {
+    padding: 2%;
+    margin-bottom: 2%;
+    margin-top: 0%;
+}
+
+.answer-header .col {
+    padding-left: 0%;
+}
+
+.question-name {
+    transform: translate(-15px);
+}
+
+.question-name .col, .answer-name .col {
+    color: darkgray;
+}
+
+.question-body {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.answer-list {
+    width: 75%;
+}
+
+.answer-name {
+    text-align: right;
+}
+.suggest-answer {
+    padding: 2%;
+    margin-top: 5%
+}
+
+.starred.answer {
+    color: white;
+    background-color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+}
+
+.answer .btn {
+    color: var(--dark-turquoise);
+    background-color: transparent;
+    border-radius: 100%;
+}
+
+.answer .btn:hover {
+    color: white;
+    background-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+
+.starred .btn {
+    color: white;
+    background-color: transparent;
+    border: none;
+    overflow: hidden;
+    outline:none;
+}
+
+#ask-question-field {
+    width: 100%;
+    padding-top: 3%;
+}
+
+#ask-question-field input {
+    width: 100%
+}

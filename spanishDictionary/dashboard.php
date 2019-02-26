@@ -1,40 +1,46 @@
 <?php
-  require "header.php";
+session_start();
+include_once "includes/head.inc.php";
+include_once "includes/printSessionInfo.inc.php";
+printHeadOpen('Dashboard');
+printGoogleFontsCdn();
+printJQueryCdn();
+printBootstrapCssCdn();
+printBootstrapJsCdn();
+
+printSessionInfo(array('email', 'role'));
+
+echo '
+    <!--CUSTOM CSS-->
+    <link href="css/dashboard.css" rel="stylesheet"/>
+    <!--CUSTOM JS-->
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+';
+
+printHeadClose();
 ?>
 
 <main>
   <div class="container content-frame border rounded">
       <br>
-      <h1 class="col">Gateway Dashboard</h1>
+      <h1 class="col">Dashboard</h1>
       <hr class="hr-header">
-      <div class="div-dictionary">
-        <form  action="dictionary.php" method="get">
-
-
-        <?php
-          require "./includes/dbh.inc.php";
-
-          $sql = "SELECT * FROM Dictionary";
-          $result = $conn->query($sql);
-        
-    
-            if ($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                     $dictionaryID = $row['dictionaryID'];
-                    print "<button type=\"submit\" class=\"btn btn-primary btn-block btn-dictionary text-left truncate\" name=\"dictionaryID\" value=$dictionaryID> Dictionary ";
-                    print_r($dictionaryID);
-                    print "</button>";
-                }
-            }
-        
-        ?>
-
-        </form>
+      <div class="div-dashboard">
+          <div class="card">
+              <div class="card-header">
+                  <h2>Classrooms</h2>
+              </div>
+              <div id="cardBody" class="card-body">
+              </div>
+          </div>
       </div>
       <br>
   </div>
 </main>
+</body>
+</html>
 
 <?php
-  require "footer.php";
+  require_once "includes/footer.inc.php";
 ?>

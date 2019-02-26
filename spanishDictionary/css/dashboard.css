@@ -1,0 +1,14 @@
+/*=============================================
+               DASHBOARD STYLES
+=============================================*/
+.div-dashboard {
+    padding: 0 2%;
+}
+
+.card-header, .card-body, .card-footer {
+    background-color: white;
+}
+
+.card {
+    margin: 3%;
+}

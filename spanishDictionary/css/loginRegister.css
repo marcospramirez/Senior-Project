@@ -1,0 +1,47 @@
+/*=============================================
+           LOGIN & REGISTER STYLES
+=============================================*/
+hr {
+    align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+    background: var(--ghost-gray);
+    border: .5px solid var(--ghost-gray);
+    border-radius: 15px;
+}
+
+.container {
+    text-align: center;
+    width: 40%;
+    padding: 2% 3%;
+    /*margin: 2% auto;*/
+}
+
+.btn {
+    background-color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+    color: white;
+}
+.btn:hover {
+    background-color: var(--dark-turquoise);
+    border-color: var(--dark-turquoise);
+    color: white;
+}
+
+.input {
+    margin: 2% auto;
+    width: 60%;
+    text-align: center;
+}
+
+/*#img-login-logo {*/
+    /*max-width: 40%;*/
+    /*height: auto;*/
+    /*padding: 5%;*/
+/*}*/
+
+/*#img-register-logo {*/
+    /*max-width: 30%;*/
+    /*height: auto;*/
+    /*padding: 5%;*/
+/*}*/

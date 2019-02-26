@@ -1,0 +1,40 @@
+/*=============================================
+      ADD DICTIONARY & ADD STUDENT STYLES
+=============================================*/
+input#dictionary-name {
+    width: 200%;
+    height: calc(3.3rem + 2px);
+    font-size: 1.3em;
+    margin-bottom: 7%;
+    text-align: center;
+}
+
+button#add-import {
+    margin-right: 1.3%;
+}
+
+button.add-more {
+    color: white;
+    background-color: var(--dark-turquoise);
+    border-color: var(--dark-turquoise);
+    border-radius: 100%;
+}
+
+button.add-more:hover {
+    color: white;
+    background-color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+    border-radius: 100%;
+}
+#submit-new.btn {
+    height: calc(3.3rem + 2px);
+    font-size: 1.3em;
+    margin-bottom: 2%;
+}
+
+.hr-entries {
+    width: 80%;
+    margin-top: 0;
+    border: .5px solid var(--ghost-gray);
+    border-radius: 15px;
+}
