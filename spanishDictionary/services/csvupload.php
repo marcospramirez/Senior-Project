@@ -50,11 +50,11 @@
 	               header("Location: ../studentList.php");
 	            }
 	            else{
-	            	echo($conn->error);
+	            	echo json_encode(array("error" => $conn->error));
 	            }
 	        } 
 	        else {
-	            echo "Error: " . $insertSQL . "<br>" . $conn->error;
+	           echo json_encode(array("error" => $conn->error));
 	        }   
         
 		}
@@ -64,7 +64,7 @@
 
 		$dictionaryName = $_POST["dictionaryName"];
 
-		$msg = ["msg" => "Success"];
+		$message = ["message" => "Success"];
 
 		$insertSQL = "INSERT into Dictionary (dictionaryName) VALUES ('$dictionaryName')";
 
@@ -81,7 +81,7 @@
 				$entryDef = $row[1];
 
 				if($entry === "" || $entryDef ===""){
-					$msg["msg"] = "Error, one of the entries was blank";
+					$message["message"] = "Error, one of the entries was blank";
 					break;
 				}
 
@@ -148,7 +148,7 @@
 		header("Location: ../dictionary.php");
 		}
 		else{
-			echo "Error: " . $insertSQL . "<br>" . $conn->error;
+			echo json_encode(array("error" => $conn->error));
 		}
 
 
@@ -163,7 +163,7 @@
 			$entryDef = $row[1];
 
 			if($entry === "" || $entryDef ===""){
-				$msg["msg"] = "Error, one of the entries was blank";
+				$message["message"] = "Error, one of the entries was blank";
 				break;
 			}
 
@@ -219,7 +219,7 @@
 	            }
             }
             else{
-            	echo($conn->error);
+            	echo json_encode(array("error" => $conn->error));
             }
        
         

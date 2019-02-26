@@ -82,7 +82,7 @@
             print $count;
         }
         else {  //fail: show error message
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            echo json_encode(array("error" => $conn->error));
         }
 
 
@@ -127,10 +127,10 @@
 
                         // echo "SUCCESSFULLY INSERTED!!!";
                     } else {
-                        echo "Error: " . $sql . "<br>" . $conn->error;
+                        echo json_encode(array("error" => $conn->error));
                     }
                 } else {
-                    echo "Error: " . $sql . "<br>" . $conn->error;
+                    echo json_encode(array("error" => $conn->error));
                 }
             }
 
@@ -174,7 +174,7 @@
 
             $conn->query($deleteStudentFromClass);
 
-            echo json_encode(array("msg" => "success"));
+            echo json_encode(array("message" => "success"));
 
         } catch (Exception $e) {
             echo json_encode(array("error" => $e->getMessage()));
