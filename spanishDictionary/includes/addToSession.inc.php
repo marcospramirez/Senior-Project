@@ -16,5 +16,6 @@ if(isset($_POST['dictionaryID'])) $_SESSION['dictionaryID'] = $_POST['dictionary
 if(isset($_POST['dictionaryName'])) $_SESSION['dictionaryName'] = $_POST['dictionaryName'];
 if(isset($_POST['personalVocabID'])) $_SESSION['personalVocabID'] = $_POST['personalVocabID'];
 if(isset($_POST['addDictionaryFlag'])) $_SESSION['addDictionaryFlag'] = $_POST['addDictionaryFlag'];
+
 if(isset($_POST["logout"])) session_destroy();  //destroy session
 

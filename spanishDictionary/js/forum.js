@@ -140,7 +140,7 @@ function addQuestionToDictionary(questionID) {
         const dictionaryName = selectData[0].text
 
         const URL = './services/dictionaryService.php?Action=singleAdd'
-        const userData = {  //todo: 1) is the action correct? 2) is that all the data i have to send?
+        const userData = {  //todo marcos
             dictionaryID: dictionaryID,
             questionID: questionID
         }
@@ -199,14 +199,13 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                     answerList.removeChild(suggestAnswerField)
 
                     currentAnswer.classList.add("starred")  //add star to current answer
-                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)
-                    //todo: for every answer in the question, change the starred answer ID to whatever it is now (null, answerID, whatever)
-                    //$(`#answer-${answerID}-star-btn`).attr("onclick",`toggleStarredAnswer(${questionID}, ${answerID}, ${answerID})`)
-                    toggleStarIcon(answerID, isCurrentlyStarred)
+                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
+                    toggleStarIcon(answerID, isCurrentlyStarred)    //change star icon to reflect starredAnswerID change
                 }
                 else if(isCurrentlyStarred) { //if current answer is starred, unstar: remove class from current answer & show suggest answer form
                     currentAnswer.classList.remove("starred")
-                    toggleStarIcon(answerID, isCurrentlyStarred)
+                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
+                    toggleStarIcon(answerID, isCurrentlyStarred)    //change star icon to reflect starredAnswerID change
 
                     //append "suggest answer" form to answer list
                     answerList.innerHTML += getSuggestAnswerHTML(questionID)
@@ -223,7 +222,8 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                         i += 1  //increment loop
                     }
                     currentAnswer.classList.add("starred")  //add star to current answer
-                    toggleStarIcon(answerID, isCurrentlyStarred)
+                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
+                    toggleStarIcon(answerID, isCurrentlyStarred)    //change star icon to reflect starredAnswerID change
                 }//end of else, find starred answer, remove star & add star to current answer
         }} else {    //else, backend error: show error message
             //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one below
@@ -385,7 +385,7 @@ function setAddQuestionToDictionaryDropdown(classroomID) {
 }//end of setAddQuestionToDictionaryDropdown
 
 function deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dictionaryName, errorMsgId) {
-    const URL = './services/questionService.php?Action=singleDelete'    //todo: 1) is the action correct? 2) is that all the data i have to send?
+    const URL = './services/questionService.php?Action=singleDelete'    //todo marcos
     $.post(URL, {questionID: questionID}, function(data) {
         data = JSON.parse(data)
         if(data.hasOwnProperty("message")) {

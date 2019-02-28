@@ -18,6 +18,10 @@ function printSessionInfo($requestedSessionInfoArray) {
 //sessionInfo is not set: redirect to the page where that would usually be set
 function missingSessionInfoRedirect($sessionInfoName) {
     switch ($sessionInfoName) {
+        case 'email':
+            header("Location: ./login.php");
+            exit();
+            break;
         case 'role':
             header("Location: ./login.php");
             exit();
