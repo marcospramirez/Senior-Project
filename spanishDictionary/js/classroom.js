@@ -64,6 +64,11 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
         })
 }//end of showStudentCountButton
 
+function showViewVocabListButton() {
+    let viewVocabListBtnHTML = `<a id="classroom-student-btn" class="col-sm-auto btn dark" href="./vocabList.php">View Vocab List</a>`
+    $('#classroom-div').append(viewVocabListBtnHTML)
+}
+
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
 function showAddDictionaryButton() {
     let addDictionaryButton = `<a id="add-dictionary" class="btn dark col-sm-auto" href="./addDictionary.php"><i class="fas fa-plus"></i> Add Dictionary</a>`
@@ -118,6 +123,7 @@ $(function () {
         showStudentCountButton(classroomID, tableID)
         showAddDictionaryButton()
     }
+    else showViewVocabListButton() //role === 'student
 
     showDictionaryTable(classroomID, classroomName, tableID)
 }) //end of doc ready

@@ -20,6 +20,7 @@ echo '
     <!--CUSTOM JS-->
     <script src="js/utils.js"></script>
     <script src="js/dictionary.js"></script>
+    <script src="js/extendDictionary.js"></script>
 ';
 
 printHeadClose();
