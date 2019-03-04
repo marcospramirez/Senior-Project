@@ -17,6 +17,7 @@ printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 echo '
     <!--CUSTOM JS-->
     <script src="js/utils.js"></script>
+    <script src="js/quizzes.js"></script>
    
 ';
 
@@ -24,7 +25,7 @@ printHeadClose();
 ?>
 
 <main class="container">
-    <div class="container content-frame border rounded">
+    <div id="form-holder" class="container content-frame border rounded">
         <form id="quiz-generation-form">
             <div class="part1">
                 <h3>How should this quiz be generated?</h3>
@@ -46,34 +47,19 @@ printHeadClose();
                 <select id="tags-select" name="tags" multiple="multiple">
                 </select>
             </div>
+
+             <input type="submit" value="Generate Quiz">
         </form>
+
+    </div>
+
+
+    <div id="quizHolder" class="container content-frame border rounded">
+        
+
     </div>
 </main>
 
-<script type="text/javascript">
-    $(document).ready(function(){
-
-
-        $("#tags-select").select2({
-            ajax: {
-                url: 'services/dictionaryService.php?Action=tags',
-                dataType: 'json'
-            },
-            placeholder: 'Tags',
-            width: '100%'
-        });
-
-        $("#dictionary-select").select2({
-            ajax: {
-                url: 'services/dictionaryService.php?Action=dictionarySelect&classroomID=' + classroomIDFromSession,
-                dataType: 'json'
-            },
-            placeholder: 'Dictionaries',
-            width: '100%'
-        });
-    });
-
-</script>
 
 <?php
 include_once "includes/footer.inc.php";
