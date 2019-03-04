@@ -5,7 +5,7 @@ include_once "includes/printSessionInfo.inc.php";
 
 //INSTRUCTOR ONLY PAGE - redirect if not instructor
 if($_SESSION['role'] !== "instructor") {
-    header("Location: login.php");
+    header("Location: index.php");
     exit();
 }
 
