@@ -11,6 +11,10 @@
             generateQuiz($conn);
             break;
 
+        case "gradeQuiz":
+            gradeQuiz($conn);
+            break;
+
         case "no action":
             noAction();
             break;
@@ -23,6 +27,52 @@
 
     closeConnection($conn);
 
+function gradeQuiz($conn){
+    try {
+        $classroomID = $_GET["classroomID"];
+        $matching = $_GET["matching-entry"];
+        $matchingAnswers = $_GET["matching-for"];
+        $response = [];
+
+        $matchingResponse = [];
+        foreach ($matching as $index => $tomatch) {
+            
+            $matchanswer = $matchingAnswers[$tomatch];
+
+            //sql
+            $correctAnswer = $matchanswer;
+            $isCorrect = true;
+
+            $singleMatch = array("question" => $tomatch, "yourAnswer" => $matchanswer, "correctAnswer" => $correctAnswer, "isCorrect" => $isCorrect);
+            $matchingResponse[] = $singleMatch;
+
+        }
+
+        $response["matching"] = $matchingResponse;
+
+        $multipleChoice = $_GET["multipleChoice"];
+
+        $multipleChoiceResponse = [];
+        foreach ($multipleChoice as $question => $answer) {
+            
+            //sql to determine
+
+            $correctAnswer = $answer;
+            $isCorrect = true;
+
+            $singleMultipleChoice = array("question" => $question, "yourAnswer" => $answer, "correctAnswer" => $correctAnswer, "isCorrect" => $isCorrect);
+
+            $multipleChoiceResponse[] = $singleMultipleChoice;
+        }
+
+        $response["multiple choice"] = $multipleChoiceResponse;
+
+        echo json_encode($response);
+
+    } catch (Exception $e) {
+        echo json_encode(array("error" => $e->getMessage()));
+    }
+}
 function generateQuiz($conn){
 	$sql;
 	try{
@@ -138,6 +188,8 @@ function generateQuiz($conn){
     			$k = rand(0, count($falseAnswers) - 1);
     		}
 
+            shuffle($answerArray);
+
     		$answers[$i] = $answerArray;
     	}
 
@@ -157,6 +209,10 @@ function generateQuiz($conn){
     	    
     }
 
+    function noAction(){
+        $retVal = array("error" => "no action error");
+        echo json_encode($retVal);
+    }
 
 
 	
