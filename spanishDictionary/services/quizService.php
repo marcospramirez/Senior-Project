@@ -30,37 +30,57 @@
 function gradeQuiz($conn){
     try {
         $classroomID = $_GET["classroomID"];
-        $matching = $_GET["matching-entry"];
-        $matchingAnswers = $_GET["matching-for"];
+        $matching = $_POST["matching-entry"];
+        $matchingAnswers = $_POST["matching-for"];
         $response = [];
 
         $matchingResponse = [];
-        foreach ($matching as $index => $tomatch) {
+        foreach ($matching as $matchID => $tomatch) {
             
-            $matchanswer = $matchingAnswers[$tomatch];
+            $matchanswer = $matchingAnswers[$matchID];
 
             //sql
-            $correctAnswer = $matchanswer;
-            $isCorrect = true;
+            $getEntrySQL = "SELECT entryText, entryDefinition from Entry where entryID = '$matchID'";
 
-            $singleMatch = array("question" => $tomatch, "yourAnswer" => $matchanswer, "correctAnswer" => $correctAnswer, "isCorrect" => $isCorrect);
+            $realEntry = $conn->query($getEntrySQL)->fetch_assoc();
+
+            $realEntryDefinition = $realEntry["entryDefinition"];
+
+            if($realEntryDefinition == $matchanswer){
+                $isCorrect = true;
+            }
+            else{
+                $isCorrect = false;
+            }
+           
+            $singleMatch = array("question" => $tomatch, "yourAnswer" => $matchanswer, "correctAnswer" => $realEntryDefinition, "isCorrect" => $isCorrect);
+
             $matchingResponse[] = $singleMatch;
 
         }
 
         $response["matching"] = $matchingResponse;
 
-        $multipleChoice = $_GET["multipleChoice"];
-
+        $multipleChoice = $_POST["multipleChoice"];
         $multipleChoiceResponse = [];
-        foreach ($multipleChoice as $question => $answer) {
+        foreach ($multipleChoice as $id => $answer) {
             
             //sql to determine
+            $getEntrySQL = "SELECT entryText, entryDefinition from Entry where entryID = '$id'";
+            $realEntry = $conn->query($getEntrySQL)->fetch_assoc();
 
-            $correctAnswer = $answer;
-            $isCorrect = true;
+            $realEntryText = $realEntry["entryText"];
 
-            $singleMultipleChoice = array("question" => $question, "yourAnswer" => $answer, "correctAnswer" => $correctAnswer, "isCorrect" => $isCorrect);
+            if($realEntryText == $answer){
+                $isCorrect = true;
+            }
+            else{
+                $isCorrect = false;
+            }
+
+            $question = $realEntry["entryDefinition"];
+
+            $singleMultipleChoice = array("question" => $question, "yourAnswer" => $answer, "correctAnswer" => $realEntryText, "isCorrect" => $isCorrect);
 
             $multipleChoiceResponse[] = $singleMultipleChoice;
         }
@@ -83,7 +103,7 @@ function generateQuiz($conn){
 		if($generateType == "dictionary"){
 			$allDictionariesorChoose = $_GET["dictionaryAmount"];
 			if($allDictionariesorChoose == "alldictionaries"){
-				$sql = "SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID in (SELECT Dictionary.dictionaryID from Dictionary, classroomToDictionary WHERE classroomToDictionary.classID = '$classroomID' and classroomToDictionary.dictionaryID = Dictionary.dictionaryID) ";
+				$sql = "SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID in (SELECT Dictionary.dictionaryID from Dictionary, classroomToDictionary WHERE classroomToDictionary.classID = '$classroomID' and classroomToDictionary.dictionaryID = Dictionary.dictionaryID) ";
 			}
 			else{ //dictionaries Chosen
 				$dictionaryIDs = $_GET["dictionarySelect"];
@@ -94,7 +114,7 @@ function generateQuiz($conn){
 
 				$allDictionaryIDs = implode(',' , $dictionaryIDs);
 
-				$sql = "SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID in (" . $allDictionaryIDs . ") ";
+				$sql = "SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID in (" . $allDictionaryIDs . ") ";
 			}
 		}
 
@@ -135,7 +155,7 @@ function generateQuiz($conn){
 
     if ($result->num_rows > 2){
         while($row = $result->fetch_assoc()){
-            $matchingEntries[]= $row["entryText"];
+            $matchingEntries[]= array("text" => $row["entryText"], "id"=> $row["entryID"]);
             $matchingDefinitions[] = $row["entryDefinition"];
         }
 
@@ -167,8 +187,8 @@ function generateQuiz($conn){
     		$falseAnswers[] = $row["entryText"];
 
     		if($index < 5){
-    			$definitions[$index] = $row["entryDefinition"];
-    			$answers[$index] = array($row["entryText"]);
+    			$definitions[$index] = array("text" => $row["entryDefinition"], "id" => $row["entryID"]);
+    			$answers[$index] = array($row["entryText"]);//setting as array so I can add random choices to it later
     		}
 
     		$index ++;
