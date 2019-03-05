@@ -73,7 +73,7 @@ $ (function() {
 
     updateVocabListHeader(classroomName)
     displayVocabListTable(classroomID, tableHtmlId)
-    setTagLibrary(tagSelectHTMLId)    //use select2 to have dynamic tag selection
+    // setTagLibrary(tagSelectHTMLId)    //use select2 to have dynamic tag selection
 
     //hijack filter form to display filtered table
     let filterForm = $('#filter-list-form')
