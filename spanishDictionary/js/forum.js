@@ -110,14 +110,14 @@ function getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, 
             addStarredClass = 'starred'  //add 'starred' class to change styling of answer
             starButtonHTML = starButtonHTML.replace('Click to star answer', 'Click to unstar answer')   //change button title to reflect toggle
             starButtonHTML = starButtonHTML.replace('far', 'fas')   //change the star icon from a outlined star to a solid one, indicating starred status
-            addToDictionaryButtonHTML = `<div class="col col-sm-auto"><button class="btn btn-sm" title="Add to Dictionary" onclick="addQuestionToDictionary(${questionID})"><i class="fas fa-plus"></i></button></div>`
+            addToDictionaryButtonHTML = getAddToDictBtnHTML(questionID, answerID)
         }
     }   //else, role === student: don't show any star HTML or answer names
 
     return `        <div id="answer-${answerID}" class="question-${questionID}-answer ${addStarredClass} answer content-frame border rounded">
                         <div class="answer-body row align-items-center">
                             ${starButtonHTML}
-                            ${addToDictionaryButtonHTML}
+                            <div id="answer-${answerID}-add-to-dict" class="col col-sm-auto">${addToDictionaryButtonHTML}</div>
                             <div class="col">
                                 <div class="row answer-text"><div class="col">${answerText}</div></div>
                                 ${answerNameHTML}
@@ -125,6 +125,10 @@ function getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, 
                         </div>
                     </div>`
 }//end of getAnswerHTML
+
+function getAddToDictBtnHTML(answerID, questionID) {
+    return `<button id="answer-${answerID}-add-to-dict-btn" class="btn btn-sm" title="Add to Dictionary" onclick="addQuestionToDictionary(${questionID})"><i class="fas fa-plus"></i></button>`
+}
 
 function addQuestionToDictionary(questionID) {
     const errorMsgId = 'add-to-dict-error-message'
@@ -200,12 +204,12 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
 
                     currentAnswer.classList.add("starred")  //add star to current answer
                     setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
-                    toggleStarIcon(answerID, isCurrentlyStarred)    //change star icon to reflect starredAnswerID change
+                    toggleStarIcon(answerID, isCurrentlyStarred)    //star current answer
                 }
                 else if(isCurrentlyStarred) { //if current answer is starred, unstar: remove class from current answer & show suggest answer form
                     currentAnswer.classList.remove("starred")
                     setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
-                    toggleStarIcon(answerID, isCurrentlyStarred)    //change star icon to reflect starredAnswerID change
+                    toggleStarIcon(answerID, isCurrentlyStarred)    //unstar current answer
 
                     //append "suggest answer" form to answer list
                     answerList.innerHTML += getSuggestAnswerHTML(questionID)
@@ -223,7 +227,8 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                     }
                     currentAnswer.classList.add("starred")  //add star to current answer
                     setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
-                    toggleStarIcon(answerID, isCurrentlyStarred)    //change star icon to reflect starredAnswerID change
+                    toggleStarIcon(starredAnswerID, true, questionID)    //unstar starred answer
+                    toggleStarIcon(answerID, isCurrentlyStarred, questionID)    //star current answer
                 }//end of else, find starred answer, remove star & add star to current answer
         }} else {    //else, backend error: show error message
             //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one below
@@ -237,15 +242,20 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
     })
 }//end of toggleStarredAnswer
 
-function toggleStarIcon(answerID, isStarred) {
+function toggleStarIcon(answerID, isStarred, questionID) {
     let starIcon = document.getElementById(`answer-${answerID}-star`)
+    let addToDictDiv = document.getElementById(`answer-${answerID}-add-to-dict`)
     if(isStarred) {
         starIcon.classList.remove("fas")
         starIcon.classList.add("far")
+
+        addToDictDiv.innerHTML = '' //remove "add to dictionary" button
     }
     else {
         starIcon.classList.remove("far")
         starIcon.classList.add("fas")
+
+        addToDictDiv.innerHTML = getAddToDictBtnHTML(questionID, answerID)   //add "add to dictionary" button
     }
 }   //end of toggleStarIcon
 
@@ -258,7 +268,9 @@ function setNewStarredAnswerID(questionID, answerID, starredAnswerID) {
     const answerArray = document.getElementsByClassName(`question-${questionID}-answer`)
     $.each(answerArray, function(index, answer) {
         const starButton = answer.childNodes[1].childNodes[1].childNodes[0]
-        starButton.setAttribute("onclick", `toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})`)
+        const currentOnclick = starButton.getAttribute("onclick")   //grab the current toggleStarredAnswer
+        const currentAnswerID = parseInt(currentOnclick.split(",")[1])  //grab the second parameter, which is the answerID
+        starButton.setAttribute("onclick", `toggleStarredAnswer(${questionID}, ${currentAnswerID}, ${starredAnswerID})`)
     })
 }//end of setNewStarredAnswerID
 
