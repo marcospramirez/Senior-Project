@@ -41,13 +41,15 @@ $(document).ready(function(){
 
                     quizHTML += "<div id='matching'>";
 
-                    matchingEntries.forEach(entry =>{
+                    matchingEntries.forEach(entryArray =>{
                         
+                        let entry = entryArray["text"];
+                        let id = entryArray["id"];
 
                         quizHTML += "<div>"
                         quizHTML += `<label>${entry}</label>`
-                        quizHTML += `<input type="hidden" name="matching-entry[]" value="${entry}">` 
-                        quizHTML += `<select name="matching-for[${entry}]">`
+                        quizHTML += `<input type="hidden" name="matching-entry[${id}]" value="${entry}">` 
+                        quizHTML += `<select name="matching-for[${id}]">`
 
                         matchingDefinitions.forEach(definition =>{
                             quizHTML += `<option value="${definition}">${definition}</option>`;
@@ -64,18 +66,20 @@ $(document).ready(function(){
                     quizHTML += '<div id="multiple-choice">'
 
                     multipleChoiceQuestions.forEach(question =>{
-                        let label = question["definition"];
+                        let questionArray = question["definition"];
+
+                        let label = questionArray["text"];
+                        let id = questionArray["id"];
 
                         let choices = question["choices"];
 
                         quizHTML += "<div>";
                         quizHTML += '<label>' + label +'</label>';
-                        quizHTML += `<input type="hidden" value = "${label}">`; 
                         quizHTML += '<div>';
                         choices.forEach(choice =>{
 
-                            quizHTML += '<input type="radio" id="multipleChoice' + label + '-' + choice + '" name="multipleChoice[' + label + ']" value="' + choice +'">';
-                            quizHTML += '<label for="multipleChoice-' + label + '-' + choice + '">' + choice + '</label>';
+                            quizHTML += '<input type="radio" id="multipleChoice-' + choice.replace(/\s/g,'') + '-' + label.replace(/\s/g,'') +'" name="multipleChoice[' + id + ']" value="' + choice +'">';
+                            quizHTML += '<label for="multipleChoice-' + choice.replace(/\s/g,'') + '-' + label.replace(/\s/g,'') + '">' + choice + '</label>';
                             
                         })
 
@@ -108,7 +112,7 @@ $(document).ready(function(){
                 $("#quizHolder").slideUp();
 
                 let gradeURL = 'services/quizService.php?Action=gradeQuiz&classroomID=' + classroomIDFromSession;
-                $.get(gradeURL, quiz, function(data) {
+                $.post(gradeURL, quiz, function(data) {
                     console.log("success");
                 });
 
