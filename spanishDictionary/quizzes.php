@@ -32,18 +32,20 @@ printHeadClose();
                 <input type="radio" id="dictionary" value="dictionary" name="quizType"><label for="dictionary">Dictionary</label>
                 <input type="radio" id="personal-vocab-list" value="personal-vocab-list" name="quizType"><label for="personal-vocab-list">Personal Vocab List</label>
             </div>
-            <div class="part2">
+            <div class="part2" style="display: none">
                 <h3>All dictionaries or chooose your own?</h3>
-                <input type="radio" id="alldictionaries" value="alldictionaries" name="dictionaryAmount"><label for="alldictionaries">All Dictionaries</label>
+                <input type="radio" id="alldictionaries" value="alldictionaries" name="dictionaryAmount" selected="selected"><label for="alldictionaries">All Dictionaries</label>
                 <input type="radio" id="chooseOwn" value="chooseOwn" name="dictionaryAmount"><label for="chooseOwn">Choose your own</label>
             </div>
-            <div class="part3">
+            <div class="part3" style="display: none">
                 <h3>Choose Dictionaries</h3>
                 <select id="dictionary-select" name="dictionarySelect">
                 </select>
             </div>
 
             <div class="part4">
+                <h3>Select tags (optional)</h3>
+                <p>*note: selecting tags may limit the number of entries that can be used to create a quiz and prevent one from being made</p>
                 <select id="tags-select" name="tags" multiple="multiple">
                 </select>
             </div>

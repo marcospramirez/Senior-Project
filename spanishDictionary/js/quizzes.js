@@ -1,11 +1,35 @@
 $(document).ready(function(){
 
+    $( "input[name='quizType']" ).change(function() {
+        let quizType = $(this).val();
+
+        if(quizType == "dictionary"){
+            $(".part2").slideDown();
+            $("#alldictionaries").prop("checked", true);
+
+        }
+        else{
+            $(".part3").slideUp();
+            $(".part2").slideUp();
+        }
+    });
+    $( "input[name='dictionaryAmount']" ).change(function() {
+        let amount = $(this).val();
+
+        if(amount == "chooseOwn"){
+            $(".part3").slideDown();
+        }
+        else{
+            $(".part3").slideUp();
+        }
+    });
+
     $("#tags-select").select2({
         ajax: {
             url: 'services/dictionaryService.php?Action=tags',
             dataType: 'json'
         },
-        placeholder: 'Tags',
+        placeholder: 'Tags (optional)',
         width: '100%'
     });
 
