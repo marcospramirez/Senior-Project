@@ -143,7 +143,7 @@ function addQuestionToDictionary(questionID) {
         const dictionaryID = selectData[0].id
         const dictionaryName = selectData[0].text
 
-        const URL = './services/dictionaryService.php?Action=singleAdd'
+        const URL = './services/questionService.php?Action=addQuestionToDictionary'
         const userData = {  //todo marcos
             dictionaryID: dictionaryID,
             questionID: questionID
@@ -153,7 +153,7 @@ function addQuestionToDictionary(questionID) {
             if(data.hasOwnProperty("message")) {
                 //if post was successful, delete question from forum & show button to go to dictionary
                 if(data.message === "success") {
-                    deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dictionaryName, errorMsgId)
+                    showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
                 }} else {   //else, backend error: show error message
                 const errorMsg = data.hasOwnProperty("error") ? data.error : data
                 document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
@@ -335,12 +335,11 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     const URL = './services/questionService.php?Action=getQuestionTypes'
     $.get(URL, {}, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
-            if(data.message === "success") {    //if post was successful, set question dropdown
-                const optionListHTML = getQuestionTypeOptions(data)
-                select.append(optionListHTML)   //append html to select
-                select.select2()    //initialize as select2 markup
-            }} else {   //else, backend error: show error message
+        if(!(data.hasOwnProperty("error") || data.length === 0)) {    //if post was successful, set question dropdown
+            const optionListHTML = getQuestionTypeOptions(data)
+            select.append(optionListHTML)   //append html to select
+            select.select2()    //initialize as select2 markup
+        } else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(askQuestionErrorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
         }
@@ -395,55 +394,6 @@ function setAddQuestionToDictionaryDropdown(classroomID) {
         document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
     })
 }//end of setAddQuestionToDictionaryDropdown
-
-function deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dictionaryName, errorMsgId) {
-    const URL = './services/questionService.php?Action=singleDelete'    //todo marcos
-    $.post(URL, {questionID: questionID}, function(data) {
-        data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
-            //if post was successful, delete question from forum & show button to go to dictionary
-            if(data.message === "success") {
-                showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
-    })
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
-}//end of deleteQuestionAndShowGoToDictionaryButton
-
-function hideGoToDictionaryBtn() {
-    let goToDictBtn = document.getElementById("go-to-dict-btn")
-    goToDictBtn.innerHTML = ''
-
-    document.getElementById("add-to-dict-success-message").innerHTML = ''   //clear success message
-}
-
-function showGoToDictionaryBtn(dictionaryID, dictionaryName, successMessage = '') {
-    let goToDictBtn = document.getElementById("go-to-dict-btn")
-    const userData = {
-        dictionaryID:dictionaryID,
-        dictionaryName: dictionaryName
-    }
-    goToDictBtn.innerHTML = `<button class="btn dark" onclick="addToSession(${userData}, 'goTo', './dictionary.php')">Go to Dictionary</button>`
-    goToDictBtn.style.display = 'block'
-
-    document.getElementById("add-to-dict-success-message").innerHTML = successMessage
-}
-
-function getDictionaryOptions(dictionaryIDNameSet) {
-    const dictionaryIDArray = dictionaryIDNameSet.dictionaryIdArray
-    const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
-    let optionListHTML = ''
-
-    $.each(dictionaryIDArray, function(i, v) {
-        optionListHTML += `<option value="${dictionaryIDArray[i]}">${dictionaryNameArray[i]}</option>`  //add option to option list
-    })
-
-    return optionListHTML
-}
 
 function displayQuestionInput() {
     const questionField = document.getElementById("ask-question-field")

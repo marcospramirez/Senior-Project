@@ -52,7 +52,7 @@ function getStudentColumnData(role) {
                 orderable: false,
                 data: "delete",
                 width: "5%",
-                defaultContent: "<button class=\"btn btn-outline-danger student delete\"><i class=\"fas fa-trash\"></i></button>"
+                defaultContent: "<button title='Delete Student from Classroom' class=\"btn btn-outline-danger student delete\"><i class=\"fas fa-trash\"></i></button>"
             })
     }
     return columnData

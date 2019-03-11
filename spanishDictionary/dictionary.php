@@ -12,7 +12,7 @@ printDataTablesCdn();
 printFontAwesomeIconsCdn();
 printSelect2Cdn();
 
-printSessionInfo(array('role', 'dictionaryID', 'dictionaryName'));
+printSessionInfo(array('email', 'role', 'classroomID', 'dictionaryID', 'dictionaryName'));
 
 echo '
     <!--CUSTOM CSS-->
