@@ -61,7 +61,13 @@ function gradeQuiz($conn){
 
         $response["matching"] = $matchingResponse;
 
-        $multipleChoice = $_POST["multipleChoice"];
+        if(isset($_POST["multipleChoice"])){
+          $multipleChoice = $_POST["multipleChoice"];  
+        }
+        else{
+            $multipleChoice = [];
+        }
+        
         $multipleChoiceResponse = [];
         foreach ($multipleChoice as $id => $answer) {
             
@@ -117,6 +123,12 @@ function generateQuiz($conn){
 				$sql = "SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID in (" . $allDictionaryIDs . ") ";
 			}
 		}
+        else{
+            //vocab list
+            $email = $_GET["email"];
+
+            $sql = "SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath FROM Entry where entryID in (SELECT entryID from entryToPersonalVocabList, studentToClassroom where studentToClassroom.studentEmail = '$email' and studentToClassroom.classroomID = '$classroomID' and entryToPersonalVocabList.personalVocabID = studentToClassroom.personalVocabID)";
+        }
 
 		if(isset($_GET["tags"])){
 			
@@ -134,8 +146,6 @@ function generateQuiz($conn){
 		}
 
 		$sql .= " ORDER BY RAND()";
-
-
 	}
 	catch(Exception $e){
         echo json_encode(array("error" => $e->getMessage()));
@@ -152,7 +162,7 @@ function generateQuiz($conn){
     $matchingDefinitions = [];
     
     $result = $conn->query($matching);
-
+    $noMathching = false;
     if ($result->num_rows > 2){
         while($row = $result->fetch_assoc()){
             $matchingEntries[]= array("text" => $row["entryText"], "id"=> $row["entryID"]);
@@ -167,6 +177,9 @@ function generateQuiz($conn){
 
         $returnQuestions[] = $matchingQuestions;
     }
+    else{
+        $noMathching = true;
+    }
 
 
     $multipleChoice = $sql;
@@ -180,7 +193,7 @@ function generateQuiz($conn){
     $falseAnswers = [];
 
     $result = $conn->query($multipleChoice);
-
+    $noMultipleChoice = false;
     if($result->num_rows > 4){
     	while($row = $result->fetch_assoc()){
 
@@ -224,10 +237,23 @@ function generateQuiz($conn){
 
     	$returnQuestions[] = $multipleChoiceQuestions;
 
-    	header('Content-Type: text/html; charset=utf-8');
-    	echo json_encode($returnQuestions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    	
     	    
     }
+
+    else{
+        $noMultipleChoice = true;
+    }
+
+    if($noMultipleChoice && $noMathching){
+         echo json_encode(array("error" => "not enough entries"));
+    }
+    else{
+        header('Content-Type: text/html; charset=utf-8');
+        echo json_encode($returnQuestions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+}
+
 
     function noAction(){
         $retVal = array("error" => "no action error");
@@ -241,4 +267,3 @@ function generateQuiz($conn){
 
 
 
-}

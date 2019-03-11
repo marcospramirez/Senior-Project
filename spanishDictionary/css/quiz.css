@@ -1,0 +1,56 @@
+#quiz-generation-form, #quizForm, #gradedQuizHolder{
+	text-align: center;
+    padding-bottom: 30px;
+}
+#quiz-generation-form div, #quizForm div, #gradedQuizHolder div{
+	max-width: 500px;
+	text-align: left;
+	margin: auto;
+}
+
+#quiz-generation-form label, #quizForm label{
+    padding: 0px 10px 10px 2px;
+}
+div.part3{
+    margin-bottom: 20px !important;
+}
+h3{
+	margin-bottom: 2px;
+
+}
+
+h1{
+	margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+p{
+	font-size: 14px;
+}
+
+input[type="submit"]{
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.incorrect, .correct{
+	width: fit-content !important;
+    margin: 10px 0 !important;
+	padding: 24px 20px;
+    border-radius: 10%;
+}
+
+.correct{
+    background: #bbe0bb;   
+}
+
+.incorrect{
+	background: #ff7a70;
+}
+
+#percentage{
+    text-align: center !important;
+    font-weight: bold;
+    font-size: 50px;
+    margin-bottom: 30px;
+}
