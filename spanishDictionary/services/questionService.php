@@ -34,6 +34,10 @@
             noAction();
             break;
 
+        case "addQuestionToDictionary":
+            addQuestiontoDictionary($conn);
+            break;
+
         default:
             noAction();
             break;
@@ -154,7 +158,7 @@
         if($conn->query($insertAnswer)){
             $lastAnswerInserted = $conn->insert_id;
             
-            if($answerRole == 1){
+            if($answerRole == "1"){
                 
                 starAnswerAction($conn, $lastAnswerInserted); 
             }
@@ -187,6 +191,8 @@
             else{
                 echo json_encode(array("error" => "error uploading question"));      
             }
+        }else{
+            $conn->query($updateQuestionWithStarredAnswer);
         }
        
     }
@@ -260,6 +266,83 @@
         $returnArray[] = array("questionType" =>3, "questionText" => "Other");
 
         echo json_encode($returnArray);
+    }
+
+    function addQuestiontoDictionary($conn){
+        try{
+            $questionID = $_POST["questionID"];
+            $dictionaryID = $_POST["dictionaryID"];
+
+            $questionResults = $conn->query("SELECT questionType, questionText, starredAnswer from Question where questionID = '$questionID'");
+
+            if ($questionResults->num_rows > 0){
+
+                while($question = $questionResults->fetch_assoc()){
+                    $questionType = $question["questionType"];
+                    $questionText = $question["questionText"];
+
+                    $answerID = $question["starredAnswer"];
+
+                }
+            }
+            else{
+                 echo json_encode(array("error" => "no question found"));
+                 die();
+            }
+
+            $answerResults = $conn->query("SELECT answerText from Answer where answerID = '$answerID'");
+
+            while ($answer = $answerResults->fetch_assoc()) {
+                 $answerText = $answer["answerText"];
+            }
+           
+
+            $sql = "";
+            if($questionType == '1'){
+                //questionText is english
+                //answerText is spanish
+
+                $sql = "INSERT INTO Entry (entryText, entryDefinition, entryAudioPath) VALUES ('$answerText' , '$questionText', '')";
+            }
+            else if($questionType == '2'){
+                //questionText is spanish
+                //answerText is english
+
+                $sql = "INSERT INTO Entry (entryText, entryDefinition, entryAudioPath) VALUES ('$questionText' , '$answerText', '')";
+            }
+            else{
+                echo json_encode(array("error" => "Custom question cannot be added to dictionary", "questionType" => $questionType));
+            }
+
+            if($sql == ""){
+                echo json_encode(array("error" => "Question Type not defined", "questionType" => $questionType));
+                die();
+            }
+            if($conn->query($sql)){
+                $lastID = $conn->insert_id;
+
+                $conn->query("INSERT INTO entryToDictionary (dictionaryID, entryID) VALUES ('$dictionaryID','$lastID')");
+
+
+                $conn->query("DELETE From Question where questionID = '$questionID'");
+                $conn->query("DELETE from Answer where questionID = '$questionID'");
+
+
+
+                echo json_encode(array("message" => "success"));
+
+            }
+            else{
+                echo json_encode(array("error" => "error inserting question", "sql" => $sql));
+            }
+
+
+        }
+        catch(Exception $e){
+            echo json_encode(array("error" => $e->getMessage()));
+
+        }
+
     }
 
 
