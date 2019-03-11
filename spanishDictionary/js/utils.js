@@ -14,10 +14,10 @@ function hideGoToDictionaryBtn() {
 function showGoToDictionaryBtn(dictionaryID, dictionaryName, successMessage = '') {
     let goToDictBtn = document.getElementById("go-to-dict-btn")
     const userData = {
-        dictionaryID:dictionaryID,
+        dictionaryID: dictionaryID,
         dictionaryName: dictionaryName
     }
-    goToDictBtn.innerHTML = `<button class="btn dark" onclick="addToSession(${userData}, 'goTo', './dictionary.php')">Go to Dictionary</button>`
+    goToDictBtn.innerHTML = `<button class='btn dark' onclick='addToSession(${JSON.stringify(userData)}, "goTo", "./dictionary.php")'>Go to Dictionary</button>`
     goToDictBtn.style.display = 'block'
 
     document.getElementById("add-to-dict-success-message").innerHTML = successMessage
@@ -70,19 +70,4 @@ function addToSession(userData, movementFlag = null, URL = null) {
     .fail(function(data){  //failed to connect
         console.log("Error! " + data)
     })
-}
-
-function logout(){
-    const addToSessionURL = "./includes/addToSession.inc.php"
-    $.post(addToSessionURL, {logout : true}, function() {  //added userData successfully
-        window.location.href = "./login.php"   //go to URL, adding past location to history
-    })
-    .fail(function(data){  //failed to connect
-        console.log("Error! " + data)
-    })
-}
-
-function switchtoClassroom(classID , className){
-    let currentPage =  window.location.href;
-    addToSession({classroomID: classID, classroomName: className}, 'redirectTo', currentPage);
 }

@@ -106,43 +106,37 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
 }//end of showDictionaryTable
 
 function setAddDefaultDictionaryToClassroomDropdown() {
-    const errorMsgId = 'add-default-dict-error-message'
-    let select = $("#dictionary-select")
-    const URL = './services/dictionaryService.php?Action=defaultList'
-    $.get(URL, function(data) {
-        //todo: customize this function to what I receive (do I get an success/error message? do i just get an array?)
-        const dictionaryIDNameSet = getDictionaryIdNameSet(data)    //todo: how am I getting this data>
-        if(dictionaryIDNameSet.dictionaryIdArray.length === 0) {  //no dictionaries received: error
-            document.getElementById(errorMsgId).innerHTML = `Error, no dictionaries received! URL: ${URL}`
-        } else {    //classroom has dictionaries, show dictionaries in dropdown
-            const optionListHTML = getDictionaryOptions(dictionaryIDNameSet)
-            select.append(optionListHTML)   //append html to select
-            select.select2()    //initialize as select2 markup
-        }
+    $("#dictionary-select").select2({
+        ajax: {
+            url: './services/dictionaryService.php?Action=getAllBuiltInDictionaries',
+            dataType: 'json'
+        },
+        dropdownParent: $("#add-default-dict"),
+        placeholder: 'Built-in Dictionaries',
+        width: '100%'
     })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
 }//end of setAddDefaultDictionaryToClassroomDropdown
 
 function addDefaultDictionaryToClassroom(classroomID) {
     const errorMsgId = 'add-default-dict-error-message'
     const selectHTMLId = 'dictionary-select'
     let selectData = $(`#${selectHTMLId}`).select2('data')  //get data from select markup
-    const dictionaryID = selectData[0].id
-    const dictionaryName = selectData[0].text
+    const builtInDictionaryID = selectData[0].id
+    const builtInDictionaryName = selectData[0].text
 
-    const URL = './services/dictionaryService.php?Action=singleAdd'
+    const URL = './services/dictionaryService.php?Action=addBuiltInDictionary'
     const userData = {  //todo marcos
-        dictionaryID: dictionaryID,
-        classroomID: classroomID
+        builtInDictionaryID: builtInDictionaryID,
+        class: classroomID
     }
     $.post(URL, userData, function(data) {
         data = JSON.parse(data)
         if(data.hasOwnProperty("message")) {
             //if post was successful, delete question from forum & show button to go to dictionary
             if(data.message === "success") {
-                showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
+                const dictionaryID = data.id
+                const dictionaryName = data.name
+                showGoToDictionaryBtn(dictionaryID, dictionaryName, `${builtInDictionaryName} was added to ${classroomNameFromSession}!`)
             }} else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`

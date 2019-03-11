@@ -209,7 +209,7 @@ function editDictionaryButtonClicked(tableHtmlId, row) {
             formData.append("entryID", entryID)
 
             const plainTextFormData = {entryAudioPath: newEntryAudio, entryText: newEntryText, entryDefinition: newEntryDefinition}
-            editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId)
+            editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId)
         }else { //user didn't change term, show error message
             document.getElementById(errorMsgId).innerHTML = 'Please edit the term or close the dialog box.'
         }
@@ -268,7 +268,7 @@ function areMatchingArrays(array1, array2) {
     else return false
 }//end of areMatchingArrays
 
-function editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId) {
+function editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId) {
     const URL = "./services/dictionaryService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
@@ -277,7 +277,7 @@ function editEntry(table, row, formData, plainTextFormData, editModalID, errorMs
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newTermData = [plainTextFormData.entryAudioPath, plainTextFormData.entryText, plainTextFormData.entryDefinition]
-                editTableRow(newTermData, table, row,editModalID)
+                editTableRow(newTermData, tableHtmlId, row,editModalID)
             }} else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`

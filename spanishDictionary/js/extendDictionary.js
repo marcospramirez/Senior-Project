@@ -1,5 +1,5 @@
 function playAudio(audioPath) {
-    var audio = new Audio(`audio/${audioPath}`)
+    const audio = new Audio(`audio/${audioPath}`)
     audio.play()
 }
 
@@ -167,7 +167,8 @@ function clearFilter(data, tableHtmlId) {
 }
 
 //in order to edit table at specific row index, redraw whole table with new entry data
-function editTableRow(data, table, row, editModalID) {
+function editTableRow(data, tableHtmlId, row, editModalID) {
+    let table = $(`#${tableHtmlId}`).DataTable()
     const index = row.index()
     row.remove()    //delete old row
     let currentRows = table.data().toArray()  //get table data

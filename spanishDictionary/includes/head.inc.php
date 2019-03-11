@@ -123,9 +123,11 @@ function printHeadClose() {
             $currentClassroomID = $_SESSION['classroomID'];
             $currentClassroomName = $_SESSION['classroomName'];
 
-            $navHtml .= '<div class="dropdown" style="margin-right: 1rem">
+            $currentPage = basename($_SERVER['PHP_SELF']);
+            if($currentPage != 'dashboard.php') {   //don't show classroom dropdown in dashboard
+                $navHtml .= '<div class="dropdown" style="margin-right: 1rem">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
-                        $currentClassroomName.'
+                    $currentClassroomName.'
                       </button>
 
                       <div class="dropdown-menu" aria-labelledby="classroomNavigation">
@@ -133,6 +135,7 @@ function printHeadClose() {
                         <a class="dropdown-item" href="./forum.php">Forum</a>
                       </div>
                     </div>';
+            }//end of if: don't show classroom dropdown in dashboard
         }
                                         
                     
@@ -152,7 +155,6 @@ function getClassroomsForNavHtml($email, $role){
         $currentClass = $_SESSION['classroomID'];
     }
     $html = "";
-    $sql;
     if($role =="instructor"){
         $sql = "SELECT classID, className FROM Classroom, Instructor WHERE instructorEmail = email AND email = '$email';";
     }
