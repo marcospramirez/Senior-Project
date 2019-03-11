@@ -60,10 +60,14 @@
 		}
 	}
 
-	function uploadNewDictionary($conn, $classID, $csvAsArray){
+	function uploadNewDictionary($conn, $classID, $csvAsArray, $dictionaryName = null){
 
-		$dictionaryName = $_POST["dictionaryName"];
-
+		$calledFromBuiltInDictionary = true;
+		if($dictionaryName == null){
+			$dictionaryName = $_POST["dictionaryName"];
+			$calledFromBuiltInDictionary = false;
+		}
+		
 		$message = ["message" => "Success"];
 
 		$insertSQL = "INSERT into Dictionary (dictionaryName) VALUES ('$dictionaryName')";
@@ -72,7 +76,7 @@
 		if ($conn->query($insertSQL)) {
     		$dictID = $conn->insert_id;
 
-    		$conn->query("INSERT into classRoomToDictionary (classID, dictionaryID) VALUES ('$dictID' , '$classID'");
+    		$conn->query("INSERT into classroomToDictionary (classID, dictionaryID) VALUES ('$classID' , '$dictID')");
 
 			foreach ($csvAsArray as $index => $row) {
 				$entry = $row[0];
@@ -142,10 +146,17 @@
 	       
 	        
 			}
-		session_start();
-		$_SESSION["dictionaryName"] = $dictionaryName;
-		$_SESSION["dictionaryID"] = $dictID;
-		header("Location: ../dictionary.php");
+
+			if($calledFromBuiltInDictionary){
+				echo json_encode(array("message" => "success", "id" => $dictID, "name" => $dictionaryName));
+			}
+			else{
+				session_start();
+				$_SESSION["dictionaryName"] = $dictionaryName;
+				$_SESSION["dictionaryID"] = $dictID;
+				header("Location: ../dictionary.php");
+			}
+			
 		}
 		else{
 			echo json_encode(array("error" => $conn->error));

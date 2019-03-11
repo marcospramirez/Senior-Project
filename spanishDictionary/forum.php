@@ -44,10 +44,10 @@ printHeadClose();
                     <div style="text-align: center;"><div id="ask-question-error-message" class="error-message"></div></div>
                     <div class="form-group">
                         <label for="question-type-select" class="col-form-label"></label>
-                        <select id="question-type-select" class="form-control custom-select question-type" title="Select a question type" name="questionType[]" onchange="displayQuestionInput()" required>
+                        <select id="question-type-select" class="form-control custom-select question-type" title="Select a question type" name="questionType[]" style="width: 100%" onchange="displayQuestionInput()" required>
                             <option value="" selected disabled hidden>Select a question type</option>
                         </select>
-                        <div id="ask-question-field" style="display: none;"></div>
+                        <div id="ask-question-field"></div>
                     </div>
                 </div>
                 <div class="modal-footer">

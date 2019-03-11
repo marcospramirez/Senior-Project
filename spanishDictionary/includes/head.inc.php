@@ -119,6 +119,14 @@ function printHeadClose() {
             $navHtml .= getClassroomsForNavHtml($_SESSION['email'], $_SESSION["role"]);
         }
 
+        if($_SESSION['role'] == "student"){
+            $quizNav = '<a class="dropdown-item" href="./quizzes.php">Quizzes</a>
+                        <a class="dropdown-item" href ="./vocabList.php">Personal Vocab</a>';
+        }
+        else{
+            $quizNav = '';
+        }
+
         if(isset($_SESSION['classroomID']) && isset($_SESSION['classroomName'])) {
             $currentClassroomID = $_SESSION['classroomID'];
             $currentClassroomName = $_SESSION['classroomName'];
@@ -130,7 +138,8 @@ function printHeadClose() {
 
                       <div class="dropdown-menu" aria-labelledby="classroomNavigation">
                         <a class="dropdown-item" href="./classroom.php">Dictionaries</a>
-                        <a class="dropdown-item" href="./forum.php">Forum</a>
+                        <a class="dropdown-item" href="./forum.php">Forum</a>'
+                        . $quizNav . '
                       </div>
                     </div>';
         }

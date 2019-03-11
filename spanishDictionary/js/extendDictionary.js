@@ -80,18 +80,18 @@ function deleteEntry(row, entryIDArray, entryID, deleteModalID, previousTableSiz
 }//end of deleteEntry
 
 function setEmptyDictVocabView(role, tableHtmlId) {
-    const dictionaryBodyHtmlId = 'dictionary-body'
+    const contentBodyHtmlId = getFileNameFromPath().includes("dictionary") ? 'dictionary-body' : 'list-body'
 
-    hideTable(tableHtmlId, dictionaryBodyHtmlId)
+    hideTable(tableHtmlId, contentBodyHtmlId)
     disableFiltering()
-    if(role === "instructor") showAddToDictionaryButton(dictionaryBodyHtmlId, 'newDictionary')
+    if(role === "instructor") showAddToDictionaryButton(contentBodyHtmlId, 'newDictionary')
 }
 
-function hideTable(tableHtmlId, dictionaryBody) {
+function hideTable(tableHtmlId, contentBodyHtmlId) {
     $(`#${tableHtmlId}`).DataTable().destroy()  //make dataTable back to a normal table
     document.getElementById(tableHtmlId).style.display = "none" //hide normal table
 
-    dictionaryBody.append("<h2 class='col'>No Content in Dictionary</h2>\n")    //show "no content in dictionary" message
+    $(`#${contentBodyHtmlId}`).append("<h2 class='col'>No content.</h2>\n")    //show "no content in dictionary" message
 }
 
 function disableFiltering() {

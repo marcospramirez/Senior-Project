@@ -11,7 +11,6 @@ button.term {  /*outline button*/
     border-color: var(--dark-ocean);
     border-radius: 100%;
 }
-
 button.term:hover {
     width: 40px;
     background-image: none;
@@ -24,4 +23,25 @@ button.term:hover {
 button.term.delete:hover {
     border-color: var(--danger-red);
     background-color: var(--danger-red);
+}
+
+button.term.darkBtn {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+}
+button.term.darkBtn:hover {
+    background-color: white;
+    border-color: white;
+    color: var(--dark-ocean);
+}
+
+button.term.darkBtn.remove:hover {
+    border-color: var(--danger-red);
+    background-color: var(--danger-red);
+    color: white;
+}
+
+.fa-check:hover:before {
+    content: "\f12d"
 }

@@ -4,6 +4,37 @@ function getFileNameFromPath() {
     return filename
 }
 
+function hideGoToDictionaryBtn() {
+    let goToDictBtn = document.getElementById("go-to-dict-btn")
+    goToDictBtn.innerHTML = ''
+
+    document.getElementById("add-to-dict-success-message").innerHTML = ''   //clear success message
+}
+
+function showGoToDictionaryBtn(dictionaryID, dictionaryName, successMessage = '') {
+    let goToDictBtn = document.getElementById("go-to-dict-btn")
+    const userData = {
+        dictionaryID:dictionaryID,
+        dictionaryName: dictionaryName
+    }
+    goToDictBtn.innerHTML = `<button class="btn dark" onclick="addToSession(${userData}, 'goTo', './dictionary.php')">Go to Dictionary</button>`
+    goToDictBtn.style.display = 'block'
+
+    document.getElementById("add-to-dict-success-message").innerHTML = successMessage
+}
+
+function getDictionaryOptions(dictionaryIDNameSet) {
+    const dictionaryIDArray = dictionaryIDNameSet.dictionaryIdArray
+    const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
+    let optionListHTML = ''
+
+    $.each(dictionaryIDArray, function(i, v) {
+        optionListHTML += `<option value="${dictionaryIDArray[i]}">${dictionaryNameArray[i]}</option>`  //add option to option list
+    })
+
+    return optionListHTML
+}
+
 function getDictionaryIdNameSet(data) {
     let dictionaryIDArray = []
     let dictionaryNameArray = []
