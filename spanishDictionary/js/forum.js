@@ -52,6 +52,7 @@ function getForumHTML(data) {
     //for each question, get question data & answer(s) data & fill into the HTML
     $.each(data, function(index, questionData) {
         const questionID = questionData.questionID
+        const questionType = questionData.questionType
         const questionText = questionData.questionText
         const questionName = role === "instructor" ? questionData.questionName : "Anonymous"  //instructors can see names, students cannot
 
@@ -63,7 +64,7 @@ function getForumHTML(data) {
             const answerText = answerData.answerText
             const answerName = answerData.hasOwnProperty("answerName") ? answerData.answerName : undefined
 
-            const answerHTML = getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, answerName)
+            const answerHTML = getAnswerHTML(role, questionType, questionID, starredAnswerID, answerID, answerText, answerName)
 
             questionHTML += answerHTML
         })  //end of for each answer in question
@@ -97,22 +98,23 @@ function getClosingQuestionHTML() {
     return '</div> </div> </div>'
 }
 
-function getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, answerName = false) {
+function getAnswerHTML(role, questionType, questionID, starredAnswerID, answerID, answerText, answerName = false) {
     let starButtonHTML = ''
     let answerNameHTML = ''
     let addStarredClass = ''
     let addToDictionaryButtonHTML = ''
 
     if(role === 'instructor') { //instructors can view names, star questions and add question-answer pair to a dictionary
-        starButtonHTML = `<div class="col col-sm-auto"><button id="answer-${answerID}-star-btn" class="btn btn-sm" title="Click to star answer" onclick="toggleStarredAnswer(${questionID}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="far fa-star"></i></button></div>`
+        starButtonHTML = `<div class="col col-sm-auto"><button id="answer-${answerID}-star-btn" class="btn btn-sm" title="Click to star answer" onclick="toggleStarredAnswer(${questionID}, ${questionType}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="far fa-star"></i></button></div>`
         answerNameHTML = answerName ? `<div class="answer-name" class="row"><div class="col">${answerName}</div></div>` : ''    //if there's no answerName, then don't create HTML for it
         if(answerID === starredAnswerID) {  //if answer is starred, change HTML accordingly
             addStarredClass = 'starred'  //add 'starred' class to change styling of answer
             starButtonHTML = starButtonHTML.replace('Click to star answer', 'Click to unstar answer')   //change button title to reflect toggle
             starButtonHTML = starButtonHTML.replace('far', 'fas')   //change the star icon from a outlined star to a solid one, indicating starred status
-            addToDictionaryButtonHTML = getAddToDictBtnHTML(questionID, answerID)
+            if(questionType !== "3") addToDictionaryButtonHTML = getAddToDictBtnHTML(questionID, answerID)    //if question in correct format, allow instructor to add question to dictionary
         }
-    }   //else, role === student: don't show any star HTML or answer names
+    } else if(answerID === starredAnswerID) addStarredClass = 'starred'  //role === student, show css changes to starred answers, but that's it
+
 
     return `        <div id="answer-${answerID}" class="question-${questionID}-answer ${addStarredClass} answer content-frame border rounded">
                         <div class="answer-body row align-items-center">
@@ -126,7 +128,7 @@ function getAnswerHTML(role, questionID, starredAnswerID, answerID, answerText, 
                     </div>`
 }//end of getAnswerHTML
 
-function getAddToDictBtnHTML(answerID, questionID) {
+function getAddToDictBtnHTML(questionID, answerID) {
     return `<button id="answer-${answerID}-add-to-dict-btn" class="btn btn-sm" title="Add to Dictionary" onclick="addQuestionToDictionary(${questionID})"><i class="fas fa-plus"></i></button>`
 }
 
@@ -135,6 +137,8 @@ function addQuestionToDictionary(questionID) {
     const selectHTMLId = 'dictionary-select'
 
     hideGoToDictionaryBtn()
+    document.getElementById(errorMsgId).innerHTML = ''  //clear error message
+
     $('#add-to-dict').modal('show')
 
     //user confirmed add: add question to dictionary and delete question from forum
@@ -143,7 +147,7 @@ function addQuestionToDictionary(questionID) {
         const dictionaryID = selectData[0].id
         const dictionaryName = selectData[0].text
 
-        const URL = './services/dictionaryService.php?Action=singleAdd'
+        const URL = './services/questionService.php?Action=addQuestionToDictionary'
         const userData = {  //todo marcos
             dictionaryID: dictionaryID,
             questionID: questionID
@@ -153,7 +157,8 @@ function addQuestionToDictionary(questionID) {
             if(data.hasOwnProperty("message")) {
                 //if post was successful, delete question from forum & show button to go to dictionary
                 if(data.message === "success") {
-                    deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dictionaryName, errorMsgId)
+                    deleteQuestion(questionID)
+                    showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
                 }} else {   //else, backend error: show error message
                 const errorMsg = data.hasOwnProperty("error") ? data.error : data
                 document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
@@ -164,6 +169,23 @@ function addQuestionToDictionary(questionID) {
         })
     })
 }//end of addQuestionToDictionary
+
+function deleteQuestion(questionID) {
+    const question = document.getElementById(`question-${questionID}`)
+    question.parentNode.removeChild(question)
+
+    questionCount -= 1
+
+    let magicGrid = new MagicGrid({
+        container: '#forum',
+        gutter: 30,
+        static: false,
+        items: questionCount
+    })
+
+    magicGrid.positionItems();  //reposition items
+    magicGrid.listen(); //listen for changes in window size
+}
 
 function getSuggestAnswerHTML(questionID) {
     return `
@@ -184,7 +206,7 @@ function getSuggestAnswerHTML(questionID) {
 }//end of getSuggestAnswerHTML
 
 //using AJAX, request to change starredAnswer to answerID OR unstar answer at answerID and display change
-function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
+function toggleStarredAnswer(questionID, questionType, answerID, starredAnswerID) {
     const currentAnswer = document.getElementById(`answer-${answerID}`)
     const isCurrentlyStarred = answerID === starredAnswerID
     const action = isCurrentlyStarred ? 'unstarAnswer' : 'starAnswer'    //if answer is starred, then toggle to unstar & vice versa
@@ -203,13 +225,13 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                     answerList.removeChild(suggestAnswerField)
 
                     currentAnswer.classList.add("starred")  //add star to current answer
-                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
-                    toggleStarIcon(answerID, isCurrentlyStarred)    //star current answer
+                    setNewStarredAnswerID(questionID, questionType, answerID, starredAnswerID)    //change onclick answerID to reflect change
+                    toggleStarIcon(questionType, answerID, isCurrentlyStarred, questionID)    //star current answer
                 }
                 else if(isCurrentlyStarred) { //if current answer is starred, unstar: remove class from current answer & show suggest answer form
                     currentAnswer.classList.remove("starred")
-                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
-                    toggleStarIcon(answerID, isCurrentlyStarred)    //unstar current answer
+                    setNewStarredAnswerID(questionID, questionType, answerID, starredAnswerID)    //change onclick answerID to reflect change
+                    toggleStarIcon(questionType, answerID, isCurrentlyStarred, questionID)    //unstar current answer
 
                     //append "suggest answer" form to answer list
                     answerList.innerHTML += getSuggestAnswerHTML(questionID)
@@ -226,9 +248,9 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
                         i += 1  //increment loop
                     }
                     currentAnswer.classList.add("starred")  //add star to current answer
-                    setNewStarredAnswerID(questionID, answerID, starredAnswerID)    //change onclick answerID to reflect change
-                    toggleStarIcon(starredAnswerID, true, questionID)    //unstar starred answer
-                    toggleStarIcon(answerID, isCurrentlyStarred, questionID)    //star current answer
+                    setNewStarredAnswerID(questionID, questionType, answerID, starredAnswerID)    //change onclick answerID to reflect change
+                    toggleStarIcon(questionType, starredAnswerID, true, questionID)    //unstar starred answer
+                    toggleStarIcon(questionType, answerID, isCurrentlyStarred, questionID)    //star current answer
                 }//end of else, find starred answer, remove star & add star to current answer
         }} else {    //else, backend error: show error message
             //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one below
@@ -242,7 +264,7 @@ function toggleStarredAnswer(questionID, answerID, starredAnswerID) {
     })
 }//end of toggleStarredAnswer
 
-function toggleStarIcon(answerID, isStarred, questionID) {
+function toggleStarIcon(questionType, answerID, isStarred, questionID) {
     let starIcon = document.getElementById(`answer-${answerID}-star`)
     let addToDictDiv = document.getElementById(`answer-${answerID}-add-to-dict`)
     if(isStarred) {
@@ -255,11 +277,11 @@ function toggleStarIcon(answerID, isStarred, questionID) {
         starIcon.classList.remove("far")
         starIcon.classList.add("fas")
 
-        addToDictDiv.innerHTML = getAddToDictBtnHTML(questionID, answerID)   //add "add to dictionary" button
+        if(questionType !== 3) addToDictDiv.innerHTML = getAddToDictBtnHTML(questionID, answerID)   //if in correct format, add "add to dictionary" button
     }
 }   //end of toggleStarIcon
 
-function setNewStarredAnswerID(questionID, answerID, starredAnswerID) {
+function setNewStarredAnswerID(questionID, questionType, answerID, starredAnswerID) {
     const isCurrentlyStarred = answerID === starredAnswerID
     if(!starredAnswerID) starredAnswerID = answerID //no answer was starred: current answerID is now starredAnswerID
     else if(isCurrentlyStarred) starredAnswerID = null //current answer is starred: change starredAnswerID to null
@@ -269,8 +291,8 @@ function setNewStarredAnswerID(questionID, answerID, starredAnswerID) {
     $.each(answerArray, function(index, answer) {
         const starButton = answer.childNodes[1].childNodes[1].childNodes[0]
         const currentOnclick = starButton.getAttribute("onclick")   //grab the current toggleStarredAnswer
-        const currentAnswerID = parseInt(currentOnclick.split(",")[1])  //grab the second parameter, which is the answerID
-        starButton.setAttribute("onclick", `toggleStarredAnswer(${questionID}, ${currentAnswerID}, ${starredAnswerID})`)
+        const currentAnswerID = parseInt(currentOnclick.split(",")[2])  //grab the third parameter, which is the answerID
+        starButton.setAttribute("onclick", `toggleStarredAnswer(${questionID}, ${questionType}, ${currentAnswerID}, ${starredAnswerID})`)
     })
 }//end of setNewStarredAnswerID
 
@@ -335,12 +357,14 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
     const URL = './services/questionService.php?Action=getQuestionTypes'
     $.get(URL, {}, function(data) {
         data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
-            if(data.message === "success") {    //if post was successful, set question dropdown
-                const optionListHTML = getQuestionTypeOptions(data)
-                select.append(optionListHTML)   //append html to select
-                select.select2()    //initialize as select2 markup
-            }} else {   //else, backend error: show error message
+        if(!(data.hasOwnProperty("error") || data.length === 0)) {    //if post was successful, set question dropdown
+            const optionListHTML = getQuestionTypeOptions(data)
+            select.append(optionListHTML)   //append html to select
+            select.select2({    //initialize as select2 markup
+                dropdownParent: $("#ask-question"),
+                width: '100%'
+            })
+        } else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(askQuestionErrorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
         }
@@ -388,62 +412,16 @@ function setAddQuestionToDictionaryDropdown(classroomID) {
         } else {    //classroom has dictionaries, show dictionaries in dropdown
             const optionListHTML = getDictionaryOptions(dictionaryIDNameSet)
             select.append(optionListHTML)   //append html to select
-            select.select2()    //initialize as select2 markup
+            select.select2({    //initialize as select2 markup
+                dropdownParent: $("#add-to-dict"),
+                width: '100%'
+            })
         }
     })
     .fail(function() {
         document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
     })
 }//end of setAddQuestionToDictionaryDropdown
-
-function deleteQuestionAndShowGoToDictionaryButton(questionID, dictionaryID, dictionaryName, errorMsgId) {
-    const URL = './services/questionService.php?Action=singleDelete'    //todo marcos
-    $.post(URL, {questionID: questionID}, function(data) {
-        data = JSON.parse(data)
-        if(data.hasOwnProperty("message")) {
-            //if post was successful, delete question from forum & show button to go to dictionary
-            if(data.message === "success") {
-                showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
-    })
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
-}//end of deleteQuestionAndShowGoToDictionaryButton
-
-function hideGoToDictionaryBtn() {
-    let goToDictBtn = document.getElementById("go-to-dict-btn")
-    goToDictBtn.innerHTML = ''
-
-    document.getElementById("add-to-dict-success-message").innerHTML = ''   //clear success message
-}
-
-function showGoToDictionaryBtn(dictionaryID, dictionaryName, successMessage = '') {
-    let goToDictBtn = document.getElementById("go-to-dict-btn")
-    const userData = {
-        dictionaryID:dictionaryID,
-        dictionaryName: dictionaryName
-    }
-    goToDictBtn.innerHTML = `<button class="btn dark" onclick="addToSession(${userData}, 'goTo', './dictionary.php')">Go to Dictionary</button>`
-    goToDictBtn.style.display = 'block'
-
-    document.getElementById("add-to-dict-success-message").innerHTML = successMessage
-}
-
-function getDictionaryOptions(dictionaryIDNameSet) {
-    const dictionaryIDArray = dictionaryIDNameSet.dictionaryIdArray
-    const dictionaryNameArray = dictionaryIDNameSet.dictionaryNameArray
-    let optionListHTML = ''
-
-    $.each(dictionaryIDArray, function(i, v) {
-        optionListHTML += `<option value="${dictionaryIDArray[i]}">${dictionaryNameArray[i]}</option>`  //add option to option list
-    })
-
-    return optionListHTML
-}
 
 function displayQuestionInput() {
     const questionField = document.getElementById("ask-question-field")

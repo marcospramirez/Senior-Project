@@ -58,6 +58,14 @@
 
         case "singleTags":
             getTagsForEntry($conn);
+            break;
+        case "addBuiltInDictionary":
+            addBuiltInDictionary($conn);
+            break;
+
+        case "getAllBuiltInDictionaries":
+            returnBuiltInDictionaries($conn);
+            break;
 
         default:
             noDictionaryAction();
@@ -104,7 +112,6 @@
             $dictionaryID = $_GET['dictionaryID'];
         }
     
-
         $sql = "SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = '$dictionaryID'";
     
         $result = $conn->query($sql);
@@ -120,7 +127,7 @@
         }
         
         //echo json_encode($records);
-        header('Content-Type: text/html; charset=utf-8');
+        //header('Content-Type: text/html; charset=utf-8');
         echo json_encode($records, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     }
@@ -134,6 +141,73 @@
         $csvAsArray = array_map('str_getcsv', file($tmpName));
 
         uploadNewDictionary($conn, $classID, $csvAsArray);
+
+    }
+
+    function addBuiltInDictionary($conn){
+        $classID = $_POST['class'];
+        $builtInDictionaryID = $_POST["builtInDictionaryID"];
+
+
+        if($conn->query("SELECT * from classToBuiltInDictionary where classroomID = '$classID'")->num_rows > 0){
+            echo(json_encode(array("error" => "this class already has this built in dictionary", "classID" => $classID))); 
+        }
+        else{
+
+            $filename = getFilenameForBuiltInDictionary($builtInDictionaryID, $conn);
+            $dictionaryName = getNameForBuiltInDictionary($builtInDictionaryID, $conn);
+            $csv =file($filename);
+            $csvAsArray = array_map('str_getcsv', $csv); 
+
+            $conn->query("INSERT into classToBuiltInDictionary (classroomID, builtInDictionaryID) VALUES ('$classID', '$builtInDictionaryID')");
+            uploadNewDictionary($conn, $classID, $csvAsArray, $dictionaryName);   
+        }
+        
+    }
+
+    function getFilenameForBuiltInDictionary($builtInDictionaryID, $conn){
+        $results = $conn->query("SELECT filename from BuiltInDictionary where builtInDictionaryID = '$builtInDictionaryID'");
+
+        while($row = $results->fetch_assoc()){
+            $filename = $row["filename"];
+        }
+
+        return "../csv/" . $filename;
+    }
+
+    function getNameForBuiltInDictionary($builtInDictionaryID, $conn){
+        $results = $conn->query("SELECT builtInDictionaryName from BuiltInDictionary where builtInDictionaryID = '$builtInDictionaryID'");
+
+        while($row = $results->fetch_assoc()){
+            $name = $row["builtInDictionaryName"];
+        }
+
+        return $name;
+    }
+
+    function returnBuiltInDictionaries($conn){
+        $sql = "SELECT * from BuiltInDictionary";
+
+        $result = $conn->query($sql);
+        
+        $response = array();
+
+        $results = [];
+      
+        
+        if ($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+
+                $record = array("id" => $row["builtInDictionaryID"], "text" => $row["builtInDictionaryName"]);
+                $results[]= $record;
+
+            }
+        }
+
+        $response["results"] = $results;
+    
+        header('Content-Type: text/html; charset=utf-8');
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     }
 

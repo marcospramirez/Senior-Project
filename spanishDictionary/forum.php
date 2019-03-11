@@ -47,7 +47,7 @@ printHeadClose();
                         <select id="question-type-select" class="form-control custom-select question-type" title="Select a question type" name="questionType[]" onchange="displayQuestionInput()" required>
                             <option value="" selected disabled hidden>Select a question type</option>
                         </select>
-                        <div id="ask-question-field" style="display: none;"></div>
+                        <div id="ask-question-field"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -74,7 +74,7 @@ printHeadClose();
                     <div class="form-group">
                         <div id="select-dictionary-body">
                             <label id="dictionary-select-label" for="dictionary-select" class="col-form-label"></label>
-                            <select id="dictionary-select" class="form-control custom-select" title="Select a Dictionary" name="dictionary" style="width: 100%" required>
+                            <select id="dictionary-select" class="form-control custom-select" title="Select a Dictionary" name="dictionary" required>
                                 <option value="" selected disabled hidden>Select a dictionary</option>
                             </select>
                         </div>

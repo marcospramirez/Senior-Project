@@ -16,7 +16,7 @@ function displayDictionaryTable(dictionaryID, tableHtmlId) {
                     let return_data = []
                     $.each(json, function (index, entry) {
                         return_data.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
-                        if(role === "instructor") entryIDArray.push(entry.entryID)
+                        entryIDArray.push(entry.entryID)
                     })
                     return return_data;
                 }
@@ -37,32 +37,41 @@ function getDictionaryColumnData(role) {
         {title: "Term"},
         {title: "Definition"}]
 
-    if(role === "instructor") { //if instructor, allow user to edit and delete dictionary terms
+    if(role === "instructor") { //if instructor, allow instructor to edit and delete dictionary terms
         columnData.push({
                 orderable: false,
                 data: "edit",
                 width: "5%",
-                defaultContent: "<button class=\"btn btn-outline-info term edit\"><i class=\"fas fa-edit\"></i></button>"
+                defaultContent: "<button title='Edit Term' class=\"btn btn-outline-info term edit\"><i class=\"fas fa-edit\"></i></button>"
             },
             {
                 orderable: false,
                 data: "delete",
                 width: "5%",
-                defaultContent: "<button class=\"btn btn-outline-danger term delete\"><i class=\"fas fa-trash\"></i></button>"
+                defaultContent: "<button title='Delete Term' class=\"btn btn-outline-danger term delete\"><i class=\"fas fa-trash\"></i></button>"
             })
+    } else { //role === student, allow student to add term to their classroom vocab list
+        columnData.push({
+            orderable: false,
+            data: "add",
+            width: "5%",
+            defaultContent: "<button class=\"btn btn-outline-info term vocab-list-add-remove add\"><i class=\"fas fa-plus\"></i></button>"
+        })
     }
+
     return columnData
 }//end of getDictionaryColumnData
 
 function setDictionaryButtonListeners(role, tableHtmlId) {
-    $(`#${tableHtmlId} tbody`).on( 'click', 'button.audio', function () {
+    const tableBody = $(`#${tableHtmlId} tbody`)
+    tableBody.on( 'click', 'button.audio', function () {
         const table = $(`#${tableHtmlId}`).DataTable()
         const audioPath = table.row($(this).parents('tr')).data()[0]
         playAudio(audioPath)
     })
 
     if(role === "instructor") {
-        $(`#${tableHtmlId} tbody`).on( 'click', 'button.edit', function () {
+        tableBody.on( 'click', 'button.edit', function () {
             const table = $(`#${tableHtmlId}`).DataTable()
             const row = table.row($(this).parents('tr'))
 
@@ -72,14 +81,95 @@ function setDictionaryButtonListeners(role, tableHtmlId) {
 
         //delete button clicked: show modal to confirm delete. If confirmed,
         //delete entry in database and delete table row
-        $(`#${tableHtmlId} tbody`).on( 'click', 'button.delete', function () {
+        tableBody.on( 'click', 'button.delete', function () {
             const table = $(`#${tableHtmlId}`).DataTable()
             const row = table.row($(this).parents('tr'))
 
             entryIDArray = deleteDictVocabButtonClicked(table, tableHtmlId, row, entryIDArray)
         })
     }//end of setting listeners for instructor functions
+    else {  //role === student
+        tableBody.on( 'click', 'button.vocab-list-add-remove', function () {
+            const table = $(`#${tableHtmlId}`).DataTable()
+            const row = table.row($(this).parents('tr'))
+            const userData = {
+                email: emailFromSession,
+                classroomID: classroomIDFromSession,
+                entryID: entryIDArray[row.index()]
+            }
+            const audioBtn = $(this).parents('tr')[0].childNodes[0].childNodes[0]
+            const addBtn = $(this)[0]
+            const addBtnIcon = addBtn.childNodes[0]
+
+            if(addBtn.classList.contains("add")) {  //add term to classroom vocab list
+                toggleVocabListBtn('adding', addBtnIcon)    //change btn icon to loading icon
+
+                let URL = './services/personalVocabListService.php?Action=addToVocabList'
+
+                $.post(URL, userData, function (data) {
+                    data = JSON.parse(data)
+                    if(data.hasOwnProperty("message")) {
+                        if(data.message === "success") {    //if post was successful, change row color and btn icon
+                            toggleVocabListBtn('added', addBtnIcon, table, row, audioBtn, addBtn) //todo: exlpain what's happeing
+                        }}
+                })
+            }else if(addBtn.classList.contains("remove")) {
+                toggleVocabListBtn('removing', addBtnIcon)    //change btn icon to loading icon
+
+                let URL = './services/personalVocabListService.php?Action=removeFromVocabList'
+                $.post(URL, userData, function (data) {
+                    data = JSON.parse(data)
+                    if(data.hasOwnProperty("message")) {
+                        if(data.message === "success") {    //if post was successful, change row color and btn icon
+                            toggleVocabListBtn('removed', addBtnIcon, table, row, audioBtn, addBtn) //change btn icon to checkmark icon
+                        }}
+                })
+            }
+
+
+            //todo: add $.fail stuff
+
+
+        })//end of button.edit onclick
+    }
 }//end of setDictionaryButtonListeners
+
+function toggleVocabListBtn(stateFlag, addBtnIcon, table = null, row = null, audioBtn = null, addBtn = null) {
+    const loadingIcon = '•••'
+    if(stateFlag === 'adding') {  //signify that term is being added
+        addBtnIcon.classList.remove("fa-plus")
+        addBtnIcon.innerHTML = loadingIcon
+    } else if(stateFlag === 'added') {  //signify that term was added
+        addBtnIcon.innerHTML = ''
+        addBtnIcon.classList.add("fa-check")
+
+        const darkBG = {color: 'white', backgroundColor: '#172b42'}
+        const rowNode = table.row(row.index()).node()
+        $(rowNode).animate(darkBG, 'slow')
+
+        audioBtn.classList.add("darkBtn")
+        addBtn.classList.add("darkBtn")
+        addBtn.classList.remove("add")
+        addBtn.classList.add("remove")
+    } else if(stateFlag === 'removing') {   //signify that term is being removed
+        addBtnIcon.classList.remove("fa-eraser")
+        addBtnIcon.classList.remove("fa-check")
+        addBtnIcon.innerHTML = loadingIcon
+    }
+    else if(stateFlag === 'removed') {   //signify that term was removed & ready to be added
+        addBtnIcon.innerHTML = ''
+        addBtnIcon.classList.add("fa-plus")
+
+        const normalBG = {color: '#343434', backgroundColor: 'transparent'}
+        const rowNode = table.row(row.index()).node()
+        $(rowNode).animate(normalBG, 'slow')
+
+        audioBtn.classList.remove("darkBtn")
+        addBtn.classList.remove("darkBtn")
+        addBtn.classList.remove("remove")
+        addBtn.classList.add("add")
+    }
+}//end of toggleVocabListBtn
 
 //grab entry text & definition and populate modal data with it.
 //once submit data for edit, send to server & once complete, show changes on table
@@ -119,7 +209,7 @@ function editDictionaryButtonClicked(tableHtmlId, row) {
             formData.append("entryID", entryID)
 
             const plainTextFormData = {entryAudioPath: newEntryAudio, entryText: newEntryText, entryDefinition: newEntryDefinition}
-            editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId)
+            editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId)
         }else { //user didn't change term, show error message
             document.getElementById(errorMsgId).innerHTML = 'Please edit the term or close the dialog box.'
         }
@@ -178,7 +268,7 @@ function areMatchingArrays(array1, array2) {
     else return false
 }//end of areMatchingArrays
 
-function editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId) {
+function editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId) {
     const URL = "./services/dictionaryService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
@@ -187,7 +277,7 @@ function editEntry(table, row, formData, plainTextFormData, editModalID, errorMs
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newTermData = [plainTextFormData.entryAudioPath, plainTextFormData.entryText, plainTextFormData.entryDefinition]
-                editTableRow(newTermData, table, row,editModalID)
+                editTableRow(newTermData, tableHtmlId, row,editModalID)
             }} else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`

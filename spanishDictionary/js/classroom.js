@@ -30,7 +30,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
         classroomID: classroomID
     }
     $.get(URL, userData, function (data) { //get student count of classroom
-        let classroomDiv = $('#classroom-div')
+        let btn = document.getElementById('set-btn')
         const studentCount = parseInt(data)   //convert string to int
         if(isNaN(studentCount)) {
             document.getElementById(errorMsgDiv).innerHTML += `Error, could not find classroom!`
@@ -54,9 +54,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
                     studentBtnInnerHTML = `${studentCount} Students`
                 }
             }   //end of else if
-
-            let studentBtnHTML = `<a id="classroom-student-btn" class="col-sm-auto btn dark" href="${goToURL}">${studentBtnInnerHTML}</a>`
-            classroomDiv.append(studentBtnHTML)
+            btn.innerHTML = `<a id="classroom-student-btn" class="col-sm-auto btn dark" href="${goToURL}">${studentBtnInnerHTML}</a>`
         }//end of else: received an student count number
     })//end of $.get
         .fail(function () {
@@ -65,8 +63,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
 }//end of showStudentCountButton
 
 function showViewVocabListButton() {
-    let viewVocabListBtnHTML = `<a id="classroom-student-btn" class="col-sm-auto btn dark" href="./vocabList.php">View Vocab List</a>`
-    $('#classroom-div').append(viewVocabListBtnHTML)
+    document.getElementById('set-btn').innerHTML = `<a id="classroom-student-btn" class="col-sm-auto btn dark" href="./vocabList.php">View Vocab List</a>`
 }
 
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
@@ -108,6 +105,48 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
         })
 }//end of showDictionaryTable
 
+function setAddDefaultDictionaryToClassroomDropdown() {
+    $("#dictionary-select").select2({
+        ajax: {
+            url: './services/dictionaryService.php?Action=getAllBuiltInDictionaries',
+            dataType: 'json'
+        },
+        dropdownParent: $("#add-default-dict"),
+        placeholder: 'Built-in Dictionaries',
+        width: '100%'
+    })
+}//end of setAddDefaultDictionaryToClassroomDropdown
+
+function addDefaultDictionaryToClassroom(classroomID) {
+    const errorMsgId = 'add-default-dict-error-message'
+    const selectHTMLId = 'dictionary-select'
+    let selectData = $(`#${selectHTMLId}`).select2('data')  //get data from select markup
+    const builtInDictionaryID = selectData[0].id
+    const builtInDictionaryName = selectData[0].text
+
+    const URL = './services/dictionaryService.php?Action=addBuiltInDictionary'
+    const userData = {  //todo marcos
+        builtInDictionaryID: builtInDictionaryID,
+        class: classroomID
+    }
+    $.post(URL, userData, function(data) {
+        data = JSON.parse(data)
+        if(data.hasOwnProperty("message")) {
+            //if post was successful, delete question from forum & show button to go to dictionary
+            if(data.message === "success") {
+                const dictionaryID = data.id
+                const dictionaryName = data.name
+                showGoToDictionaryBtn(dictionaryID, dictionaryName, `${builtInDictionaryName} was added to ${classroomNameFromSession}!`)
+            }} else {   //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
+        }
+    })
+        .fail(function() {
+            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+        })
+}
+
 //show table of the classroom's dictionaries. When dictionary name is clicked, go to dictionary (dictionary.php)
 //if user is instructor, allow user to view student count/add students & add a dictionary
 $(function () {
@@ -122,6 +161,7 @@ $(function () {
     if(role === 'instructor') {
         showStudentCountButton(classroomID, tableID)
         showAddDictionaryButton()
+        setAddDefaultDictionaryToClassroomDropdown(classroomID)
     }
     else showViewVocabListButton() //role === 'student
 
