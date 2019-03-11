@@ -16,6 +16,12 @@ function returnConnection(){
       die("Connection failed: " . $conn->connect_error);
   }
 
+  // if (!$conn->set_charset("utf8")) {
+  //     printf("Error loading character set utf8: %s\n", $conn->error);
+  // } else {
+  //     printf("Current character set: %s\n", $conn->character_set_name());
+  // }
+
   return $conn;
 }
 
