@@ -18,14 +18,13 @@ function printHeadOpen($title) {
             <meta http-equiv=\"Cache-control\" content=\"no-cache\"> <!-- for testing only -->
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <!-- <link rel=\"icon\" href=\"static/images/favicon.ico\" type=\"image/x-icon\"> -->
+            <link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/x-icon\">
             <title>$title</title>
     ";
 }
 
 function printGoogleFontsCdn() {
     echo '
-            <!--GOOGLE FONTS-->
             <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600" rel="stylesheet">
     ';
 }
@@ -111,8 +110,8 @@ function printHeadClose() {
 
         $navHtml = '
             <header>
-                <nav style="justify-content:left" class="navbar sticky-top navbar-light bg-light">
-                    <a href="./dashboard.php" class="navbar-brand">Dashboard</a>';
+                <nav style="justify-content:left" class="navbar sticky-top navbar-light bg-light row align-items-start">
+                    <a href="./dashboard.php" class="navbar-brand col-sm-auto"><img class="d-inline-block align-top" src="images/logo.png" alt="Accent Logo" width="100" height="auto"></a>';
 
 
         if(isset($_SESSION['role'])){
@@ -133,7 +132,7 @@ function printHeadClose() {
 
             $currentPage = basename($_SERVER['PHP_SELF']);
             if($currentPage != 'dashboard.php') {   //don't show classroom dropdown in dashboard
-                $navHtml .= '<div class="dropdown" style="margin-right: 1rem">
+                $navHtml .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
                     $currentClassroomName.'
                       </button>
@@ -149,7 +148,7 @@ function printHeadClose() {
                                         
                     
             $navHtml .='                           
-                    <button type="button" class="btn" onclick="addToSession({logout: true}, \'goTo\', \'./login.php\')">Logout</button>
+                    <div class="col"><button type="button" class="btn" style="float: right" onclick="addToSession({logout: true}, \'redirectTo\', \'./login.php\')">Logout</button></div>
                 </nav>
             </header>';
 
@@ -174,7 +173,7 @@ function getClassroomsForNavHtml($email, $role){
     $conn = returnConnection();
 
     if ($result = $conn->query($sql)) { //query successful
-        $html .= '<div class="dropdown" style="margin-right: 1rem">
+        $html .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Switch Classrooms
                 </button>
