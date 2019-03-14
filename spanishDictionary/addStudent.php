@@ -28,6 +28,31 @@ echo '
 
 printHeadClose();
 ?>
+<main>
+    <div class="container content-frame border rounded">
+        <br>
+        <div class="row align-items-start">
+            <h1 id="add-students-header" class="col">Add Students to </h1>
+            <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Students</button>
+        </div>
+        <hr class="hr-header">
+        <form id="new-students-form" enctype="multipart/form-data" action="services/studentService.php?Action=addStudents" method="POST">
+            <div id="students">
+                <div class="student-email"> <!--Student #1 in Classroom-->
+                    <div class="form-group"><input type="text" id="student1" class="form-control" title="Enter Student Email" name="studentEmail[]" placeholder="Student Email" required></div>
+                </div>
+            </div>
+            <div class="row"> <!--Button: Add New Student Email Field-->
+                <div class="col" align="right"><button type="button" class="btn add-more" onclick="addStudentField()"><i class="fas fa-plus"></i></button></div>
+            </div>
+            <div id="add-students-error-message"></div>
+            <div class="row"> <!--Button: Add New Students-->
+                <div id="add-students-hidden"></div>  <!--add classID into POST-->
+                <div class="col" align="center"><input type="submit" name="newStudents" value="Add Students" id="submit-new" class="btn dark"></div>
+            </div>
+        </form>
+    </div>
+</main>
 
 <!-- Import Students Modal -->
 <div class="modal fade importFile" id="import-file" tabindex="-1" role="dialog" aria-hidden="true">
@@ -56,32 +81,7 @@ printHeadClose();
         </div>
     </div>
 </div>
-
-<main>
-    <div class="container content-frame border rounded">
-        <br>
-        <div class="row align-items-start">
-            <h1 id="add-students-header" class="col">Add Students to </h1>
-            <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Students</button>
-        </div>
-        <hr class="hr-header">
-        <form id="new-students-form" enctype="multipart/form-data" action="services/studentService.php?Action=addStudents" method="POST">
-            <div id="students">
-                <div class="student-email"> <!--Student #1 in Classroom-->
-                    <div class="form-group"><input type="text" id="student1" class="form-control" title="studentEmail" name="studentEmail[]" placeholder="Student Email" required></div>
-                </div>
-            </div>
-            <div class="row"> <!--Button: Add New Student Email Field-->
-                <div class="col" align="right"><button type="button" class="btn add-more" onclick="addStudentField()"><i class="fas fa-plus"></i></button></div>
-            </div>
-            <div id="add-students-error-message"></div>
-            <div class="row"> <!--Button: Add New Students-->
-                <div id="add-students-hidden"></div>  <!--add classID into POST-->
-                <div class="col" align="center"><input type="submit" name="newStudents" value="Add Students" id="submit-new" class="btn dark"></div>
-            </div>
-        </form>
-    </div>
-</main>
+<!-- End of Import Students Modal -->
 
 <?php
 include_once "includes/footer.inc.php";

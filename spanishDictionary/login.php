@@ -21,6 +21,7 @@ printHeadClose();
 <main>
     <!-- LOGIN FORM -->
     <div id="login-div" class="container content-frame border rounded">
+        <img id="login-logo" src="images/logo.png" alt="Accent Logo">
         <div id="login-error-message"></div>
         <div id="register-success-message" class="success-message"></div>
         <h1>Log in</h1>
@@ -41,6 +42,7 @@ printHeadClose();
 
     <!-- STUDENT REGISTER FORM: HIDDEN AT DOC LOAD -->
     <div id="register-student-div" class="container content-frame border rounded" style="display: none;">
+        <img class="register-logo" src="images/logo.png" alt="Accent Logo">
         <div id="register-student-error-message" class="red error-message"></div>
         <h1>Sign up as Student</h1>
         <form id="register-student-form">
@@ -60,6 +62,7 @@ printHeadClose();
 
     <!-- INSTRUCTOR REGISTER FORM: HIDDEN AT DOC LOAD -->
     <div id="register-instructor-div" class="container content-frame border rounded" style="display: none;">
+        <img class="register-logo" src="images/logo.png" alt="Accent Logo">
         <div id="register-instructor-error-message" class="red error-message"></div>
         <h1>Sign up as Instructor</h1>
         <form id="register-instructor-form">

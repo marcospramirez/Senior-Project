@@ -1,7 +1,7 @@
 //check if name, email and password are alphanumeric and if passwords match
 //if not, display error messages
 function passedErrorCheckLogin(errorMsgId, email, password) {
-    var errArray = []
+    let errArray = []
     if($.trim(password) === '') {//error: password(s) filled with spaces
         errArray.push("Invalid password. Password is filled with spaces.")
     }
@@ -28,7 +28,7 @@ $(function(){
     //set form variable
     let form = $('#login-form')
     let errorMsgId = ''
-    const URL = 'services/login.php'
+    const URL = './services/login.php'
 
     //hijack student register form
     form.submit(function(event) {
@@ -49,18 +49,14 @@ $(function(){
                 password: password
             }
             $.post(URL, userData, function(data) {
-                if(data === "instructor" || data === "student") {  //authenticated user, redirect to dashboard
-                    //add email and role to the session & redirect to the dashboard
-                    addToSession({email: email, role: data}, 'redirectTo', './dashboard.php')
-                } else if(data === "none") { //invalid credentials
-                    document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'
-                } else {
-                    document.getElementById(errorMsgId).innerHTML = 'Error! ' + data
-                }
+                if(data === "instructor" || data === "student") addToSession({email: email, role: data}, 'redirectTo', './dashboard.php')   //authenticated user, add email and role to the session & redirect to the dashboard
+                else if(data === "new instructor") addToSession({email: email, role: "instructor"}, 'redirectTo', './addClassroom.php') //authenticated new instructor, add email and role to the session & redirect to add classrooms
+                else if(data === "none") document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'    //invalid credentials
+                else document.getElementById(errorMsgId).innerHTML = 'Error! ' + data   //backend error
             }) //end of $.post
-                .fail(function() {
-                    document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL}`
-                })//end of $.fail
+            .fail(function() {
+                document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL}`
+            })//end of $.fail
 
 
         } //end of if: passedErrorCheckLogin

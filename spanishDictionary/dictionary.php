@@ -67,6 +67,27 @@ printHeadClose();
 </div>
 <!-- End Filter Dictionary Modal -->
 
+<!-- Delete Dictionary Modal -->
+<div class="modal fade deleteDictionary" id="delete-dictionary" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered deleteDictionary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Delete Dictionary</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center;"><div id="delete-error-message" class="error-message"></div></div>
+                <p>Are you sure you want to delete <span id="deleting-dictionary" style="font-weight: bold"></span> from the classroom? This is change is irreversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="submit-delete" class="btn dark">Remove</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Delete Dictionary Modal -->
+
 <!-- Edit Term Modal -->
 <div class="modal fade editTerm" id="edit-term" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered editTerm" role="document">

@@ -15,6 +15,10 @@ function getClassroomIDNameSet(data) {
     return {classroomIDArray: classroomIDArray, classroomNameArray: classroomNameArray}
 }
 
+function setAddClassroomButton() {
+    $("#dashboard-header").after('<a id="add-classroom" class="btn dark col-sm-auto" href="./addClassroom.php"><i class="fas fa-plus"></i> Add Classroom</a>');
+}
+
 function getPersonalVocabIDArray(data) {
     let personalVocabIDArray = []
 
@@ -57,13 +61,15 @@ $(function () {
     const cardBody = "cardBody"
 
     $.get(URL, userData, function (data) {
+        const role = roleFromSession
         const  classroomIDNameSet = getClassroomIDNameSet(data)
         const classroomIDArray = classroomIDNameSet.classroomIDArray
         const classroomNameArray = classroomIDNameSet.classroomNameArray
         let personalVocabIDArray = []
         let classroomNameHTML = '';
 
-        if(roleFromSession === "student") { personalVocabIDArray = getPersonalVocabIDArray(data) }
+        if(role === "instructor") setAddClassroomButton()
+        else if(role === "student") personalVocabIDArray = getPersonalVocabIDArray(data)
 
         $.each(classroomNameArray, function (index, classroomName) {
             const classroomID = classroomIDArray[index]

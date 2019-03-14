@@ -72,6 +72,51 @@ function showAddDictionaryButton() {
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
 }//end of showAddDictionaryButton
 
+function setDeleteClassroomButton(email, classroomID, classroomName) {
+    //for styling reasons, move header classes around
+    let classroomHeader = $("#classroom-header")
+    classroomHeader.removeClass("col").addClass("col-sm-auto")
+
+    //set delete classroom button
+    classroomHeader.after('<div class="col"><button id="delete-classroom-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-classroom"><i class="fas fa-trash"></button></div>')
+
+    $("#classroom-div").hover(function(){
+        $("#delete-classroom-btn").fadeIn()
+    }, function(){
+        $("#delete-classroom-btn").fadeOut()
+    });
+
+    //set classroom name in modal
+    document.getElementById('deleting-classroom').innerHTML = classroomName
+
+    //user confirmed delete: delete classroom
+    $(`#submit-delete`).on( 'click', function () {
+        deleteClassroom(email, classroomID)
+    })
+}//end of setDeleteClassroomButton
+
+function deleteClassroom(email, classroomID) {
+    const errorMsgId = 'delete-error-message'
+    const URL = './services/TBD.php?Action=singleDelete'
+    const userData = {
+        email: email,
+        class: classroomID
+    }
+    $.post(URL, userData, function(data) {
+        data = JSON.parse(data)
+        if(data.hasOwnProperty("message")) {
+            if(data.message === "success") {    //if post was successful, exit out of classroom/redirect to dashboard
+                window.location.replace('./dashboard.php')
+            }} else {   //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
+        }
+    })
+    .fail(function() {
+        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+    })
+}//end of deleteStudent
+
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
 function showDictionaryTable(classroomID, classroomName, tableID) {
@@ -105,7 +150,9 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
         })
 }//end of showDictionaryTable
 
-function setAddDefaultDictionaryToClassroomDropdown() {
+function setAddDefaultDictionaryToClassroom() {
+    $("#forum-btn").before('<button id="add-default-dict-btn" class="col-sm-auto btn dark" data-toggle="modal" data-target="#add-default-dict">Add Default Dictionary</button>')
+
     $("#dictionary-select").select2({
         ajax: {
             url: './services/dictionaryService.php?Action=getAllBuiltInDictionaries',
@@ -115,7 +162,7 @@ function setAddDefaultDictionaryToClassroomDropdown() {
         placeholder: 'Built-in Dictionaries',
         width: '100%'
     })
-}//end of setAddDefaultDictionaryToClassroomDropdown
+}//end of setAddDefaultDictionaryToClassroom
 
 function addDefaultDictionaryToClassroom(classroomID) {
     const errorMsgId = 'add-default-dict-error-message'
@@ -151,7 +198,6 @@ function addDefaultDictionaryToClassroom(classroomID) {
 //if user is instructor, allow user to view student count/add students & add a dictionary
 $(function () {
     const tableID = 'table-dictionaries'
-    // let email = emailFromSession
     const role = roleFromSession
     const classroomID = classroomIDFromSession
     const classroomName = classroomNameFromSession
@@ -161,7 +207,8 @@ $(function () {
     if(role === 'instructor') {
         showStudentCountButton(classroomID, tableID)
         showAddDictionaryButton()
-        setAddDefaultDictionaryToClassroomDropdown(classroomID)
+        setDeleteClassroomButton(emailFromSession, classroomID, classroomName)
+        setAddDefaultDictionaryToClassroom()
     }
     else showViewVocabListButton() //role === 'student
 

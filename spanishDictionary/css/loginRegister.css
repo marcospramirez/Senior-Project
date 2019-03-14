@@ -34,14 +34,12 @@ hr {
     text-align: center;
 }
 
-/*#img-login-logo {*/
-    /*max-width: 40%;*/
-    /*height: auto;*/
-    /*padding: 5%;*/
-/*}*/
+img#login-logo {
+    width: 70%;
+    padding: 5% 2% 10%;
+}
 
-/*#img-register-logo {*/
-    /*max-width: 30%;*/
-    /*height: auto;*/
-    /*padding: 5%;*/
-/*}*/
+img.register-logo {
+    width: 50%;
+    padding: 5% 2% 10%;
+}

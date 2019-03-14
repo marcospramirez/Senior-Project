@@ -7,6 +7,7 @@ printGoogleFontsCdn();
 printJQueryCdn();
 printBootstrapCssCdn();
 printBootstrapJsCdn();
+printFontAwesomeIconsCdn();
 
 printSessionInfo(array('email', 'role'));
 
@@ -24,7 +25,7 @@ printHeadClose();
 <main>
   <div class="container content-frame border rounded">
       <br>
-      <h1 class="col">Dashboard</h1>
+      <div class="row align-items-start"><h1 id="dashboard-header" class="col">Dashboard</h1></div>
       <hr class="hr-header">
       <div class="div-dashboard">
           <div class="card">
@@ -38,8 +39,6 @@ printHeadClose();
       <br>
   </div>
 </main>
-</body>
-</html>
 
 <?php
   require_once "includes/footer.inc.php";
