@@ -102,6 +102,12 @@ button.btn.round-delete:hover {
     border-radius: 100%;
 }
 
+.dropdown-toggle.dark:focus {
+    color: white;
+    border-color: var(--dark-ocean);
+    background-color: var(--dark-ocean);
+}
+
 .logout {  /*outline logout button*/
     background-color: transparent;
     background-image: none;
