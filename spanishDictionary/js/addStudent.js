@@ -1,8 +1,8 @@
-var studentCount = 1   //page loads with one term & need at least one term in a dictionary
+let studentCount = 1   //page loads with one term & need at least one term in a dictionary
 function addStudentField() {
     const studentHTML = `<hr class="hr-entries">
-            <div id="student-email"> <!--Student #${studentCount + 1} in Classroom-->
-                <div class="form-group"><input type="text" id="student${studentCount + 1}" class="form-control" title="studentEmail" name="studentEmail[]" placeholder="Student Email" required></div>
+            <div class="student-email"> <!--Student #${studentCount + 1} in Classroom-->
+                <div class="form-group"><input type="text" id="student${studentCount + 1}" class="form-control" title="Enter Student Email" name="studentEmail[]" placeholder="Student Email" required></div>
             </div>`
 
     $('#students').append(studentHTML)
@@ -19,9 +19,9 @@ function setAddStudentHeader(element, classroomName) {
 
 $(function () {
     const classroomID = classroomIDFromSession
-    const clasroomName = classroomNameFromSession
+    const classroomName = classroomNameFromSession
 
-    setAddStudentHeader('add-students-header',clasroomName)
+    setAddStudentHeader('add-students-header',classroomName)
 
     //add classroomID as a hidden input named "class"
     //for both the 'import' form and the 'add student' form

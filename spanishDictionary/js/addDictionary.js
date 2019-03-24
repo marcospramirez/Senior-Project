@@ -30,7 +30,8 @@ function addTermFields() {
             url: 'services/dictionaryService.php?Action=tags',
             dataType: 'json'
         },
-        placeholder: 'Tags'
+        placeholder: 'Tags',
+        width: '100%'
     });
 }
 
@@ -76,7 +77,8 @@ $(function () {
             url: 'services/dictionaryService.php?Action=tags',
             dataType: 'json'
         },
-        placeholder: 'Tags'
+        placeholder: 'Tags',
+        width: '100%'
     });
 
     //change header depending on how

@@ -10,9 +10,6 @@ function displayDictionaryTable(dictionaryID, tableHtmlId) {
             dataSrc: function (json) {
                 if(json.length === 0) setEmptyDictVocabView(roleFromSession, tableHtmlId) //no terms in dictionary, hide content
                 else {
-                    //allow instructor to add more terms to the dictionary
-                    if(role === 'instructor') showAddToDictionaryButton('add-more', 'populatedDictionary')
-
                     let return_data = []
                     $.each(json, function (index, entry) {
                         return_data.push([entry.entryAudioPath, entry.entryText, entry.entryDefinition])
@@ -209,7 +206,7 @@ function editDictionaryButtonClicked(tableHtmlId, row) {
             formData.append("entryID", entryID)
 
             const plainTextFormData = {entryAudioPath: newEntryAudio, entryText: newEntryText, entryDefinition: newEntryDefinition}
-            editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId)
+            editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId)
         }else { //user didn't change term, show error message
             document.getElementById(errorMsgId).innerHTML = 'Please edit the term or close the dialog box.'
         }
@@ -268,7 +265,7 @@ function areMatchingArrays(array1, array2) {
     else return false
 }//end of areMatchingArrays
 
-function editEntry(table, row, formData, plainTextFormData, editModalID, errorMsgId) {
+function editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId) {
     const URL = "./services/dictionaryService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
@@ -277,7 +274,7 @@ function editEntry(table, row, formData, plainTextFormData, editModalID, errorMs
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newTermData = [plainTextFormData.entryAudioPath, plainTextFormData.entryText, plainTextFormData.entryDefinition]
-                editTableRow(newTermData, table, row,editModalID)
+                editTableRow(newTermData, tableHtmlId, row,editModalID)
             }} else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
@@ -293,14 +290,50 @@ function updateDictionaryHeader(dictionaryName) {
     $('#dictionary-name').append(dictionaryName)
 }
 
-//addDictionaryFlag === "newDictionary" or "populatedDictionary"
-function showAddToDictionaryButton(htmlId, addDictionaryFlag) {
-    //add dictionaryFlag to the session but don't redirect anywhere
-    addToSession({addDictionaryFlag: addDictionaryFlag})
-    //as instructor, show button that allows them to add terms to the dictionary
-    let addToDictionaryButton = `<a class="col-sm-auto btn dark" href="./addDictionary.php">Add to Dictionary</a>`
-    document.getElementById(htmlId).innerHTML = addToDictionaryButton
-}//end of showAddToDictionaryButton
+function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
+    //for styling reasons, move dictionary-name classes around
+    let dictionaryNameHeader = $("#dictionary-name")
+    dictionaryNameHeader.removeClass("col").addClass("col-sm-auto")
+
+    //set delete dictionary button
+    dictionaryNameHeader.after('<div class="col"><button id="delete-dictionary-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-dictionary"><i class="fas fa-trash"></button></div>')
+
+    $("#dictionary-header").hover(function(){
+        $("#delete-dictionary-btn").fadeIn()
+    }, function(){
+        $("#delete-dictionary-btn").fadeOut()
+    });
+
+    //set classroom name in modal
+    document.getElementById('deleting-dictionary').innerHTML = dictionaryName
+
+    //user confirmed delete: delete classroom
+    $(`#submit-delete`).on( 'click', function () {
+        deleteDictionary(email, dictionaryID)
+    })
+}//end of setDeleteDictionaryButton
+
+function deleteDictionary(email, dictionaryID) {
+    const errorMsgId = 'delete-error-message'
+    const URL = './services/TBD.php?Action=singleDelete'
+    const userData = {
+        email: email,
+        dictionaryID: dictionaryID
+    }
+    $.post(URL, userData, function(data) {
+        data = JSON.parse(data)
+        if(data.hasOwnProperty("message")) {
+            if(data.message === "success") {    //if post was successful, exit out of dictionary/redirect to classroom
+                window.location.replace('./classroom.php')
+            }} else {   //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
+        }
+    })
+    .fail(function() {
+        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+    })
+}//end of deleteDictionary
 
 $ (function() {
     const tableHtmlId = 'table-dictionary'
@@ -311,6 +344,10 @@ $ (function() {
     updateDictionaryHeader(dictionaryName)
     displayDictionaryTable(dictionaryID, tableHtmlId)
     setTagLibrary(tagSelectHTMLId)    //use select2 to have dynamic tag selection
+    if(roleFromSession === 'instructor'){
+        showAddToDictionaryButton('add-more', 'populatedDictionary')
+        setDeleteDictionaryButton(emailFromSession, dictionaryID, dictionaryName)
+    }
 
     //hijack filter form to display filtered table
     let filterForm = $('#filter-dictionary-form')

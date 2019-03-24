@@ -1,5 +1,5 @@
 function playAudio(audioPath) {
-    var audio = new Audio(`audio/${audioPath}`)
+    const audio = new Audio(`audio/${audioPath}`)
     audio.play()
 }
 
@@ -87,6 +87,15 @@ function setEmptyDictVocabView(role, tableHtmlId) {
     if(role === "instructor") showAddToDictionaryButton(contentBodyHtmlId, 'newDictionary')
 }
 
+//addDictionaryFlag === "newDictionary" or "populatedDictionary"
+function showAddToDictionaryButton(htmlId, addDictionaryFlag) {
+    //add dictionaryFlag to the session but don't redirect anywhere
+    addToSession({addDictionaryFlag: addDictionaryFlag})
+    //as instructor, show button that allows them to add terms to the dictionary
+    let addToDictionaryButton = `<a class="col-sm-auto btn dark" href="./addDictionary.php">Add to Dictionary</a>`
+    document.getElementById(htmlId).innerHTML = addToDictionaryButton
+}//end of showAddToDictionaryButton
+
 function hideTable(tableHtmlId, contentBodyHtmlId) {
     $(`#${tableHtmlId}`).DataTable().destroy()  //make dataTable back to a normal table
     document.getElementById(tableHtmlId).style.display = "none" //hide normal table
@@ -167,7 +176,8 @@ function clearFilter(data, tableHtmlId) {
 }
 
 //in order to edit table at specific row index, redraw whole table with new entry data
-function editTableRow(data, table, row, editModalID) {
+function editTableRow(data, tableHtmlId, row, editModalID) {
+    let table = $(`#${tableHtmlId}`).DataTable()
     const index = row.index()
     row.remove()    //delete old row
     let currentRows = table.data().toArray()  //get table data

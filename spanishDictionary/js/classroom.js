@@ -72,6 +72,51 @@ function showAddDictionaryButton() {
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
 }//end of showAddDictionaryButton
 
+function setDeleteClassroomButton(email, classroomID, classroomName) {
+    //for styling reasons, move header classes around
+    let classroomHeader = $("#classroom-header")
+    classroomHeader.removeClass("col").addClass("col-sm-auto")
+
+    //set delete classroom button
+    classroomHeader.after('<div class="col"><button id="delete-classroom-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-classroom"><i class="fas fa-trash"></button></div>')
+
+    $("#classroom-div").hover(function(){
+        $("#delete-classroom-btn").fadeIn()
+    }, function(){
+        $("#delete-classroom-btn").fadeOut()
+    });
+
+    //set classroom name in modal
+    document.getElementById('deleting-classroom').innerHTML = classroomName
+
+    //user confirmed delete: delete classroom
+    $(`#submit-delete`).on( 'click', function () {
+        deleteClassroom(email, classroomID)
+    })
+}//end of setDeleteClassroomButton
+
+function deleteClassroom(email, classroomID) {
+    const errorMsgId = 'delete-error-message'
+    const URL = './services/TBD.php?Action=singleDelete'
+    const userData = {
+        email: email,
+        class: classroomID
+    }
+    $.post(URL, userData, function(data) {
+        data = JSON.parse(data)
+        if(data.hasOwnProperty("message")) {
+            if(data.message === "success") {    //if post was successful, exit out of classroom/redirect to dashboard
+                window.location.replace('./dashboard.php')
+            }} else {   //else, backend error: show error message
+            const errorMsg = data.hasOwnProperty("error") ? data.error : data
+            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
+        }
+    })
+    .fail(function() {
+        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
+    })
+}//end of deleteStudent
+
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
 //if dictionary name is clicked, go to view the dictionary (dictionary.php)
 function showDictionaryTable(classroomID, classroomName, tableID) {
@@ -105,44 +150,40 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
         })
 }//end of showDictionaryTable
 
-function setAddDefaultDictionaryToClassroomDropdown() {
-    const errorMsgId = 'add-default-dict-error-message'
-    let select = $("#dictionary-select")
-    const URL = './services/dictionaryService.php?Action=defaultList'
-    $.get(URL, function(data) {
-        //todo: customize this function to what I receive (do I get an success/error message? do i just get an array?)
-        const dictionaryIDNameSet = getDictionaryIdNameSet(data)    //todo: how am I getting this data>
-        if(dictionaryIDNameSet.dictionaryIdArray.length === 0) {  //no dictionaries received: error
-            document.getElementById(errorMsgId).innerHTML = `Error, no dictionaries received! URL: ${URL}`
-        } else {    //classroom has dictionaries, show dictionaries in dropdown
-            const optionListHTML = getDictionaryOptions(dictionaryIDNameSet)
-            select.append(optionListHTML)   //append html to select
-            select.select2()    //initialize as select2 markup
-        }
+function setAddDefaultDictionaryToClassroom() {
+    $("#forum-btn").before('<button id="add-default-dict-btn" class="col-sm-auto btn dark" data-toggle="modal" data-target="#add-default-dict">Add Default Dictionary</button>')
+
+    $("#dictionary-select").select2({
+        ajax: {
+            url: './services/dictionaryService.php?Action=getAllBuiltInDictionaries',
+            dataType: 'json'
+        },
+        dropdownParent: $("#add-default-dict"),
+        placeholder: 'Built-in Dictionaries',
+        width: '100%'
     })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
-}//end of setAddDefaultDictionaryToClassroomDropdown
+}//end of setAddDefaultDictionaryToClassroom
 
 function addDefaultDictionaryToClassroom(classroomID) {
     const errorMsgId = 'add-default-dict-error-message'
     const selectHTMLId = 'dictionary-select'
     let selectData = $(`#${selectHTMLId}`).select2('data')  //get data from select markup
-    const dictionaryID = selectData[0].id
-    const dictionaryName = selectData[0].text
+    const builtInDictionaryID = selectData[0].id
+    const builtInDictionaryName = selectData[0].text
 
-    const URL = './services/dictionaryService.php?Action=singleAdd'
+    const URL = './services/dictionaryService.php?Action=addBuiltInDictionary'
     const userData = {  //todo marcos
-        dictionaryID: dictionaryID,
-        classroomID: classroomID
+        builtInDictionaryID: builtInDictionaryID,
+        class: classroomID
     }
     $.post(URL, userData, function(data) {
         data = JSON.parse(data)
         if(data.hasOwnProperty("message")) {
             //if post was successful, delete question from forum & show button to go to dictionary
             if(data.message === "success") {
-                showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
+                const dictionaryID = data.id
+                const dictionaryName = data.name
+                showGoToDictionaryBtn(dictionaryID, dictionaryName, `${builtInDictionaryName} was added to ${classroomNameFromSession}!`)
             }} else {   //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
@@ -157,7 +198,6 @@ function addDefaultDictionaryToClassroom(classroomID) {
 //if user is instructor, allow user to view student count/add students & add a dictionary
 $(function () {
     const tableID = 'table-dictionaries'
-    // let email = emailFromSession
     const role = roleFromSession
     const classroomID = classroomIDFromSession
     const classroomName = classroomNameFromSession
@@ -167,7 +207,8 @@ $(function () {
     if(role === 'instructor') {
         showStudentCountButton(classroomID, tableID)
         showAddDictionaryButton()
-        setAddDefaultDictionaryToClassroomDropdown(classroomID)
+        setDeleteClassroomButton(emailFromSession, classroomID, classroomName)
+        setAddDefaultDictionaryToClassroom()
     }
     else showViewVocabListButton() //role === 'student
 

@@ -9,6 +9,7 @@ printJQueryCdn();
 printBootstrapJsCdn();
 printDataTablesCdn();
 printFontAwesomeIconsCdn();
+printSelect2Cdn();
 
 printSessionInfo(array('email', 'role', 'classroomID', 'classroomName'));
 
@@ -24,8 +25,7 @@ printHeadClose();
 <main class="container">
     <div id="classroom-div" class="header row align-items-start">
         <h1 id="classroom-header" class="col"></h1>
-        <?php if($_SESSION['role'] == 'instructor') echo '<button id="add-default-dict-btn" class="col-sm-auto btn dark" data-toggle="modal" data-target="#add-default-dict">Add Default Dictionary</button>'?>
-        <a class="col-sm-auto btn dark" href="forum.php">View Forum</a>
+        <a id="forum-btn" class="col-sm-auto btn dark" href="forum.php">View Forum</a>
         <div id="set-btn"><a class="col-sm-auto btn dark" href="#"> Loading... </a></div>
     </div>
     <div class="container content-frame border rounded">
@@ -53,7 +53,7 @@ printHeadClose();
                     <div class="form-group">
                         <div id="select-dictionary-body">
                             <label id="dictionary-select-label" for="dictionary-select" class="col-form-label"></label>
-                            <select id="dictionary-select" class="form-control custom-select" title="Select a Dictionary" name="dictionary" style="width: 100%" required>
+                            <select id="dictionary-select" class="form-control custom-select" title="Select a Dictionary" name="dictionary" required>
                                 <option value="" selected disabled hidden>Select a dictionary</option>
                             </select>
                         </div>
@@ -70,6 +70,27 @@ printHeadClose();
     </div>
 </div>
 <!-- End of Add Built-in Dictionary to Classroom Modal -->
+
+<!-- Delete Classroom Modal -->
+<div class="modal fade deleteClassroom" id="delete-classroom" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered deleteClassroom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Delete Classroom</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center;"><div id="delete-error-message" class="error-message"></div></div>
+                <p>Are you sure you want to delete <span id="deleting-classroom" style="font-weight: bold"></span>? This is change is irreversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="submit-delete" class="btn dark">Remove</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Delete Classroom Modal -->
 
 <?php
 include_once "includes/footer.inc.php";
