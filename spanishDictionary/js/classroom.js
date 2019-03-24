@@ -68,9 +68,13 @@ function showViewVocabListButton() {
 
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
 function showAddDictionaryButton() {
-    let addDictionaryButton = `<a id="add-dictionary" class="btn dark col-sm-auto" href="./addDictionary.php"><i class="fas fa-plus"></i> Add Dictionary</a>`
+    let addDictionaryButton = `<button id="add-dictionary" class="btn dark col-sm-auto" onclick="redirectToAddDict()"><i class="fas fa-plus"></i> Add Dictionary</button>`
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
 }//end of showAddDictionaryButton
+
+function redirectToAddDict() {
+    addToSession({addDictionaryFlag: 'newDictionary'}, 'goTo', './addDictionary.php')
+}
 
 function setDeleteClassroomButton(email, classroomID, classroomName) {
     //for styling reasons, move header classes around
