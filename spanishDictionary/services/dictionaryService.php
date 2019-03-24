@@ -376,7 +376,7 @@
     
         //SELECT Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = 36 and entryID in (SELECT entryID from entryToTag where tagID in (1,2))
 
-        $sql = "SELECT SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = '$dictionaryID' and entryID in (SELECT entryID from entryToTag where tagID in ($tags))";
+        $sql = "SELECT Entry.entryID, Entry.entryText, Entry.entryDefinition, Entry.entryAudioPath, dictionaryID FROM Entry INNER JOIN entryToDictionary USING (entryID) where dictionaryID = '$dictionaryID' and entryID in (SELECT entryID from entryToTag where tagID in ($tags))";
     
         $result = $conn->query($sql);
         
@@ -586,6 +586,7 @@
             if($conn->query($sql)){
                 if($conn->query($deleteDictionary)){
                     echo json_encode(array("message" => "success"));
+                    //header("Location: ../classroom.php");
                 }
                 else{
                     echo json_encode(array('error' => $conn->error));

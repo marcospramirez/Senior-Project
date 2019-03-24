@@ -279,7 +279,7 @@
 
                 while($question = $questionResults->fetch_assoc()){
                     $questionType = $question["questionType"];
-                    $questionText = htmlentities($question["questionText"]);
+                    $questionText = $question["questionText"];
 
                     $answerID = $question["starredAnswer"];
 
@@ -293,7 +293,7 @@
             $answerResults = $conn->query("SELECT answerText from Answer where answerID = '$answerID'");
 
             while ($answer = $answerResults->fetch_assoc()) {
-                 $answerText = htmlentities($answer["answerText"]);
+                 $answerText = $answer["answerText"];
             }
            
 

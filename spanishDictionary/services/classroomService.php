@@ -44,8 +44,8 @@
                     $conn->query($sql);
                    
                 }
-
-                echo json_encode(array("message" => "success"));
+                 header("Location: ../dashboard.php");
+                //echo json_encode(array("message" => "success"));
 
             } 
         }
@@ -59,7 +59,7 @@
         try{
 
             $email = $_POST["email"];
-            $classroomID= $_POST["classroomID"];
+            $classroomID= $_POST["class"];
 
             $getDictionaries = "SELECT Dictionary.dictionaryID from Dictionary, classroomToDictionary WHERE classroomToDictionary.classID = '$classroomID' and classroomToDictionary.dictionaryID = Dictionary.dictionaryID";
 
@@ -77,14 +77,15 @@
                     
                     $conn->query($sql);
 
-                    $conn->query($deleteDictionary)
+                    $conn->query($deleteDictionary);
                 }
             }
 
             $deleteClassroomSql = "DELETE from Classroom where Classroom.classID = '$classroomID' and Classroom.instructorEmail = '$email'";
 
             if($conn->query($deleteClassroomSql)){
-                echo json_encode(array("message" => "success")); 
+                echo json_encode(array("message" => "success"));
+                //header("Location: ../dashboard.php");
             } 
             else{
                 echo json_encode(array('error' => $conn->error));
@@ -94,6 +95,7 @@
         catch(Exception $e){
             echo json_encode(array('error' => $e->getMessage() ));
         }
+
     }
 
    function noAction(){
