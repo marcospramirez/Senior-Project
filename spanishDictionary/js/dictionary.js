@@ -298,12 +298,10 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
     //set delete dictionary button
     dictionaryNameHeader.after('<div class="col"><button id="delete-dictionary-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-dictionary"><i class="fas fa-trash"></button></div>')
 
-    $("#dictionary-header").hover(function(event){
-        event.stopPropagation()
-        $("#delete-dictionary-btn").fadeIn()
-    }, function(event){
-        $("#delete-dictionary-btn").fadeOut()
-        event.stopPropagation()
+    $("#dictionary-header").hover(function(){
+        $("#delete-dictionary-btn").stop(true, false).fadeIn()
+    }, function(){
+        $("#delete-dictionary-btn").stop(true, false).fadeOut()
     });
 
     //set classroom name in modal
