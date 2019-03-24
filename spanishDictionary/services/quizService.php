@@ -37,7 +37,7 @@ function gradeQuiz($conn){
         $matchingResponse = [];
         foreach ($matching as $matchID => $tomatch) {
             
-            $matchanswer = $matchingAnswers[$matchID];
+            $matchanswer = htmlentities($matchingAnswers[$matchID]);
 
             //sql
             $getEntrySQL = "SELECT entryText, entryDefinition from Entry where entryID = '$matchID'";
@@ -77,7 +77,7 @@ function gradeQuiz($conn){
 
             $realEntryText = $realEntry["entryText"];
 
-            if($realEntryText == $answer){
+            if($realEntryText == htmlentities($answer)){
                 $isCorrect = true;
             }
             else{
