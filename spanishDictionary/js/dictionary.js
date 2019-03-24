@@ -301,7 +301,7 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
     $("#dictionary-header").hover(function(){
         $("#delete-dictionary-btn").stop(true, false).fadeIn()
     }, function(){
-        $("#delete-dictionary-btn").stop(true, false).fadeOut()
+        $("#delete-dictionary-btn").stop(true, true).fadeOut()
     });
 
     //set classroom name in modal
