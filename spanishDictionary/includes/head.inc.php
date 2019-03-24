@@ -191,7 +191,7 @@ function getClassroomsForNavHtml($email, $role){
                     $activeClass = "active";
                 }
 
-                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="addToSession({'.$classID.' ,\'' .$className . '\'}, \'goTo\', \'./classroom.php\')">'.$className.'</button>';
+                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="addToSession({classroomID: '.$classID.' , classroomName: \'' .$className . '\'}, \'goTo\', \'./classroom.php\')">'.$className.'</button>';
             }
         }
         
