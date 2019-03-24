@@ -81,6 +81,7 @@ function setDeleteClassroomButton(email, classroomID, classroomName) {
     classroomHeader.after('<div class="col"><button id="delete-classroom-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-classroom"><i class="fas fa-trash"></button></div>')
 
     $("#classroom-div").hover(function(){
+
         $("#delete-classroom-btn").fadeIn()
     }, function(){
         $("#delete-classroom-btn").fadeOut()

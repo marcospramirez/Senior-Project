@@ -191,13 +191,13 @@ function getClassroomsForNavHtml($email, $role){
                     $activeClass = "active";
                 }
 
-                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="switchtoClassroom('.$classID.' ,\'' .$className . '\')">'.$className.'</button>';
+                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="addToSession({'.$classID.' ,\'' .$className . '\'}, \'goTo\', \'./classroom.php\')">'.$className.'</button>';
             }
         }
         
         if($role == "instructor"){
             $html .= '<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Add Classroom</a>';
+                        <a class="dropdown-item" href="./addClassroom.php">Add Classroom</a>';
         }
                            
         $html .=     '</div>
