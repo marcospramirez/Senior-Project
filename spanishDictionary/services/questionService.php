@@ -91,7 +91,7 @@
         try{
             $classroomID = $_POST["classroomID"];
             $questionType = $_POST["questionType"];
-            $questionText = $_POST["questionText"];
+            $questionText = htmlentities($_POST["questionText"]);
             $questionEmail = $_POST["questionEmail"];
             //$questionName = $_POST["questionName"];
             $questionRole = $_POST["questionRole"];
@@ -131,7 +131,7 @@
         try{
 
             $questionID = $_POST["questionID"];
-            $answerText = $_POST["answerText"];
+            $answerText = htmlentities($_POST["answerText"]);
             $answerEmail = $_POST["answerEmail"];
             //$answerName = $_POST["answerName"];
             $answerRole = $_POST["answerRole"];
@@ -279,7 +279,7 @@
 
                 while($question = $questionResults->fetch_assoc()){
                     $questionType = $question["questionType"];
-                    $questionText = $question["questionText"];
+                    $questionText = htmlentities($question["questionText"]);
 
                     $answerID = $question["starredAnswer"];
 
@@ -293,7 +293,7 @@
             $answerResults = $conn->query("SELECT answerText from Answer where answerID = '$answerID'");
 
             while ($answer = $answerResults->fetch_assoc()) {
-                 $answerText = $answer["answerText"];
+                 $answerText = htmlentities($answer["answerText"]);
             }
            
 

@@ -64,7 +64,7 @@
 
 		$calledFromBuiltInDictionary = true;
 		if($dictionaryName == null){
-			$dictionaryName = $_POST["dictionaryName"];
+			$dictionaryName = htmlentities($_POST["dictionaryName"]);
 			$calledFromBuiltInDictionary = false;
 		}
 		
@@ -81,8 +81,9 @@
 			foreach ($csvAsArray as $index => $row) {
 				$entry = $row[0];
 				$entry = remove_utf8_bom($entry);
+				$entry = htmlentities($entry);
 
-				$entryDef = $row[1];
+				$entryDef = htmlentities($row[1]);
 
 				if($entry === "" || $entryDef ===""){
 					$message["message"] = "Error, one of the entries was blank";
@@ -170,8 +171,9 @@
 		foreach ($csvAsArray as $index => $row) {
 			$entry = $row[0];
 			$entry = remove_utf8_bom($entry);
+			$entry = htmlentities($entry);
 
-			$entryDef = $row[1];
+			$entryDef = htmlentities($row[1]);
 
 			if($entry === "" || $entryDef ===""){
 				$message["message"] = "Error, one of the entries was blank";

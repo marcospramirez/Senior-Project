@@ -233,7 +233,9 @@
                     if(isset($_POST["entryText"])) {
                         $entry = $_POST["entryText"];
                         foreach ($entry as $index => $entryText) {
-                            $entryDefinition = $_POST["entryDefinition"][$index];
+
+                            $entryText = htmlentities($entryText);
+                            $entryDefinition = htmlentities($_POST["entryDefinition"][$index]);
                             $entryAudio = basename($_FILES["entryAudio"]["name"][$index]);
 
                             $target_dir = "../audio/";
@@ -396,7 +398,8 @@
             if(isset($_POST["entryText"])) {
                 $entry = $_POST["entryText"];
                 foreach ($entry as $index => $entryText) {
-                    $entryDefinition = $_POST["entryDefinition"][$index];
+                    $entryDefinition = htmlentities($_POST["entryDefinition"][$index]);
+                    $entryText = htmlentities($entryText);
                     $entryAudio = basename($_FILES["entryAudio"]["name"][$index]);
 
                     $target_dir = "../audio/";
@@ -478,8 +481,8 @@
     function editEntry($conn){
         try {
             $entryID = $_POST["entryID"];
-            $entryText = $_POST["entryText"];
-            $entryDefinition = $_POST["entryDefinition"];
+            $entryText = htmlentities($_POST["entryText"]);
+            $entryDefinition = htmlentities($_POST["entryDefinition"]);
             $entryAudio = $_POST["entryAudio"];
             $entryTags = $_POST["entryTags"];
 
