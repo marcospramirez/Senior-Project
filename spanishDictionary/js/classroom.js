@@ -80,11 +80,12 @@ function setDeleteClassroomButton(email, classroomID, classroomName) {
     //set delete classroom button
     classroomHeader.after('<div class="col"><button id="delete-classroom-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-classroom"><i class="fas fa-trash"></button></div>')
 
-    $("#classroom-div").hover(function(){
-
+    $("#classroom-div").hover(function(event){
+        event.stopPropagation()
         $("#delete-classroom-btn").fadeIn()
-    }, function(){
+    }, function(event){
         $("#delete-classroom-btn").fadeOut()
+        event.stopPropagation()
     });
 
     //set classroom name in modal
