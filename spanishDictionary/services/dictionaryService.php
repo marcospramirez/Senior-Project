@@ -67,6 +67,10 @@
             returnBuiltInDictionaries($conn);
             break;
 
+        case "deleteDictionary":
+            deleteDictionary($conn);
+            break;
+
         default:
             noDictionaryAction();
             break;
@@ -567,6 +571,35 @@
 
         } catch (Exception $e) {
             echo json_encode(array("error" => $e->getMessage()));
+        }
+    }
+
+    function deleteDictionary($conn){
+        try{
+
+            $email = $_POST["email"];
+            $dictionaryID = $_POST["dictionaryID"];
+            $sql = "DELETE FROM Entry where Entry.entryID in (SELECT * from (SELECT Entry.entryID FROM Entry, entryToDictionary where entryToDictionary.dictionaryID = '$dictionaryID' and Entry.entryID = entryToDictionary.entryID) as T)";
+            
+            $deleteDictionary = "DELETE FROM Dictionary where Dictionary.dictionaryID = '$dictionaryID' and Dictionary.dictionaryID in (SELECT dictionaryID from classroomToDictionary, Classroom where Classroom.instructorEmail = '$email' and Classroom.classID = classroomToDictionary.classID)";
+
+            if($conn->query($sql)){
+                if($conn->query($deleteDictionary)){
+                    echo json_encode(array("message" => "success"));
+                }
+                else{
+                    echo json_encode(array('error' => $conn->error));
+                }
+            }
+            else{
+                echo json_encode(array('error' => $conn->error));
+            }
+            
+
+
+        }
+        catch(Exception $e){
+            echo json_encode(array('error' => $e->getMessage() ));
         }
     }
 

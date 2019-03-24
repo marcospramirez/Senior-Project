@@ -22,7 +22,11 @@ function checkUser($conn) {
         return "student";
     } elseif($checkUserInstructorResult == "INSTRUCTOR") {
         return "instructor";
-    } elseif($checkUserStudentResult == "EMPTY" || $checkUserInstructorResult == "EMPTY") {   //user doesn't exist
+    }
+    elseif($checkUserInstructorResult == "NEW INSTRUCTOR"){
+        return "new instructor";
+    }
+    elseif($checkUserStudentResult == "EMPTY" || $checkUserInstructorResult == "EMPTY") {   //user doesn't exist
         return "none";
     }
     else{
@@ -46,8 +50,19 @@ function checkUserStudent($conn, $email, $password) {
 function checkUserInstructor($conn, $email, $password) {
     $sql = "SELECT * FROM Instructor WHERE email = '$email' AND password = '$password';";
 
-    if ($conn->query($sql) && ($conn->affected_rows > 0)) { //instructor exists
-        return "INSTRUCTOR";
+    if ($conn->query($sql) && ($conn->affected_rows > 0)) {
+        //instructor exists
+
+        $checkIfNew = "SELECT * from Classroom where instructorEmail = '$email'";
+
+        if($conn->query($checkIfNew) && ($conn->affected_rows == 0)){
+            return "NEW INSTRUCTOR";
+        }
+        else{
+            return "INSTRUCTOR";
+        }
+     
+        
     } elseif($conn->affected_rows == 0) {   //no results, instructor doesn't exist
         return "EMPTY";
     } else {
