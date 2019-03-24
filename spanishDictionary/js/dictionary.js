@@ -315,7 +315,7 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
 
 function deleteDictionary(email, dictionaryID) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/TBD.php?Action=singleDelete'
+    const URL = './services/dictionaryService.php?Action=deleteDictionary'
     const userData = {
         email: email,
         dictionaryID: dictionaryID

@@ -97,7 +97,7 @@ function setDeleteClassroomButton(email, classroomID, classroomName) {
 
 function deleteClassroom(email, classroomID) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/TBD.php?Action=singleDelete'
+    const URL = './services/classroomService.php?Action=deleteClassroom'
     const userData = {
         email: email,
         class: classroomID
