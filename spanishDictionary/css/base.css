@@ -101,3 +101,17 @@ button.btn.round-delete:hover {
     background-color: var(--danger-red);
     border-radius: 100%;
 }
+
+.logout {  /*outline logout button*/
+    background-color: transparent;
+    background-image: none;
+    color: var(--dark-ocean);
+    border-color: var(--dark-ocean);
+}
+
+.logout:hover {
+    background-image: none;
+    color: white;
+    border-color: var(--dark-ocean);
+    background-color: var(--dark-ocean);
+}

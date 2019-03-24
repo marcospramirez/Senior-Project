@@ -87,8 +87,9 @@ $(function () {
 
     //add classroomID as a hidden input named "class"
     //for both the 'import' form and the 'add dictionary' form
-    // const importDictionaryForm = $('#import-hidden')
+    const importDictionaryForm = $('#import-hidden')
     const addDictionaryForm = $('#add-dictionary-hidden')
+    addHiddenInputToForm(importDictionaryForm, 'class', classroomID)
     addHiddenInputToForm(addDictionaryForm, 'class', classroomID)
     //if adding to populated dictionary, add dictionaryID to form data
     if(addDictionaryFlag === 'populatedDictionary') addHiddenInputToForm(addDictionaryForm, 'dictionaryID', dictionaryID)
