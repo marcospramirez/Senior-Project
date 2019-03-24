@@ -174,7 +174,7 @@ function getClassroomsForNavHtml($email, $role){
 
     if ($result = $conn->query($sql)) { //query successful
         $html .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle dark" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Switch Classrooms
                 </button>
 
