@@ -76,6 +76,7 @@ printHeadClose();
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <div id="import-hidden"></div>  <!--add classID into POST-->
                         <input type="submit" name="submit_csv" value="Import Dictionary" class="btn dark">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>

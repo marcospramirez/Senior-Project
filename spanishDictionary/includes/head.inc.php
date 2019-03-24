@@ -133,7 +133,7 @@ function printHeadClose() {
             $currentPage = basename($_SERVER['PHP_SELF']);
             if($currentPage != 'dashboard.php') {   //don't show classroom dropdown in dashboard
                 $navHtml .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                      <button class="btn btn-secondary dropdown-toggle dark" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
                     $currentClassroomName.'
                       </button>
 
@@ -148,7 +148,7 @@ function printHeadClose() {
                                         
                     
             $navHtml .='                           
-                    <div class="col"><button type="button" class="btn" style="float: right" onclick="addToSession({logout: true}, \'redirectTo\', \'./login.php\')">Logout</button></div>
+                    <div class="col"><button type="button" class="btn logout" style="float: right" onclick="addToSession({logout: true}, \'redirectTo\', \'./login.php\')">Logout</button></div>
                 </nav>
             </header>';
 
@@ -174,7 +174,7 @@ function getClassroomsForNavHtml($email, $role){
 
     if ($result = $conn->query($sql)) { //query successful
         $html .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle dark" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Switch Classrooms
                 </button>
 
@@ -191,13 +191,13 @@ function getClassroomsForNavHtml($email, $role){
                     $activeClass = "active";
                 }
 
-                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="switchtoClassroom('.$classID.' ,\'' .$className . '\')">'.$className.'</button>';
+                $html .= '<button class="dropdown-item '.$activeClass. '" onclick="addToSession({classroomID: '.$classID.' , classroomName: \'' .$className . '\'}, \'goTo\', \'./classroom.php\')">'.$className.'</button>';
             }
         }
         
         if($role == "instructor"){
             $html .= '<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Add Classroom</a>';
+                        <a class="dropdown-item" href="./addClassroom.php">Add Classroom</a>';
         }
                            
         $html .=     '</div>

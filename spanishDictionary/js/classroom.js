@@ -68,9 +68,13 @@ function showViewVocabListButton() {
 
 //show "Add Dictionary" Button & add click event listener that takes user to addDictionary.php
 function showAddDictionaryButton() {
-    let addDictionaryButton = `<a id="add-dictionary" class="btn dark col-sm-auto" href="./addDictionary.php"><i class="fas fa-plus"></i> Add Dictionary</a>`
+    let addDictionaryButton = `<button id="add-dictionary" class="btn dark col-sm-auto" onclick="redirectToAddDict()"><i class="fas fa-plus"></i> Add Dictionary</button>`
     $('#table-header').append(`            ${addDictionaryButton}\n`)    //extra spaces/tab for formatting purposes
 }//end of showAddDictionaryButton
+
+function redirectToAddDict() {
+    addToSession({addDictionaryFlag: 'newDictionary'}, 'goTo', './addDictionary.php')
+}
 
 function setDeleteClassroomButton(email, classroomID, classroomName) {
     //for styling reasons, move header classes around
@@ -81,9 +85,9 @@ function setDeleteClassroomButton(email, classroomID, classroomName) {
     classroomHeader.after('<div class="col"><button id="delete-classroom-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-classroom"><i class="fas fa-trash"></button></div>')
 
     $("#classroom-div").hover(function(){
-        $("#delete-classroom-btn").fadeIn()
+        $("#delete-classroom-btn").stop(true, false).fadeIn()
     }, function(){
-        $("#delete-classroom-btn").fadeOut()
+        $("#delete-classroom-btn").stop(true, true).fadeOut()
     });
 
     //set classroom name in modal
@@ -97,7 +101,7 @@ function setDeleteClassroomButton(email, classroomID, classroomName) {
 
 function deleteClassroom(email, classroomID) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/TBD.php?Action=singleDelete'
+    const URL = './services/classroomService.php?Action=deleteClassroom'
     const userData = {
         email: email,
         class: classroomID

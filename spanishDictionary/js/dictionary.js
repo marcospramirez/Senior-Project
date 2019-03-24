@@ -299,9 +299,9 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
     dictionaryNameHeader.after('<div class="col"><button id="delete-dictionary-btn" class="btn round-delete" style="display: none" data-toggle="modal" data-target="#delete-dictionary"><i class="fas fa-trash"></button></div>')
 
     $("#dictionary-header").hover(function(){
-        $("#delete-dictionary-btn").fadeIn()
+        $("#delete-dictionary-btn").stop(true, false).fadeIn()
     }, function(){
-        $("#delete-dictionary-btn").fadeOut()
+        $("#delete-dictionary-btn").stop(true, true).fadeOut()
     });
 
     //set classroom name in modal
@@ -315,7 +315,7 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
 
 function deleteDictionary(email, dictionaryID) {
     const errorMsgId = 'delete-error-message'
-    const URL = './services/TBD.php?Action=singleDelete'
+    const URL = './services/dictionaryService.php?Action=deleteDictionary'
     const userData = {
         email: email,
         dictionaryID: dictionaryID

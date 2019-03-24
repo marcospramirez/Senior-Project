@@ -36,7 +36,7 @@ printHeadClose();
             <h1 id="add-classroom-header" class="col">Add Classrooms</h1>
         </div>
         <hr class="hr-header">
-        <form id="new-classroom-form" enctype="multipart/form-data" action="services/TBD.php?Action=addClassroom" method="POST">
+        <form id="new-classroom-form" enctype="multipart/form-data" action="services/classroomService.php?Action=addClassroom" method="POST">
             <div id="classrooms">
                 <div class="classroom-name"> <!--Student #1 in Classroom-->
                     <div class="form-group"><input type="text" id="classroom1" class="form-control" title="Enter Classroom Name" name="classroomName[]" placeholder="Classroom Name" required></div>
