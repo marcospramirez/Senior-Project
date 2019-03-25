@@ -308,7 +308,7 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
     document.getElementById('deleting-dictionary').innerHTML = dictionaryName
 
     //user confirmed delete: delete classroom
-    $(`#submit-delete`).on( 'click', function () {
+    $(`#submit-delete-classroom`).on( 'click', function () {
         deleteDictionary(email, dictionaryID)
     })
 }//end of setDeleteDictionaryButton

@@ -102,7 +102,14 @@ button.btn.round-delete:hover {
     border-radius: 100%;
 }
 
-.dropdown-toggle.dark:focus {
+.dropdown-toggle.navbar-dropdown {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: white;
+    border-color: var(--dark-turquoise);
+    background-color: var(--dark-turquoise);
+}
+
+.dropdown-toggle.navbar-dropdown:hover, .dropdown-toggle.navbar-dropdown:focus {
     color: white;
     border-color: var(--dark-ocean);
     background-color: var(--dark-ocean);

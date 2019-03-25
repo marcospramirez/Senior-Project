@@ -45,7 +45,7 @@ function deleteDictVocabButtonClicked(table, tableHtmlId, row, entryIDArray) {
     $(`#${deleteModalID}`).modal('show')
 
     //user confirmed delete: delete entry
-    $(`#submit-delete`).on( 'click', function () {
+    $(`#submit-delete-term`).on( 'click', function () {
         const tableSize = table.column(0).data().length
         newEntryIDArray = deleteEntry(row, entryIDArray, entryID, deleteModalID, tableSize, tableHtmlId)
     })

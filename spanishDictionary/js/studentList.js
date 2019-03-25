@@ -109,7 +109,7 @@ function setStudentButtonListeners(tableDataSet, role, table, tableHtmlId) {
         $(`#${deleteModalID}`).modal('show')
 
         //user confirmed delete: delete entry
-        $(`#submit-delete`).on( 'click', function () {
+        $(`#submit-delete-student`).on( 'click', function () {
             deleteStudent(row, classroomIDFromSession, studentEmail, deleteModalID)
         })
     })

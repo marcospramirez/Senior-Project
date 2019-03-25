@@ -88,7 +88,7 @@ printHeadClose();
                 <p>Are you sure you want to delete term "<span id="deleting-term" style="font-weight: bold"></span>" from your Vocab List?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="submit-delete" class="btn dark">Delete</button>
+                <button type="button" id="submit-delete-term" class="btn dark">Delete</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
