@@ -64,13 +64,13 @@ function getForumHTML(data) {
             const answerText = answerData.answerText
             const answerName = answerData.hasOwnProperty("answerName") ? answerData.answerName : undefined
 
-            const answerHTML = getAnswerHTML(role, questionType, questionID, starredAnswerID, answerID, answerText, answerName)
+            const answerHTML = getAnswerHTML(role, questionID, questionType, starredAnswerID, answerID, answerText, answerName)
 
             questionHTML += answerHTML
         })  //end of for each answer in question
 
         //if no starred answer, allow user to suggest their own answer
-        if(questionData.starredAnswer === null) questionHTML += getSuggestAnswerHTML(questionID)
+        if(questionData.starredAnswer === null) questionHTML += getSuggestAnswerHTML(questionID, questionType)
 
         questionHTML += getClosingQuestionHTML()    //create the ending HTML for the question
 
@@ -98,15 +98,14 @@ function getClosingQuestionHTML() {
     return '</div> </div> </div>'
 }
 
-function getAnswerHTML(role, questionType, questionID, starredAnswerID, answerID, answerText, answerName = false) {
+function getAnswerHTML(role, questionID, questionType, starredAnswerID, answerID, answerText, answerName = false) {
     let starButtonHTML = ''
-    let answerNameHTML = ''
+    let answerNameText = answerName && role === "instructor" ? answerName : 'Anonymous' //only show answerName if it exists and if user is an instuctor
     let addStarredClass = ''
     let addToDictionaryButtonHTML = ''
 
     if(role === 'instructor') { //instructors can view names, star questions and add question-answer pair to a dictionary
         starButtonHTML = `<div class="col col-sm-auto"><button id="answer-${answerID}-star-btn" class="btn btn-sm" title="Click to star answer" onclick="toggleStarredAnswer(${questionID}, ${questionType}, ${answerID}, ${starredAnswerID})"><i id="answer-${answerID}-star" class="far fa-star"></i></button></div>`
-        answerNameHTML = answerName ? `<div class="answer-name" class="row"><div class="col">${answerName}</div></div>` : ''    //if there's no answerName, then don't create HTML for it
         if(answerID === starredAnswerID) {  //if answer is starred, change HTML accordingly
             addStarredClass = 'starred'  //add 'starred' class to change styling of answer
             starButtonHTML = starButtonHTML.replace('Click to star answer', 'Click to unstar answer')   //change button title to reflect toggle
@@ -122,7 +121,7 @@ function getAnswerHTML(role, questionType, questionID, starredAnswerID, answerID
                             <div id="answer-${answerID}-add-to-dict" class="col col-sm-auto">${addToDictionaryButtonHTML}</div>
                             <div class="col">
                                 <div class="row answer-text"><div class="col">${answerText}</div></div>
-                                ${answerNameHTML}
+                                <div class="answer-name" class="row"><div class="col">${answerNameText}</div></div>
                             </div>
                         </div>
                     </div>`
@@ -132,34 +131,40 @@ function getAddToDictBtnHTML(questionID, answerID) {
     return `<button id="answer-${answerID}-add-to-dict-btn" class="btn btn-sm" title="Add to Dictionary" onclick="addQuestionToDictionary(${questionID})"><i class="fas fa-plus"></i></button>`
 }
 
+let questionToDelete = null
 function addQuestionToDictionary(questionID) {
     const errorMsgId = 'add-to-dict-error-message'
     const selectHTMLId = 'dictionary-select'
+    questionToDelete = questionID
 
     hideGoToDictionaryBtn()
     document.getElementById(errorMsgId).innerHTML = ''  //clear error message
+
+    document.getElementById("submit-add-to-dict").style.display = "block"
 
     $('#add-to-dict').modal('show')
 
     //user confirmed add: add question to dictionary and delete question from forum
     $(`#submit-add-to-dict`).on( 'click', function () {
         let selectData = $(`#${selectHTMLId}`).select2('data')  //get data from select markup
-        const dictionaryID = selectData[0].id
+        const dictionaryID = parseInt(selectData[0].id)
         const dictionaryName = selectData[0].text
 
         const URL = './services/questionService.php?Action=addQuestionToDictionary'
         const userData = {  //todo marcos
             dictionaryID: dictionaryID,
-            questionID: questionID
+            questionID: questionToDelete
         }
         $.post(URL, userData, function(data) {
             data = JSON.parse(data)
             if(data.hasOwnProperty("message")) {
                 //if post was successful, delete question from forum & show button to go to dictionary
                 if(data.message === "success") {
-                    deleteQuestion(questionID)
                     showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
-                }} else {   //else, backend error: show error message
+                    deleteQuestion(questionToDelete)
+                    $("#submit-add-to-dict").off("click")
+                    document.getElementById("submit-add-to-dict").style.display = "none"
+            }} else {   //else, backend error: show error message
                 const errorMsg = data.hasOwnProperty("error") ? data.error : data
                 document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
             }
@@ -176,6 +181,8 @@ function deleteQuestion(questionID) {
 
     questionCount -= 1
 
+    if(questionCount === 0) return  //don't construct empty MagicGrid
+
     let magicGrid = new MagicGrid({
         container: '#forum',
         gutter: 30,
@@ -187,7 +194,7 @@ function deleteQuestion(questionID) {
     magicGrid.listen(); //listen for changes in window size
 }
 
-function getSuggestAnswerHTML(questionID) {
+function getSuggestAnswerHTML(questionID, questionType) {
     return `
             <div id="question-${questionID}-suggest-answer" class="suggest-answer content-frame border rounded">
                 <div class="answer-body row align-items-center">
@@ -195,7 +202,7 @@ function getSuggestAnswerHTML(questionID) {
                         <div id="suggest-answer-form">
                             <div class="row">
                                 <div class="col"><input type="text" id="question-${questionID}-suggest-answer-text" class="form-control" placeholder="Suggest an answer" required></div>
-                                <div class="col-sm-auto"><button title="Answer Question" class="btn dark" onclick="answerQuestion(${questionID})">Answer</button></div>
+                                <div class="col-sm-auto"><button title="Answer Question" class="btn dark" onclick="answerQuestion(${questionID}, ${questionType})">Answer</button></div>
                             </div>
                             <div class="row"><div class="col error-message" id="question-${questionID}-suggest-answer-error-message"></div></div>
                         </div>
@@ -234,7 +241,7 @@ function toggleStarredAnswer(questionID, questionType, answerID, starredAnswerID
                     toggleStarIcon(questionType, answerID, isCurrentlyStarred, questionID)    //unstar current answer
 
                     //append "suggest answer" form to answer list
-                    answerList.innerHTML += getSuggestAnswerHTML(questionID)
+                    answerList.innerHTML += getSuggestAnswerHTML(questionID, questionType)
                 } else { //else current answer is not starred: find starred answer, remove star & add star to current answer
                     const answerArray = document.getElementsByClassName(`question-${questionID}-answer`)
                     let i = 0
@@ -296,7 +303,7 @@ function setNewStarredAnswerID(questionID, questionType, answerID, starredAnswer
     })
 }//end of setNewStarredAnswerID
 
-function answerQuestion(questionID) {
+function answerQuestion(questionID, questionType) {
     const answerErrorMessage = document.getElementById(`question-${questionID}-suggest-answer-error-message`)
     answerErrorMessage.innerHTML = ''   //clear error message
     const answerText = $(`#question-${questionID}-suggest-answer-text`).val()
@@ -325,12 +332,12 @@ function answerQuestion(questionID) {
                     answerList.removeChild(suggestAnswerField)
 
                     //add answer to bottom of answer list
-                    const answer = getAnswerHTML(roleFromSession, questionID, starredAnswerID, answerID, answerText, answerName)
+                    const answer = getAnswerHTML(roleFromSession, questionID, questionType, starredAnswerID, answerID, answerText, answerName)
                     answerList.innerHTML += answer
 
                     //if student, you need to be able to add more than one comment, so add input field back in
                     if(answerRole === 2) {
-                        const suggestAnswerFieldHTML = getSuggestAnswerHTML(questionID)
+                        const suggestAnswerFieldHTML = getSuggestAnswerHTML(questionID, questionType)
                         answerList.innerHTML += suggestAnswerFieldHTML
                     }
                 }} else {    //else, backend error: show error message
@@ -466,7 +473,8 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
             if(data.message === "success") {    //if post was successful, show new question in forum
                 const questionID = data.questionID
                 const questionName = data.questionName
-                addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTerm)
+                addNewQuestionToForum(forumHTMLID, questionID, questionType, questionName, questionTerm)
+                document.getElementById('questionTerm').innerHTML = ''  //clear questionTerm to prepare for adding more questions
         }} else {    //else, backend error: show error message
             const errorMsg = data.hasOwnProperty("error") ? data.error : data
             document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
@@ -478,14 +486,14 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
 
 }
 
-function addNewQuestionToForum(forumHTMLID, questionID, questionName, questionTerm) {
+function addNewQuestionToForum(forumHTMLID, questionID, questionType, questionName, questionTerm) {
     const questionTextStart = document.getElementById("question-text-start").innerHTML
     const questionTextEnd = document.getElementById("question-text-end").innerHTML
     const questionText = `${questionTextStart} "${questionTerm}" ${questionTextEnd}`
 
     //construct HTML for question
     let questionHTML = getOpeningQuestionHTML(questionID, questionText, questionName)
-    questionHTML += getSuggestAnswerHTML(questionID)
+    questionHTML += getSuggestAnswerHTML(questionID, questionType)
     questionHTML += getClosingQuestionHTML()
 
     $(`#${forumHTMLID}`).prepend(questionHTML)  //add new question HTML to top of forum

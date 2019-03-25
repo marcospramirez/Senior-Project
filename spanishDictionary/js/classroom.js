@@ -41,7 +41,7 @@ function showStudentCountButton(classroomID, errorMsgDiv) {
             //if no students in classroom, allow instructor to add some
             if (studentCount === 0) {
                 goToURL = "./addStudent.php"
-                studentBtnInnerHTML = '<i class="fas fa-plus"></i>Add Students'
+                studentBtnInnerHTML = '<i class="fas fa-plus"></i> Add Students'
             }
 
             //else if there are students in the classroom, allow instructor to view student list
@@ -94,7 +94,7 @@ function setDeleteClassroomButton(email, classroomID, classroomName) {
     document.getElementById('deleting-classroom').innerHTML = classroomName
 
     //user confirmed delete: delete classroom
-    $(`#submit-delete`).on( 'click', function () {
+    $(`#submit-delete-classroom`).on( 'click', function () {
         deleteClassroom(email, classroomID)
     })
 }//end of setDeleteClassroomButton

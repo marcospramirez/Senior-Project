@@ -84,7 +84,7 @@ printHeadClose();
                 <p>Are you sure you want to delete <span id="deleting-classroom" style="font-weight: bold"></span>? This is change is irreversible.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="submit-delete" class="btn dark">Remove</button>
+                <button type="button" id="submit-delete-classroom" class="btn dark">Remove</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

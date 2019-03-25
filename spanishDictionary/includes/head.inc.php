@@ -133,7 +133,7 @@ function printHeadClose() {
             $currentPage = basename($_SERVER['PHP_SELF']);
             if($currentPage != 'dashboard.php') {   //don't show classroom dropdown in dashboard
                 $navHtml .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
-                      <button class="btn btn-secondary dropdown-toggle dark" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                      <button class="btn btn-secondary dropdown-toggle navbar-dropdown" type="button" id="classroomNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
                     $currentClassroomName.'
                       </button>
 
@@ -174,7 +174,7 @@ function getClassroomsForNavHtml($email, $role){
 
     if ($result = $conn->query($sql)) { //query successful
         $html .= '<div class="dropdown col-sm-auto" style="margin-right: 1rem">
-                <button class="btn btn-secondary dropdown-toggle dark" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle navbar-dropdown" type="button" id="switchClassrooms" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Switch Classrooms
                 </button>
 

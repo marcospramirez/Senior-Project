@@ -86,7 +86,7 @@ printHeadClose();
                 <p>Are you sure you want to remove <span id="deleting-student" style="font-weight: bold"></span> from the classroom?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="submit-delete" class="btn dark">Remove</button>
+                <button type="button" id="submit-delete-student" class="btn dark">Remove</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

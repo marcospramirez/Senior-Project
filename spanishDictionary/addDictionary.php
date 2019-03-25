@@ -13,17 +13,20 @@ $dictionaryFlag = getAddDictionaryFlag();
 $csvAction = '';
 $normalAction = '';
 $pageTitle = '';
+$addBtnValue = '';
 $sessionInfo = array();
 if($dictionaryFlag == "newDictionary") {
     $csvAction = 'addDictionaryCSV';
     $normalAction = 'addDictionary';
     $pageTitle = 'Add Dictionary';
+    $addBtnValue = 'Create Dictionary';
     array_push($sessionInfo, 'email', 'role', 'classroomID', 'classroomName', 'addDictionaryFlag');
 }
 else if($dictionaryFlag == "populatedDictionary") {
     $csvAction = 'addToDictionaryCSV';
     $normalAction = 'addToDictionary';
     $pageTitle = 'Add To Dictionary';
+    $addBtnValue = 'Add New Terms';
     array_push($sessionInfo, 'email', 'role', 'classroomID', 'classroomName', 'dictionaryID', 'dictionaryName', 'addDictionaryFlag');
 }
 else {  //dictionaryFlag is wrong, redirect back to dictionary to try again
@@ -85,6 +88,7 @@ printHeadClose();
         </div>
     </div>
 
+<!--todo: remove the php inside the html, because as easy as it is, it's badd practice lol-->
     <main>
         <div class="container content-frame border rounded">
             <br>
@@ -93,7 +97,7 @@ printHeadClose();
                 <button id="add-import" class="col-sm-auto btn dark" data-toggle="modal" data-target="#import-file">Import Dictionary</button>
             </div>
             <hr class="hr-header">
-            <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php?Action=<?php echo $normalAction;?>" method="POST">
+            <form id="new-dictionary-form" enctype="multipart/form-data" action="services/dictionaryService.php?Action=<?php echo $normalAction; ?>" method="POST">
                 <!--Dictionary Name-->
                 <div id="dict-name" class="row align-items-start">
                     <div class="col-sm-auto"><input type="text" id="dictionary-name" class="form-control" title="dictionary" name="dictionaryName" placeholder="Dictionary Name" required></div>
@@ -125,7 +129,7 @@ printHeadClose();
                 <div id="add-dictionary-error-message"></div>
                 <div class="row"> <!--Button: Create New Dictionary-->
                     <div id="add-dictionary-hidden"></div>  <!--add classID into POST-->
-                    <div class="col" align="center"><input type="submit" name="newDictionary" value="Create Dictionary" id="submit-new" class="btn dark"></div>
+                    <div class="col" align="center"><input type="submit" name="newDictionary" value="<?php echo $addBtnValue; ?>" id="submit-new" class="btn dark"></div>
                 </div>
             </form>
         </div>

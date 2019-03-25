@@ -80,7 +80,7 @@ printHeadClose();
                 <p>Are you sure you want to delete <span id="deleting-dictionary" style="font-weight: bold"></span> from the classroom? This is change is irreversible.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="submit-delete" class="btn dark">Remove</button>
+                <button type="button" id="submit-delete-dictionary" class="btn dark">Remove</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -139,7 +139,7 @@ printHeadClose();
                 <p>Are you sure you want to delete term "<span id="deleting-term" style="font-weight: bold"></span>" from the dictionary?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="submit-delete" class="btn dark">Delete</button>
+                <button type="button" id="submit-delete-term" class="btn dark">Delete</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
