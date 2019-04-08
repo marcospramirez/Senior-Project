@@ -38,9 +38,7 @@ function displayForum(forumHTMLID, classroomID) {
             magicGrid.listen(); //listen for changes in window size
         }//end of else: questions in forum, show questions
     })
-    .fail(function() {
-        document.getElementById(forumHTMLID).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }//end of displayForum
 
 //parse data and create HTML for the questions in the forum
@@ -151,7 +149,7 @@ function addQuestionToDictionary(questionID) {
         const dictionaryName = selectData[0].text
 
         const URL = './services/questionService.php?Action=addQuestionToDictionary'
-        const userData = {  //todo marcos
+        const userData = {
             dictionaryID: dictionaryID,
             questionID: questionToDelete
         }
@@ -160,18 +158,14 @@ function addQuestionToDictionary(questionID) {
             if(data.hasOwnProperty("message")) {
                 //if post was successful, delete question from forum & show button to go to dictionary
                 if(data.message === "success") {
-                    showGoToDictionaryBtn(dictionaryID, dictionaryName, `Term was added to ${dictionaryName}!`)
+                    const successMessageHTMLId ="add-to-dict-success-message"
+                    showGoToDictionaryBtn(dictionaryID, dictionaryName, successMessageHTMLId, `Term was added to ${dictionaryName}!`)
                     deleteQuestion(questionToDelete)
                     $("#submit-add-to-dict").off("click")
                     document.getElementById("submit-add-to-dict").style.display = "none"
-            }} else {   //else, backend error: show error message
-                const errorMsg = data.hasOwnProperty("error") ? data.error : data
-                document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-            }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
         })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
+        .fail(function() { showErrorMessage(errorMsgId, URL) })
     })
 }//end of addQuestionToDictionary
 
@@ -259,16 +253,9 @@ function toggleStarredAnswer(questionID, questionType, answerID, starredAnswerID
                     toggleStarIcon(questionType, starredAnswerID, true, questionID)    //unstar starred answer
                     toggleStarIcon(questionType, answerID, isCurrentlyStarred, questionID)    //star current answer
                 }//end of else, find starred answer, remove star & add star to current answer
-        }} else {    //else, backend error: show error message
-            //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one below
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById('error-message').innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }//end of else, post was successful: star/unstar current answer
+        }} else showErrorMessage('error-message', URL, data)   //else, backend error: show error message
     })//end of post
-    .fail(function() {
-        //todo: make a function for this code since i use it so much function(elementID, URL, flag) flag would be whether it's this type of error or the one above
-        document.getElementById('error-message').innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage('error-message', URL) })
 }//end of toggleStarredAnswer
 
 function toggleStarIcon(questionType, answerID, isStarred, questionID) {
@@ -340,10 +327,7 @@ function answerQuestion(questionID, questionType) {
                         const suggestAnswerFieldHTML = getSuggestAnswerHTML(questionID, questionType)
                         answerList.innerHTML += suggestAnswerFieldHTML
                     }
-                }} else {    //else, backend error: show error message
-                const errorMsg = data.hasOwnProperty("error") ? data.error : data
-                document.getElementById('error-message').innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-            }   //end of else, backend error: show error message
+                }} else showErrorMessage('error-message', URL, data)   //else, backend error: show error message
         })//end of post
         .fail(function() {
             document.getElementById('error-message').innerHTML = `Error, could not connect! Please try to answer at a later time. URL: ${URL}`
@@ -371,14 +355,9 @@ function setNewQuestionDropDown(forumHTMLID, askQuestionErrorMsgId) {
                 dropdownParent: $("#ask-question"),
                 width: '100%'
             })
-        } else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(askQuestionErrorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+        } else showErrorMessage(askQuestionErrorMsgId, URL, data)   //else, backend error: show error message
     })
-    .fail(function() {
-        document.getElementById(askQuestionErrorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(askQuestionErrorMsgId, URL) })
 }//end of setNewQuestionDropDown
 
 function getQuestionTypeOptions(questionTypeData) {
@@ -425,9 +404,7 @@ function setAddQuestionToDictionaryDropdown(classroomID) {
             })
         }
     })
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }//end of setAddQuestionToDictionaryDropdown
 
 function displayQuestionInput() {
@@ -475,14 +452,9 @@ function uploadQuestion(forumHTMLID, errorMsgId) {
                 const questionName = data.questionName
                 addNewQuestionToForum(forumHTMLID, questionID, questionType, questionName, questionTerm)
                 document.getElementById('questionTerm').innerHTML = ''  //clear questionTerm to prepare for adding more questions
-        }} else {    //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }   //end of else, backend error: show error message
+        }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     })//end of post
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 
 }
 

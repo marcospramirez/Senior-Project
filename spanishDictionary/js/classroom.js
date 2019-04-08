@@ -111,14 +111,9 @@ function deleteClassroom(email, classroomID) {
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, exit out of classroom/redirect to dashboard
                 window.location.replace('./dashboard.php')
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     })
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }//end of deleteStudent
 
 //get classroom's dictionary data (dictionaryID, dictionaryName) & display dictionary name in clickable table
@@ -149,9 +144,7 @@ function showDictionaryTable(classroomID, classroomName, tableID) {
 
 
     })
-        .fail(function() {  //connection error
-            document.getElementById(tableID).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
+        .fail(function() { showErrorMessage(tableID, URL) })
 }//end of showDictionaryTable
 
 function setAddDefaultDictionaryToClassroom() {
@@ -172,11 +165,12 @@ function addDefaultDictionaryToClassroom(classroomID) {
     const errorMsgId = 'add-default-dict-error-message'
     const selectHTMLId = 'dictionary-select'
     let selectData = $(`#${selectHTMLId}`).select2('data')  //get data from select markup
+    const classroomName = classroomNameFromSession
     const builtInDictionaryID = selectData[0].id
     const builtInDictionaryName = selectData[0].text
 
     const URL = './services/dictionaryService.php?Action=addBuiltInDictionary'
-    const userData = {  //todo marcos
+    const userData = {
         builtInDictionaryID: builtInDictionaryID,
         class: classroomID
     }
@@ -187,16 +181,15 @@ function addDefaultDictionaryToClassroom(classroomID) {
             if(data.message === "success") {
                 const dictionaryID = data.id
                 const dictionaryName = data.name
-                showGoToDictionaryBtn(dictionaryID, dictionaryName, `${builtInDictionaryName} was added to ${classroomNameFromSession}!`)
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+                const successMessageHTMLId = "add-default-dict-success-message"
+
+                document.getElementById('table').innerHTML = '<table id="table-dictionaries" class="table table-hover" style="width:100%"></table>' //clear the table div (which contains the table element
+                showDictionaryTable(classroomID, classroomName, 'table-dictionaries')
+                showGoToDictionaryBtn(dictionaryID, dictionaryName, successMessageHTMLId,`${builtInDictionaryName} was added to ${classroomName}!`)
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
-}
+    .fail(function(){ showErrorMessage(errorMsgId, URL) })
+}//end of addDefaultDictionaryToClassroom
 
 //show table of the classroom's dictionaries. When dictionary name is clicked, go to dictionary (dictionary.php)
 //if user is instructor, allow user to view student count/add students & add a dictionary

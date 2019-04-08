@@ -107,7 +107,7 @@ function setDictionaryButtonListeners(role, tableHtmlId) {
                     data = JSON.parse(data)
                     if(data.hasOwnProperty("message")) {
                         if(data.message === "success") {    //if post was successful, change row color and btn icon
-                            toggleVocabListBtn('added', addBtnIcon, table, row, audioBtn, addBtn) //todo: exlpain what's happeing
+                            toggleVocabListBtn('added', addBtnIcon, table, row, audioBtn, addBtn)
                         }}
                 })
             }else if(addBtn.classList.contains("remove")) {
@@ -121,16 +121,18 @@ function setDictionaryButtonListeners(role, tableHtmlId) {
                             toggleVocabListBtn('removed', addBtnIcon, table, row, audioBtn, addBtn) //change btn icon to checkmark icon
                         }}
                 })
+                .fail(function() {
+                    window.alert(`Error, could not connect! URL: ${URL}`)
+                })
             }
-
-
-            //todo: add $.fail stuff
-
-
         })//end of button.edit onclick
     }
 }//end of setDictionaryButtonListeners
 
+
+//as the term is being added to the personal vocab list, show this change in the button and row color
+//the button has five states: default state (add icon in button), adding to vocab list (loading icon), confirming that it was added to the vocab list (check mark in button),
+//removing from the vocab list (loading icon), and confirming that it was removed (return to default state: add icon in button).
 function toggleVocabListBtn(stateFlag, addBtnIcon, table = null, row = null, audioBtn = null, addBtn = null) {
     const loadingIcon = '•••'
     if(stateFlag === 'adding') {  //signify that term is being added
@@ -205,13 +207,24 @@ function editDictionaryButtonClicked(tableHtmlId, row) {
             let formData = new FormData(editTermForm)
             formData.append("entryID", entryID)
 
-            const plainTextFormData = {entryAudioPath: newEntryAudio, entryText: newEntryText, entryDefinition: newEntryDefinition}
-            editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId)
+            const newPlainTextTableData = {entryAudioPath: newEntryAudio, entryText: newEntryText, entryDefinition: newEntryDefinition}
+            editEntry(tableHtmlId, row, formData, newPlainTextTableData, editModalID, errorMsgId)
+            removeFormListeners()   //if successful, remove all form event listeners
         }else { //user didn't change term, show error message
             document.getElementById(errorMsgId).innerHTML = 'Please edit the term or close the dialog box.'
         }
+
+        $(`#${editModalID}`).on('hide.bs.modal', function (e) {
+            removeFormListeners()   //if user closes modal, remove event listeners
+        })
     })//end of form submit event listener
 }//end of editDictionaryButtonClicked
+
+function removeFormListeners() {
+    let oldForm = document.forms.namedItem("editTermForm")
+    let newForm = oldForm.cloneNode(true)
+    oldForm.parentNode.replaceChild(newForm, oldForm)
+}
 
 //show entry data in edit form & return entry
 function setDictionaryModalData(tagSelectHTMLId, entryID, entryText, entryDefinition) {
@@ -219,36 +232,39 @@ function setDictionaryModalData(tagSelectHTMLId, entryID, entryText, entryDefini
     document.getElementById('entryDef').value = entryDefinition
 
     setSelectData(entryID)
-    setTagLibrary(tagSelectHTMLId)
 }//end of setDictionaryModalData
 
 function setSelectData(entryID) {
+    const tagSelectHTMLId = 'edit-tags'
+    const dictionaryBodyHTMLId = 'dictionary-body'
     const URL = `services/dictionaryService.php?Action=singleTags`
     $.post(URL, {entryID: entryID}, function(data) {
         data = JSON.parse(data)
         if(data.hasOwnProperty("error")) {  //remove filter button and filter modal
             disableFiltering()
-            document.getElementById('dictionary-body').innerHTML = `Error! ${data.error}. URL: ${URL}`
+            document.getElementById(dictionaryBodyHTMLId).innerHTML = `Error! ${data.error}. URL: ${URL}`
         }
         else {  //else, no backend error: set tags in select element
-            $.each(data, function(index, tagData) {
-                $(`#${tagSelectHTMLId}`).append(`<option value="${tagData.tagID}" selected>${tagData.tagText}</option>`)
+            let optionHTML = ''
+            $.each(data.results, function(index, tagData) {
+                optionHTML += `<option value="${tagData.id}" selected>${tagData.text}</option>`
             })
+            document.getElementById(tagSelectHTMLId).innerHTML = optionHTML
         }
-    })
+    })//end of post
         .fail(function() {
             disableFiltering()
-            document.getElementById('dictionary-body').innerHTML = `Error, could not connect! URL: ${URL}`
+            showErrorMessage(dictionaryBodyHTMLId, URL)
         })
 }//end of setSelectData
 
 //make sure that the entry data has been changed, otherwise, don't submit
 function dictionaryEntryChange(entryText, entryDefinition, entryTagIDArray, entryAudio, newEntryText, newEntryDefinition, newEntryTagIDArray, newEntryAudio) {
-    if(entryText === newEntryText) return false
-    else if(entryDefinition === newEntryDefinition) return false
-    else if(areMatchingArrays(entryTagIDArray, newEntryTagIDArray)) return false
-    else if(entryAudio === newEntryAudio || newEntryAudio === '') return false
-    else return true
+    if(entryText !== newEntryText) return true
+    else if(entryDefinition !== newEntryDefinition) return true
+    else if(!areMatchingArrays(entryTagIDArray, newEntryTagIDArray)) return true
+    else if(entryAudio !== newEntryAudio || newEntryAudio !== '') return true
+    else return false
 }//end of dictionaryEntryChange
 
 function areMatchingArrays(array1, array2) {
@@ -265,7 +281,7 @@ function areMatchingArrays(array1, array2) {
     else return false
 }//end of areMatchingArrays
 
-function editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, errorMsgId) {
+function editEntry(tableHtmlId, row, formData, newPlainTextTableData, editModalID, errorMsgId) {
     const URL = "./services/dictionaryService.php?Action=singleEdit"
     let xmlRequest = new XMLHttpRequest()
     xmlRequest.open("POST", URL)
@@ -273,12 +289,9 @@ function editEntry(tableHtmlId, row, formData, plainTextFormData, editModalID, e
         let data = JSON.parse(xmlRequest.responseText)
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, edit row in table
-                const newTermData = [plainTextFormData.entryAudioPath, plainTextFormData.entryText, plainTextFormData.entryDefinition]
+                const newTermData = [newPlainTextTableData.entryAudioPath, newPlainTextTableData.entryText, newPlainTextTableData.entryDefinition]
                 editTableRow(newTermData, tableHtmlId, row,editModalID)
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     };
     xmlRequest.send(formData);
 }//end of editEntry
@@ -307,8 +320,8 @@ function setDeleteDictionaryButton(email, dictionaryID, dictionaryName) {
     //set classroom name in modal
     document.getElementById('deleting-dictionary').innerHTML = dictionaryName
 
-    //user confirmed delete: delete classroom
-    $(`#submit-delete-classroom`).on( 'click', function () {
+    //user confirmed delete: delete dictionary
+    $(`#submit-delete-dictionary`).on( 'click', function () {
         deleteDictionary(email, dictionaryID)
     })
 }//end of setDeleteDictionaryButton
@@ -325,25 +338,22 @@ function deleteDictionary(email, dictionaryID) {
         if(data.hasOwnProperty("message")) {
             if(data.message === "success") {    //if post was successful, exit out of dictionary/redirect to classroom
                 window.location.replace('./classroom.php')
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     })
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }//end of deleteDictionary
 
 $ (function() {
     const tableHtmlId = 'table-dictionary'
     const dictionaryID = dictionaryIDFromSession
     const dictionaryName = dictionaryNameFromSession
-    const tagSelectHTMLId = 'tags-select'
+    const filterSelect2HTMLId = 'tags-select'
+    const editTermSelect2HTMLId = 'edit-tags'
 
     updateDictionaryHeader(dictionaryName)
     displayDictionaryTable(dictionaryID, tableHtmlId)
-    setTagLibrary(tagSelectHTMLId)    //use select2 to have dynamic tag selection
+    setTagLibrary(filterSelect2HTMLId)    //use select2 to filter the dictionary
+    setTagLibrary(editTermSelect2HTMLId)    //use select2 to edit a term in the dictionary
     if(roleFromSession === 'instructor'){
         showAddToDictionaryButton('add-more', 'populatedDictionary')
         setDeleteDictionaryButton(emailFromSession, dictionaryID, dictionaryName)
@@ -358,6 +368,6 @@ $ (function() {
         const userData = { dictionaryID: dictionaryID }
         const filterModal = $('#filter-dictionary')
 
-        displayFilteredTable(URL, userData, tagSelectHTMLId, filterModal, tableHtmlId)
+        displayFilteredTable(URL, userData, filterSelect2HTMLId, filterModal, tableHtmlId)
     })
 });//end of $(function()

@@ -193,7 +193,6 @@ $(document).ready(function(){
 
             }
         })
-
         .fail(function() {
            //console.log("error");
         })

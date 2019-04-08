@@ -80,7 +80,5 @@ $(function () {
 
         document.getElementById(cardBody).innerHTML = classroomNameHTML
     })
-        .fail(function () {
-            document.getElementById(cardBody).innerHTML = `Error, could not post! URL: ${URL}`
-        })
+    .fail(function () {showErrorMessage(errorMsgId, URL)})
 }) //end of doc ready

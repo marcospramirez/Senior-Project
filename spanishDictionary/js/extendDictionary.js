@@ -67,14 +67,9 @@ function deleteEntry(row, entryIDArray, entryID, deleteModalID, previousTableSiz
                     row.remove().draw(false) //remove row and redraw, but don't reset the table's page
                 }
                 $(`#${deleteModalID}`).modal('hide') //hide modal to show table change
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     })
-    .fail(function() {
-        document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-    })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 
     return entryIDArray //return new entryIDArray with removed entry
 }//end of deleteEntry
@@ -154,9 +149,7 @@ function displayFilteredTable(URL, userData, tagSelectHTMLId, filterModal, table
             }
         }//end of else
     })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }//end of displayFilteredTable
 
 function showClearFilterButton(headerId, data, tableHtmlId) {
@@ -193,10 +186,10 @@ function editTableRow(data, tableHtmlId, row, editModalID) {
 function animateRowBackground(rowNode) {
     const normalBG = {color: '#343434', backgroundColor: 'transparent'}
     const darkBG = {color: 'white', backgroundColor: '#172b42'}
-    for(let i = 0; i < 3; i++) {    //pulse bg color 3 times
+    for(let i = 0; i < 2; i++) {    //pulse bg color 2 times
         $(rowNode).animate(darkBG, 'slow')
         $(rowNode).animate(normalBG, 'slow')
     }
     $(rowNode).animate(darkBG, 'slow')  //animate once more to darkBG color
-    $(rowNode).delay(5*1000).animate(normalBG, 'slow')   //keep darkBG color for 15 seconds longer, then revert back
+    $(rowNode).delay(3*1000).animate(normalBG, 'slow')   //keep darkBG color for 3 seconds longer, then revert back
 }//end of animateRowBackground

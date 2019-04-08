@@ -131,10 +131,7 @@ function editStudent(table, row, formData, plainTextFormData, editModalID, error
             if(data.message === "success") {    //if post was successful, edit row in table
                 const newStudentData = [plainTextFormData.studentEmail, plainTextFormData.studentName]
                 editTableRow(newStudentData, table, row, editModalID)
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     };
     xmlRequest.send(formData);
 }//end of editStudent
@@ -153,14 +150,9 @@ function deleteStudent(row, classroomID, studentEmail, deleteModalID) {
             if(data.message === "success") {    //if post was successful, remove row from table
                 row.remove().draw(false) //remove row and redraw, but don't reset the table's page
                 $(`#${deleteModalID}`).modal('hide') //hide modal to show table change
-            }} else {   //else, backend error: show error message
-            const errorMsg = data.hasOwnProperty("error") ? data.error : data
-            document.getElementById(errorMsgId).innerHTML = `Error! ${errorMsg}. URL: ${URL}`
-        }
+            }} else showErrorMessage(errorMsgId, URL, data)   //else, backend error: show error message
     })
-        .fail(function() {
-            document.getElementById(errorMsgId).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }//end of deleteStudent
 
 $(function () {
@@ -185,7 +177,5 @@ $(function () {
         let studentList = JSON.parse(data)
         displayStudentListTable(studentList)
     })
-        .fail(function() {
-            document.getElementById(errorMsgID).innerHTML = `Error, could not connect! URL: ${URL}`
-        })
+    .fail(function() { showErrorMessage(errorMsgId, URL) })
 }) //end of doc ready

@@ -54,11 +54,7 @@ $(function(){
                 else if(data === "none") document.getElementById(errorMsgId).innerHTML = 'Invalid username or password.'    //invalid credentials
                 else document.getElementById(errorMsgId).innerHTML = 'Error! ' + data   //backend error
             }) //end of $.post
-            .fail(function() {
-                document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL}`
-            })//end of $.fail
-
-
+            .fail(function() { showErrorMessage(errorMsgId, URL) })
         } //end of if: passedErrorCheckLogin
     })
 }) //end of doc ready

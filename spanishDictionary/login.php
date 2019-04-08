@@ -18,7 +18,7 @@ echo '
 printHeadClose();
 ?>
 
-<main>
+<main><div class="row"><div class="col-6 col-md-4"></div><div class="col-12 col-md-4">
     <!-- LOGIN FORM -->
     <div id="login-div" class="container content-frame border rounded">
         <img id="login-logo" src="images/logo.png" alt="Accent Logo">
@@ -78,5 +78,4 @@ printHeadClose();
         <h2>Already Registered?</h2>
         <button class="btn" onclick="showLogin()">Back to Log in</button>
     </div>
-</main>
-
+</div><div class="col-6 col-md-4"></div></div></main>

@@ -60,9 +60,7 @@ function registerUser(role, URL, errorMsgId) {
           }
           //todo: error check for if student was not registered by instructor/can't update a student that isn't there
       }) //end of $.post
-          .fail(function() {
-                  document.getElementById(errorMsgId).innerHTML = `Error, could not post! URL: ${URL}`
-          })//end of $.fail
+      .fail(function() { showErrorMessage(errorMsgId, URL) })
 
 
   } //end of if: passedErrorCheckLogin

@@ -101,15 +101,15 @@ printHeadClose();
                     <div style="text-align: center;"><div id="edit-error-message" class="error-message"></div></div>
                     <div class="form-group">
                         <label for="entryText" class="col-form-label">Edit Term:</label>
-                        <input type="text" class="form-control" id="entryText" name="eText">
+                        <input type="text" class="form-control" id="entryText" name="entryText">
                     </div>
                     <div class="form-group">
                         <label for="entryDef" class="col-form-label">Edit Definition:</label>
-                        <input type="text" class="form-control" id="entryDef" name="eDefinition">
+                        <input type="text" class="form-control" id="entryDef" name="entryDefinition">
                     </div>
                     <div class="form-group">
                         <label for="edit-tags" class="col-form-label">Edit Tag(s):</label>
-                        <select id="edit-tags" multiple="multiple" class="form-control tags" title="tags" name="editTags[]"></select>
+                        <select id="edit-tags" multiple="multiple" class="form-control tags" title="tags" name="entryTags[]"></select>
                     </div>
                     <div class="form-group">
                         <label for="entryAudio" class="col-form-label">Edit Audio:</label>
